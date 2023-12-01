@@ -20,6 +20,7 @@ public class Animal {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "animal_board_idx")
     private Long animalId;
+
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
@@ -44,10 +45,11 @@ public class Animal {
     @Column(name = "health_check")
     private String healthCheck;
 
+    private Integer like;
+
     @Column(name = "adoption_status")
     private Boolean adoptionStatus;
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnimalImage> images;
-
 }
