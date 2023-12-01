@@ -7,10 +7,10 @@ spring:
 #  redis:
 #    host: localhost
 #    port: 6379
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
   servlet:
     multipart:
       enabled: true
@@ -23,12 +23,12 @@ security:
     secret: ${JWT_SECRET:superCoding}
     token-validity-in-seconds: 604800
 
-aws:
-  accessKeyId: ${AWS_ACCESS_KEY}
-  secretKey: ${AWS_SECRET_KEY}
-  region: ${AWS_REGION}
-  s3:
-    bucketName: ${AWS_BUCKET}
+#aws:
+#  accessKeyId: ${AWS_ACCESS_KEY}
+#  secretKey: ${AWS_SECRET_KEY}
+#  region: ${AWS_REGION}
+#  s3:
+#    bucketName: ${AWS_BUCKET}
 
 logging:
   level:
