@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.show.board.entity;
 
+import com.git.backend.daeng_nyang_connect.animal.board.entity.AnimalImage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,10 +31,14 @@ public class Show {
     private String title;
     private String contents;
 
-//    @Enumerated(EnumType.STRING)
-//    private Category category;
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShowImage> images;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
     private Integer like;
 }

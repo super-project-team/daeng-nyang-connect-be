@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.animal.board.dto.request;
 
+import com.git.backend.daeng_nyang_connect.animal.board.entity.AdoptionStatus;
 import com.git.backend.daeng_nyang_connect.animal.board.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.board.entity.AnimalImage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -20,7 +21,7 @@ public class AnimalRequestDTO {
     private String disease;
     private Date adoptionDate;
     private String training;
-    private String neutering;
+    private Boolean neutering;
     private String contents;
     private String healthCheck;
     private List<AnimalImage> images;
@@ -39,7 +40,7 @@ public class AnimalRequestDTO {
                     .contents(animalRequestDTO.getContents())
                     .healthCheck(animalRequestDTO.getHealthCheck())
                     .like(0)
-                    .adoptionStatus(true)
+                    .adoptionStatus(AdoptionStatus.STILL)
                     .build();
     }
 

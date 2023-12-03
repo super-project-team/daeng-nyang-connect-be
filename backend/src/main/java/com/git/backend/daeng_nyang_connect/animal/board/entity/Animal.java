@@ -34,12 +34,13 @@ public class Animal {
     private String gender;
     private String disease;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "adoption_date")
     private Date adoptionDate;
 
     private String training;
 
-    private String neutering;
+    private Boolean neutering;
     private String contents;
 
     @Column(name = "health_check")
@@ -47,9 +48,14 @@ public class Animal {
 
     private Integer like;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "adoption_status")
-    private Boolean adoptionStatus;
+    private AdoptionStatus adoptionStatus;
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnimalImage> images;
+
+    public void updateLike(Integer like) {
+        this.like = like;
+    }
 }

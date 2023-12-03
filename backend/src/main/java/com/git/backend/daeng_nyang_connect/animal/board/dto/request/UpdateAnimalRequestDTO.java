@@ -15,18 +15,19 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateAnimalRequestDTO {
+    private Long animalId;
     private String animalName;
     private Integer age;
     private String gender;
     private String disease;
     private Date adoptionDate;
     private String training;
-    private String neutering;
+    private Boolean neutering;
     private String contents;
     private String healthCheck;
     private List<AnimalImage> images;
 
-    public UpdateAnimalRequestDTO(Animal animal, UpdateAnimalRequestDTO updateAnimalRequestDTO) {
+    public void checkUpdateList(Animal animal, UpdateAnimalRequestDTO updateAnimalRequestDTO) {
         if (Objects.isNull(updateAnimalRequestDTO.getAnimalName())) {
             this.animalName = animal.getAnimalName();
         }
