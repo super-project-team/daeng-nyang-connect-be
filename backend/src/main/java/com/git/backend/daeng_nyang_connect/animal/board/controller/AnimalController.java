@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class AnimalController {
     private final AnimalService animalService;
     @PostMapping("/add")
     public ResponseEntity<?> addAnimal(@RequestBody AnimalRequestDTO animalRequestDTO,
-                                              @RequestHeader("X-AUTH-TOKEN") String token){
+                                       @RequestHeader("X-AUTH-TOKEN") String token){
         Animal newAnimal = animalService.addAnimal(animalRequestDTO, token);
         return ResponseEntity.status(200).body(newAnimal);
     }
@@ -27,16 +28,17 @@ public class AnimalController {
     @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteAnimal(@RequestParam("animalId") Long animalId,
-                                                 @RequestHeader("X-AUTH-TOKEN") String token){
+                                          @RequestHeader("X-AUTH-TOKEN") String token){
         animalService.deleteAnimal(animalId, token);
         return ResponseEntity.status(200).body("게시글이 삭제되었습니다.");
     }
 
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<?> updateAnimal(@RequestBody UpdateAnimalRequestDTO updateAnimalRequestDTO,
-                                                 @RequestHeader("X-AUTH-TOKEN") String token){
-        Animal updateAnimal = animalService.updateAnimal(updateAnimalRequestDTO, token);
+    public ResponseEntity<?> updateAnimal(@RequestParam("animalId") Long animalId,
+                                          @RequestBody UpdateAnimalRequestDTO updateAnimalRequestDTO,
+                                          @RequestHeader("X-AUTH-TOKEN") String token){
+        Animal updateAnimal = animalService.updateAnimal(animalId, updateAnimalRequestDTO, token);
         return ResponseEntity.status(200).body(updateAnimal);
     }
 
@@ -46,8 +48,9 @@ public class AnimalController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<?> likeAnimal(@RequestHeader("X-AUTH-TOKEN") String token){
-        String message = animalService.likeAnimal(token);
+    public ResponseEntity<?> likeAnimal(@RequestParam("animalId") Long animalId,
+                                        @RequestHeader("X-AUTH-TOKEN") String token){
+        Map<String, String> message = animalService.likeAnimal(animalId, token);
         return ResponseEntity.status(200).body(message);
     }
 }

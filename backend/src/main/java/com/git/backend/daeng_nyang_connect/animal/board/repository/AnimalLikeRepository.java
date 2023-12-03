@@ -10,6 +10,6 @@ import java.util.List;
 public interface AnimalLikeRepository extends JpaRepository<AnimalLike, Long> {
 
 //    좋아요 수 합산
-    @Query("SELECT count(al) FROM AnimalLike al WHERE al.animal.animalId =: animalId")
-    List<AnimalLike> totalAnimalLike(@Param("animalId")Long animalId);
+    @Query("SELECT count(al) AS totalLike FROM AnimalLike al WHERE al.animal.animalId =: animalId")
+    Integer totalAnimalLike(@Param("animalId")Long animalId);
 }
