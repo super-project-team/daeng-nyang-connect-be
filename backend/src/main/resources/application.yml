@@ -22,6 +22,15 @@ security:
     header: ${JWT_AUTH:Authorization}
     secret: ${JWT_SECRET:superCoding}
     token-validity-in-seconds: 604800
+  oauth2:
+    client:
+      registration:
+        google:
+          client-id: 732457214657-04h0pufj3ga4mlh9r6p6sfb88hvapgbi.apps.googleusercontent.com
+          client-secret: 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
+          redirect-uri: http://localhost:8080/login/oauth2/code/google
+          authorizationUri: https://accounts.google.com/o/oauth2/auth
+          scope: email, profile
 
 #aws:
 #  accessKeyId: ${AWS_ACCESS_KEY}
