@@ -1,4 +1,4 @@
-package com.git.backend.daeng_nyang_connect.show.board.entity;
+package com.git.backend.daeng_nyang_connect.mate.board.entity;
 
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
@@ -14,25 +14,23 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "show")
-public class Show {
+@Table(name = "mate")
+public class Mate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "show_board_idx")
-    private Long showBoardId;
+    @Column(name = "mate_board_idx")
+    private Long mateBoardId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
-    private String nickname;
-    private String title;
-    private String contents;
-
-//    @Enumerated(EnumType.STRING)
-//    private Category category;
+    private String category;
+    private String place;
+    private String text;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
     private Integer like;
 }
