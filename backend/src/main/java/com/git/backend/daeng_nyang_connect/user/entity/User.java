@@ -28,5 +28,5 @@ public class User {
     private Boolean experience;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Mypage mypage;
+    private MyPage mypage;
 }
