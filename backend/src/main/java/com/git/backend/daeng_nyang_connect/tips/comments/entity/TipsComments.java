@@ -20,18 +20,17 @@ public class TipsComments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tips_comments_idx")
-    private Long commentsId;
+    private Long tipsCommentsId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "guide_board_idx")
+    @JoinColumn(name = "tips_board_idx")
     private Tips tips;
 
-    private String nickname;
-    private String contents;
+    private String comment;
     private Integer like;
 
     @Column(name = "created_at")

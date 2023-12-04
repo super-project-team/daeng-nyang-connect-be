@@ -7,21 +7,32 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "show_board_like")
-public class ShowBoardLike {
+@Table(name = "show")
+public class Show {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "show_board_like_idx")
-    private Long likeId;
+    @Column(name = "show_board_idx")
+    private Long showBoardId;
+
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
-    @ManyToOne
-    @JoinColumn(name = "show_board_idx")
-    private Show show;
+
+    private String nickname;
+    private String title;
+    private String contents;
+
+//    @Enumerated(EnumType.STRING)
+//    private Category category;
+
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+    private Integer like;
 }

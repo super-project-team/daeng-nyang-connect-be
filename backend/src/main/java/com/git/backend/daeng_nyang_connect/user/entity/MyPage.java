@@ -11,21 +11,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "mypage")
-public class Mypage {
+@Table(name = "my_page")
+public class MyPage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "my_page_idx")
     private Long myPageId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "user_idx", unique = true)
     private User user;
 
-    private String city;
-    private String town;
-    private String gender;
-    private String mobile;
-    private String experience;
     private String info;
+    private String img;
 }

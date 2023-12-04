@@ -17,7 +17,7 @@ public class LostBoardLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lost_board_like_idx")
-    private Long likeId;
+    private Long lostBoardLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")

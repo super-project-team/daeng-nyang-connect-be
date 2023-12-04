@@ -19,14 +19,15 @@ public class Tips {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tips_board_idx")
-    private Long tipsId;
+    private Long tipsBoardId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
+    private String category;
     private String title;
-    private String contents;
+    private String text;
     private Integer like;
 
     @Column(name = "created_at")

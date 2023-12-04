@@ -20,18 +20,17 @@ public class ReviewComments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_comments_idx")
-    private Long commentsId;
+    private Long reviewCommentsId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "review_board_idx")
+    @JoinColumn(name = "review_idx")
     private Review review;
 
-    private String nickname;
-    private String contents;
+    private String comment;
     private Integer like;
 
     @Column(name = "created_at")

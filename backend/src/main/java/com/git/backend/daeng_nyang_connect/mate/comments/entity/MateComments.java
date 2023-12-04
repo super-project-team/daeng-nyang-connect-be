@@ -1,6 +1,6 @@
-package com.git.backend.daeng_nyang_connect.lost.comments.entity;
+package com.git.backend.daeng_nyang_connect.mate.comments.entity;
 
-import com.git.backend.daeng_nyang_connect.lost.board.entity.Lost;
+import com.git.backend.daeng_nyang_connect.mate.board.entity.Mate;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,21 +15,23 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "lost_comments")
-public class LostComments {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lost_comments_idx")
-    private Long lostCommentsId;
+@Table(name = "mate_comments")
+public class MateComments {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "mate_comments_idx")
+    private Long mateCommentsId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "lost_board_idx")
-    private Lost lost;
+    @JoinColumn(name = "mate_board_idx")
+    private Mate mate;
 
     private String comment;
+    private Integer like;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

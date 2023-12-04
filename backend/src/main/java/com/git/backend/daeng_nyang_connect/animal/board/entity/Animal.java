@@ -20,7 +20,6 @@ public class Animal {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "animal_board_idx")
     private Long animalId;
-
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
@@ -34,28 +33,21 @@ public class Animal {
     private String gender;
     private String disease;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "adoption_date")
     private Date adoptionDate;
 
     private String training;
 
-    private Boolean neutering;
+    private String neutering;
     private String contents;
 
     @Column(name = "health_check")
     private String healthCheck;
 
-    private Integer like;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "adoption_status")
-    private AdoptionStatus adoptionStatus;
+    private Boolean adoptionStatus;
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnimalImage> images;
 
-    public void updateLike(Integer like) {
-        this.like = like;
-    }
 }

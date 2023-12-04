@@ -17,13 +17,13 @@ public class ReviewLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_like_idx")
-    private Long likeId;
+    private Long reviewLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "review_board_idx")
+    @JoinColumn(name = "review_idx")
     private Review review;
 }

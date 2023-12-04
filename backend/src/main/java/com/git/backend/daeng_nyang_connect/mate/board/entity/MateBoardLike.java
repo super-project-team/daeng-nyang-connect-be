@@ -1,4 +1,4 @@
-package com.git.backend.daeng_nyang_connect.show.comments.entity;
+package com.git.backend.daeng_nyang_connect.mate.board.entity;
 
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "show_comments_like")
-public class ShowCommentsLike {
+@Table(name = "mate_board_like")
+public class MateBoardLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "show_comments_like_idx")
-    private Long likeId;
+    @Column(name = "mate_board_like_idx")
+    private Long mateBoardLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "show_comments_idx")
-    private ShowBoardComments showBoardComments;
+    @JoinColumn(name = "mate_board_idx")
+    private Mate mate;
 }

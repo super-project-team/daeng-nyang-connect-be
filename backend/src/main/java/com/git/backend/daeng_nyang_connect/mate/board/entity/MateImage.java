@@ -1,4 +1,4 @@
-package com.git.backend.daeng_nyang_connect.show.board.entity;
+package com.git.backend.daeng_nyang_connect.mate.board.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "show_image")
-public class ShowImage {
+@Table(name = "mate_image")
+public class MateImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "show_image_idx")
-    private Long imageId;
+    @Column(name = "mate_image_idx")
+    private Long mateImageId;
 
     @ManyToOne
-    @JoinColumn(name = "show_board_idx")
-    private Show show;
+    @JoinColumn(name = "mate_board_idx")
+    private Mate mate;
 
     private String url;
 }

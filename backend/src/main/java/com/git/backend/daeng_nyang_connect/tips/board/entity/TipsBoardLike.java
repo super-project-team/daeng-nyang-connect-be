@@ -17,13 +17,13 @@ public class TipsBoardLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tips_board_like_idx")
-    private Long likeId;
+    private Long tipsBoardLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "guide_board_idx")
+    @JoinColumn(name = "tips_board_idx")
     private Tips tips;
 }
