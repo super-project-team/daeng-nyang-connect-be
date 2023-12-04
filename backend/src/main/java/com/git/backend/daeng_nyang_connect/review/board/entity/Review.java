@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -18,7 +20,7 @@ import java.util.List;
 @Table(name = "review")
 public class Review {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_board_idx")
+    @Column(name = "review_idx")
     private Long reviewId;
 
     @ManyToOne
@@ -29,8 +31,17 @@ public class Review {
     @JoinColumn(name = "animal_idx")
     private Animal animal;
 
-    private String nickname;
-    private String contents;
+    @Column(name = "text_review")
+    private String textReview;
+
+    private Integer like;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "adopted_date")
+    private Date adoptedDate;
+
+    @Column(name = "created_at")
+    private Timestamp createdAt;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> images;

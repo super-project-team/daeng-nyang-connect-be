@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -18,13 +19,12 @@ import java.util.List;
 @Table(name = "animal")
 public class Animal {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "animal_board_idx")
+    @Column(name = "animal_idx")
     private Long animalId;
+
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
-
-    private String nickname;
 
     @Column(name = "animal_name")
     private String animalName;
@@ -32,22 +32,20 @@ public class Animal {
     private Integer age;
     private String gender;
     private String disease;
-
-    @Column(name = "adoption_date")
-    private Date adoptionDate;
-
+    private String breed;
     private String training;
-
-    private String neutering;
+    private Boolean neutering;
     private String contents;
 
     @Column(name = "health_check")
     private String healthCheck;
 
-    @Column(name = "adoption_status")
-    private Boolean adoptionStatus;
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+
+    @Column(name = "nurture_period")
+    private String nurturePeriod;
 
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnimalImage> images;
-
 }

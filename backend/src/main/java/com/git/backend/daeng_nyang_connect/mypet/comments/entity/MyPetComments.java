@@ -1,5 +1,6 @@
-package com.git.backend.daeng_nyang_connect.show.board.entity;
+package com.git.backend.daeng_nyang_connect.mypet.comments.entity;
 
+import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPet;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,25 +15,24 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "show")
-public class Show {
+@Table(name = "my_pet_comments")
+public class MyPetComments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "show_board_idx")
-    private Long showBoardId;
+    @Column(name = "my_pet_comments_idx")
+    private Long myPetCommentsId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
-    private String nickname;
-    private String title;
-    private String contents;
+    @ManyToOne
+    @JoinColumn(name = "my_pet_board_idx")
+    private MyPet mypet;
 
-//    @Enumerated(EnumType.STRING)
-//    private Category category;
+    private String comment;
+    private Integer like;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
-    private Integer like;
 }

@@ -17,7 +17,7 @@ public class ReviewCommentsLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_comments_like_idx")
-    private Long likeId;
+    private Long reviewCommentsLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")

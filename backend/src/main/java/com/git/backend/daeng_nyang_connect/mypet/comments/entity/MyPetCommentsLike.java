@@ -1,4 +1,4 @@
-package com.git.backend.daeng_nyang_connect.show.board.entity;
+package com.git.backend.daeng_nyang_connect.mypet.comments.entity;
 
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
@@ -12,16 +12,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "show_board_like")
-public class ShowBoardLike {
+@Table(name = "my_pet_comments_like")
+public class MyPetCommentsLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "show_board_like_idx")
-    private Long likeId;
+    @Column(name = "my_pet_comments_like_idx")
+    private Long myPetCommentsLikeId;
+
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
+
     @ManyToOne
-    @JoinColumn(name = "show_board_idx")
-    private Show show;
+    @JoinColumn(name = "my_pet_comments_idx")
+    private MyPetComments myPetComments;
 }
