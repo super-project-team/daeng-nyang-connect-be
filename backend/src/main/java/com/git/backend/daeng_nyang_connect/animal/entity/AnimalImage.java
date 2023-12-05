@@ -1,4 +1,4 @@
-package com.git.backend.daeng_nyang_connect.animal.board.entity;
+package com.git.backend.daeng_nyang_connect.animal.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

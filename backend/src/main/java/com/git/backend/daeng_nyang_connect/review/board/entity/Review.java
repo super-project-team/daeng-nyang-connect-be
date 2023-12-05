@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.review.board.entity;
 
-import com.git.backend.daeng_nyang_connect.animal.board.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,17 +29,13 @@ public class Review {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "animal_idx")
-    private Animal animal;
+    @JoinColumn(name = "adopted_animal_idx")
+    private AdoptedAnimal adoptedAnimal;
 
     @Column(name = "text_review")
     private String textReview;
 
     private Integer like;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "adopted_date")
-    private Date adoptedDate;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
