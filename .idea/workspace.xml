@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a1d68fce-2c6a-4dcf-be79-e63db9a3ec00" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2023-12-05_오후_1_37,_체크아웃_전에_커밋되지_않은_변경_내용_[Changes]/shelved.patch" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/2023-12-05_오후_1_37,_체크아웃_전에_커밋되지_않은_변경_내용_[Changes]/shelved.patch" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/jwt/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/config/jwt/TokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/security/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/config/jwt/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/config/jwt/TokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/config/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/config/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/dto/SignUpDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/dto/SignUpDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +41,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -63,6 +68,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -83,7 +92,7 @@
       <recent name="com.git.backend.daeng_nyang_connect.config.security" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.C:/Users/user/IdeaProjects/daeng-nyang-connect-be/backend/build.gradle">
+  <component name="RunManager" selected="Spring Boot.BackendApplication">
     <configuration default="true" type="DjangoTestsConfigurationType">
       <module name="daeng-nyang-connect-be" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -186,8 +195,18 @@
       <method v="2" />
     </configuration>
     <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="DB_PASSWORD" value="fptmql12" />
+        <env name="DB_URL" value="jdbc:mysql://supercoding-prj3.cvi1bstps8qn.ap-northeast-2.rds.amazonaws.com:3306/prj3" />
+        <env name="DB_USER_NAME" value="root" />
+      </envs>
       <module name="backend.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.git.backend.BackendApplication" />
+      <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+        <option name="credential" />
+        <option name="region" />
+        <option name="useCurrentConnection" value="false" />
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -204,6 +223,10 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Gradle.C:/Users/user/IdeaProjects/daeng-nyang-connect-be/backend/build.gradle" />
+      <item itemvalue="Spring Boot.BackendApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.C:/Users/user/IdeaProjects/daeng-nyang-connect-be/backend/build.gradle" />
@@ -222,6 +245,7 @@
       <workItem from="1701394030333" duration="282000" />
       <workItem from="1701707198862" duration="1861000" />
       <workItem from="1701747905117" duration="1032000" />
+      <workItem from="1701789568166" duration="11489000" />
     </task>
     <servers />
   </component>

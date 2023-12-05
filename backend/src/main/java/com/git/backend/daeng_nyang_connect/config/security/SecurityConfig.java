@@ -62,12 +62,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(httpSecurityCorsConfigurer -> corsConfigurationSource())
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .headers((headerConfig -> headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)))
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .rememberMe(AbstractHttpConfigurer::disable)
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers())
-    
+                                .requestMatchers("/api", "/api/signup", "/api/login").permitAll()
+                                .anyRequest().authenticated())
+                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
     }
 
     @Bean
@@ -75,7 +81,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));

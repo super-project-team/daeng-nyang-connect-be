@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.user.entity;
 
+import com.git.backend.daeng_nyang_connect.user.role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,12 +27,18 @@ public class User implements UserDetails {
     private String name;
     private String email;
     private String password;
+
+    @Column(name = "user_nickname")
     private String nickname;
+
     private String city;
     private String town;
     private String gender;
     private String mobile;
     private Boolean experience;
+
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private MyPage mypage;

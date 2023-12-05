@@ -1,6 +1,9 @@
 package com.git.backend.daeng_nyang_connect.config.jwt;
 
+import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.CustomerUserDetails;
+import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
+import com.git.backend.daeng_nyang_connect.user.role.Role;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.ClaimsSet;
 import io.jsonwebtoken.Claims;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -30,14 +35,16 @@ public class TokenProvider {
     private long refreshtokenValidSecond = 1000L * 60 * 60; //1시간
 
     private final CustomerUserDetails customerUserDetails;
+    private final UserRepository userRepository;
 
     @PostConstruct
     protected void init(){
         secretKey  = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    private String getString(String email, long accesstokenValidSecond){
+    private String getString(String email, long accesstokenValidSecond, Role role){
         Claims claims = Jwts.claims().setSubject(email);
+        claims.put("Role", role);
         Date now = new Date();
         Date accessValidate = new Date(now.getTime() + accesstokenValidSecond);
 
@@ -51,11 +58,15 @@ public class TokenProvider {
     }
     //액세스 토큰 생성
     public String createAccessToken(String email){
-        return getString(email, accesstokenValidSecond);
+        Optional<User> isUser = userRepository.findByEmail(email);
+        return isUser.map(user -> getString(email, accesstokenValidSecond, user.getRole()))
+                .orElseThrow(() -> new NoSuchElementException("없는 회원 입니다"));
     }
     //리프레쉬 토큰 생성
     public String createRefreshToken(String email){
-        return getString(email, refreshtokenValidSecond);
+        Optional<User> isUser = userRepository.findByEmail(email);
+        return isUser.map(user -> getString(email, refreshtokenValidSecond, user.getRole()))
+                .orElseThrow(() -> new NoSuchElementException("없는 회원 입니다"));
     }
 
     private String getUserEmail(String token) {

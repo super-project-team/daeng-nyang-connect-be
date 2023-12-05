@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.user.dto;
 
+import com.git.backend.daeng_nyang_connect.user.role.Role;
 import lombok.*;
 
 @Getter
@@ -18,5 +19,6 @@ public class SignUpDto {
     private String town;
     private boolean experience;
     private char gender;
+    private Role role;
 
 }
