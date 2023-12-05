@@ -1,5 +1,6 @@
-package com.git.backend.daeng_nyang_connect.animal.board.entity;
+package com.git.backend.daeng_nyang_connect.animal.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,13 +14,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "animal_scrap")
-public class AnimaScrap {
+public class AnimalScrap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "animal_scrap_idx")
     private Long animalScrapId;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_idx")
     private User user;
 

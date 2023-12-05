@@ -1,10 +1,14 @@
 package com.git.backend.daeng_nyang_connect.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.git.backend.daeng_nyang_connect.animal.entity.AnimalScrap;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,5 +32,9 @@ public class User {
     private Boolean experience;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Mypage mypage;
+    private MyPage myPage;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<AnimalScrap> myAnimalScrap;
 }

@@ -1,9 +1,10 @@
-package com.git.backend.daeng_nyang_connect.animal.board.controller;
+package com.git.backend.daeng_nyang_connect.animal.controller;
 
-import com.git.backend.daeng_nyang_connect.animal.board.dto.request.AnimalRequestDTO;
-import com.git.backend.daeng_nyang_connect.animal.board.dto.request.UpdateAnimalRequestDTO;
-import com.git.backend.daeng_nyang_connect.animal.board.entity.Animal;
-import com.git.backend.daeng_nyang_connect.animal.board.service.AnimalService;
+import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.dto.request.UpdateAnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.service.AnimalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,15 @@ public class AnimalController {
                                        @RequestHeader("X-AUTH-TOKEN") String token){
         Animal newAnimal = animalService.addAnimal(animalRequestDTO, token);
         return ResponseEntity.status(200).body(newAnimal);
+    }
+
+    @Transactional
+    @PutMapping("/complete")
+    public ResponseEntity<?> completeAnimal(@RequestParam("animalId") Long animalId,
+                                            @RequestParam("adoptedUserId") Long adoptedUserId,
+                                            @RequestHeader("X-AUTH-TOKEN") String token){
+        AdoptedAnimal adoptedAnimal = animalService.completeAnimal(animalId, adoptedUserId, token);
+        return ResponseEntity.status(200).body(adoptedAnimal.getAnimal().getAnimalName() + " 이 " + adoptedAnimal.getUser().getNickname() +" 님에게 입양되었습니다.");
     }
 
     @Transactional
@@ -47,10 +57,10 @@ public class AnimalController {
         return animalService.findAllAnimal();
     }
 
-    @PostMapping("/like")
-    public ResponseEntity<?> likeAnimal(@RequestParam("animalId") Long animalId,
-                                        @RequestHeader("X-AUTH-TOKEN") String token){
-        Map<String, String> message = animalService.likeAnimal(animalId, token);
-        return ResponseEntity.status(200).body(message);
+    @PostMapping("/scrap")
+    public ResponseEntity<?> scrapAnimal(@RequestBody Long animalId,
+                                       @RequestHeader("X-AUTH-TOKEN") String token){
+        Animal scrapAnimal = animalService.scrapAnimal(animalId, token);
+        return ResponseEntity.status(200).body(scrapAnimal);
     }
 }

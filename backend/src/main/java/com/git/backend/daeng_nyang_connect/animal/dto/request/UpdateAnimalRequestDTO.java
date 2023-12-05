@@ -1,8 +1,8 @@
-package com.git.backend.daeng_nyang_connect.animal.board.dto.request;
+package com.git.backend.daeng_nyang_connect.animal.dto.request;
 
-import com.git.backend.daeng_nyang_connect.animal.board.entity.Animal;
-import com.git.backend.daeng_nyang_connect.animal.board.entity.AnimalImage;
-import com.git.backend.daeng_nyang_connect.user.entity.User;
+import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.entity.AnimalImage;
+import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
 import lombok.*;
 
 import java.util.Date;
@@ -20,14 +20,16 @@ public class UpdateAnimalRequestDTO {
     private Integer age;
     private String gender;
     private String disease;
-    private Date adoptionDate;
     private String training;
     private Boolean neutering;
-    private String contents;
+    private String textReason;
     private String healthCheck;
+    private Kind kind;
+    private String breed;
+    private Date nurturePeriod;
     private List<AnimalImage> images;
 
-    public void checkUpdateList(Animal animal, UpdateAnimalRequestDTO updateAnimalRequestDTO) {
+    public void checkUpdateList(UpdateAnimalRequestDTO updateAnimalRequestDTO, Animal animal) {
         if (Objects.isNull(updateAnimalRequestDTO.getAnimalName())) {
             this.animalName = animal.getAnimalName();
         }
@@ -44,8 +46,8 @@ public class UpdateAnimalRequestDTO {
             this.disease = animal.getDisease();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getAdoptionDate())) {
-            this.adoptionDate = animal.getAdoptionDate();
+        if (Objects.isNull(updateAnimalRequestDTO.getNurturePeriod())) {
+            this.nurturePeriod = animal.getNurturePeriod();
         }
 
         if (Objects.isNull(updateAnimalRequestDTO.getTraining())) {
@@ -56,8 +58,16 @@ public class UpdateAnimalRequestDTO {
             this.neutering = animal.getNeutering();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getContents())) {
-            this.contents = animal.getContents();
+        if (Objects.isNull(updateAnimalRequestDTO.getTextReason())) {
+            this.textReason = animal.getTextReason();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getKind())) {
+            this.kind = animal.getKind();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getBreed())) {
+            this.breed = animal.getBreed();
         }
 
         if (Objects.isNull(updateAnimalRequestDTO.getHealthCheck())) {
