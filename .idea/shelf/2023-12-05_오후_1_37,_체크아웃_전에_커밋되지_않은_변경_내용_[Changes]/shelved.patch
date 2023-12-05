@@ -6,8 +6,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/.idea/workspace.xml b/.idea/workspace.xml
---- a/.idea/workspace.xml	(revision 4cce32815b27a5cdbb65b6f213d7617b02f967e6)
-+++ b/.idea/workspace.xml	(date 1701750982632)
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
 @@ -4,127 +4,7 @@
      <option name="autoReloadType" value="SELECTIVE" />
    </component>
