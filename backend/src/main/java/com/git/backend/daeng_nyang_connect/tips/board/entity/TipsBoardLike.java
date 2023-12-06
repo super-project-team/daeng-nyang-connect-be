@@ -28,4 +28,8 @@ public class TipsBoardLike {
     private Tips tips;
 
 
+    public TipsBoardLike(Tips tips, User user) {
+        this.tips = tips;
+        this.user = user;
+    }
 }

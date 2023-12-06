@@ -15,7 +15,7 @@ public class TipsBoardDto {
     private String category;
     private String title;
     private String text;
-    private Integer like;
+    private Integer tipsLike;
     private Timestamp createdAt;
 
 }

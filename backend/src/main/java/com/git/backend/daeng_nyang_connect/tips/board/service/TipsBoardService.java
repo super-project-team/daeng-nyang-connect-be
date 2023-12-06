@@ -4,6 +4,8 @@ package com.git.backend.daeng_nyang_connect.tips.board.service;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
+import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsBoardLike;
+import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardLikeRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
@@ -31,6 +33,8 @@ public class TipsBoardService {
     private final UserRepository userRepository;
     private final TipsBoardRepository tipsBoardRepository;
     private final TipsImgUpload tipsImgUpload;
+    private final TipsBoardLikeRepository tipsBoardLikeRepository;
+
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
     @Transactional
     public Map<?,?> postBoard(TipsBoardDto tipsBoardDto, String token, List<MultipartFile> img){
@@ -48,7 +52,7 @@ public class TipsBoardService {
                     .title(tipsBoardDto.getTitle())
                     .text(tipsBoardDto.getText())
                     .createdAt(timestamp)
-                    .tips_like(0)
+                    .tipsLike(0)
                     .build();
         tipsBoardRepository.save(tips);
         tipsImgUpload.uploadTipsImgs(tips, tipsBoardDto.getTitle(), img);
@@ -79,6 +83,22 @@ public class TipsBoardService {
 //                })
 //    }
 //
+    public void setHeart(Tips tips, User user, Integer likeCount, Boolean msg){
+        if(msg){
+            TipsBoardLike tipsBoardLike = new TipsBoardLike(tips, user);
+            likeCount++;
+            tips.setTipsLike(likeCount);
+            tipsBoardLikeRepository.save(tipsBoardLike);
+            tipsBoardRepository.save(tips);
+        }else{
+            tipsBoardLikeRepository.deleteByUser(user);
+            likeCount--;
+            tips.setTipsLike(likeCount);
+            tipsBoardRepository.save(tips);
+        }
+    }
+
+    
 
 
 

@@ -30,8 +30,12 @@ public class Tips {
     private String text;
 
     @Column(name = "tips_like")
-    private Integer tips_like;
+    private Integer tipsLike;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    public void setTipsLike(Integer tipsLike) {
+        this.tipsLike = tipsLike;
+    }
 }
