@@ -1,7 +1,6 @@
 package com.git.backend.daeng_nyang_connect.animal.service;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
-import com.git.backend.daeng_nyang_connect.animal.dto.request.UpdateAnimalRequestDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -19,7 +18,7 @@ public interface AnimalService {
     void deleteAnimal(Long animalId, String token);
 
     // 댕냥 게시판에 등록한 내 파양동물 수정
-    Animal updateAnimal(Long animalId, UpdateAnimalRequestDTO updateAnimalRequestDTO, String token);
+    Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, String token);
 
     // 댕냥 게시판에 등록된 파양동물 전체 출력
     List<Animal> findAllAnimal();

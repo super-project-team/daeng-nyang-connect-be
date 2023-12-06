@@ -1,12 +1,14 @@
 package com.git.backend.daeng_nyang_connect.review.board.service;
 
-import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
-import com.git.backend.daeng_nyang_connect.review.board.dto.request.UpdateReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewImage;
+import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewLike;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewImageRepository;
+import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewLikeRepository;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -26,30 +28,35 @@ public class ReviewServiceImpl implements ReviewService {
     private final AnimalRepository animalRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
+    private final AdoptedAnimalRepository adoptedAnimalRepository;
     @Override
-    public Review addReview(Long adoptedAnimalId, ReviewRequestDTO reviewRequestDTO, String token) {
+    public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
 
         // 2. 해당 유저가 입양한 댕냥이가 맞는지 확인
+        AdoptedAnimal myAdoptedAnimal = checkMyAdoptedAnimal(animalId, user);
 
-
-        // 2. 후기를 DB에 저장
-        Review newReview = ReviewRequestDTO.addToEntity(reviewRequestDTO, user, nowDate());
+        // 3. 후기를 DB에 저장
+        Review newReview = Review.builder()
+                                .user(user)
+                                .adoptedAnimal(myAdoptedAnimal)
+                                .textReview(reviewRequestDTO.getTextReview())
+                                .like(0)
+                                .createdAt(nowDate())
+                                .build();
         reviewRepository.save(newReview);
 
-        // 3. 이미지 url 변환
+        // 4. 유저가 이미지를 등록했으면
         if(!reviewRequestDTO.getImages().isEmpty()) {
+            // 5. 이미지 url 변환
 
+            // 6. 댕냥이 이미지 DB에 저장
+            ReviewImage reviewImage = uploadImage(newReview, url);
+            reviewImageRepository.save(reviewImage);
         }
 
-        // 4. 댕냥이 이미지 DB에 저장
-        ReviewImage reviewImage = ReviewImage.builder()
-                                            .review(newReview)
-                                            .url(url)
-                                            .build();
-        reviewImageRepository.save(reviewImage);
-
-        // 4. return 새로운 후기
+        // 7. return 새로운 후기
         return newReview;
     }
 
@@ -65,7 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Long reviewId, UpdateReviewRequestDTO updateReviewRequestDTO, String token) {
+    public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
 
 
@@ -73,9 +80,24 @@ public class ReviewServiceImpl implements ReviewService {
         Review myReview = checkMyReview(reviewId, user);
 
         // 3. 댕냥이 후기 정보를 DB에서 수정
-        updateReviewRequestDTO.checkUpdateList(updateReviewRequestDTO, myReview);
-        Review updateReview = ReviewRequestDTO.updateToDTO(updateReviewRequestDTO, myReview);
+        reviewRequestDTO.checkUpdateList(reviewRequestDTO, myReview);
+
+        Review updateReview = Review.builder()
+                                    .user(myReview.getUser())
+                                    .adoptedAnimal(myReview.getAdoptedAnimal())
+                                    .textReview(reviewRequestDTO.getTextReview()) // text 수정
+                                    .like(myReview.getLike())
+                                    .createdAt(myReview.getCreatedAt())
+                                    .build();
         reviewRepository.save(updateReview);
+
+        if(!reviewRequestDTO.getImages().isEmpty()) {
+            // 4. 이미지 url 변환
+
+            // 5. 댕냥이 이미지 DB에 저장
+            ReviewImage reviewImage = uploadImage(updateReview, url);
+            reviewImageRepository.save(reviewImage);
+        }
 
         // 4. 수정된 댕냥이 후기를 반환
         return updateReview;
@@ -83,42 +105,50 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> findAllReview() {
-        // 후기 전체 보기
+        // 입양 후기 전체 보기
         return reviewRepository.findAll();
     }
 
     @Override
-    public List<Review> findAllReviewToAnimal(Long animalId) {
+    public List<Review> findAllReviewByAnimal(Long animalId) {
         // 해당 댕냥이에 대한 후기 찾기
         return reviewRepository.findReviewByAnimalId(animalId);
     }
 
     @Override
     public Map<String, String> likeReview(Long reviewId, String token) {
-        //        1. 토큰으로 유저 확인
+        // 1. 토큰으로 유저 확인
 
-//        2. 해당 유저가 해당 댕냥이에게 좋아요를 눌렀는지 확인
-        Animal animal = animalRepository.findById(animalId).orElseThrow(
-                () -> new NoSuchElementException("없는 게시글입니다.")
+        // 2. 해당 유저가 해당 댕냥이 후기에 좋아요를 눌렀는지 확인
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new NoSuchElementException("없는 후기입니다.")
         );
 
         Map<String,String> message = new HashMap<>();
 
-        if(animalLikeRepository.findByUser(user).isEmpty()){
-            AnimalLike addLike = AnimalLike.builder()
-                    .animal(animal)
-                    .user(user)
-                    .build();
-            animal.updateLike(animalLikeRepository.totalAnimalLike(animalId));
-            animalRepository.save(animal);
+        if(reviewLikeRepository.findByUser(user).isPresent()){
+            // 3. 만약 해당 댓글에 좋아요가 이미 눌러져 있다면 (좋아요 - 1)
+            reviewLikeRepository.deleteByUser(user);
 
-            animalLikeRepository.save(addLike);
-            message.put("message", "좋아요가 성공적으로 추가되었습니다.");
+            Review totalLike = updateLike(review, reviewLikeRepository.totalReviewLike(reviewId));
+            reviewRepository.save(totalLike);
+
+            message.put("message", "좋아요가 성공적으로 삭제되었습니다.");
             return message;
         }
 
-        animalLikeRepository.deleteByUser(user);
-        message.put("message", "좋아요가 성공적으로 삭제되었습니다.");
+        // 3. 해당 댓글에 좋아요를 처음 누를때 (좋아요 + 1)
+        ReviewLike addLike = ReviewLike.builder()
+                .review(review)
+                .user(user)
+                .build();
+        reviewLikeRepository.save(addLike);
+
+
+        Review totalLike = updateLike(review, reviewLikeRepository.totalReviewLike(reviewId));
+        reviewRepository.save(totalLike);
+
+        message.put("message", "좋아요가 성공적으로 추가되었습니다.");
         return message;
     }
 
@@ -138,9 +168,44 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public AdoptedAnimal checkMyAdoptedAnimal(Long animalId, User user) {
+        // 1. 입양한 댕냥이 존재 유무 확인
+        AdoptedAnimal adoptedAnimal = adoptedAnimalRepository.findByAnimalId(animalId).orElseThrow(
+                () -> new NoSuchElementException("없는 댕냥이입니다.")
+        );
+
+        // 2. 내가 입양한 댕냥이가 맞는지 확인
+        if(!adoptedAnimal.getUser().equals(user)) {
+            throw new IllegalArgumentException("회원님이 입양 한 동물이 아닙니다.");
+        }
+
+        // 3. 내가 작성한 게시글 반환
+        return adoptedAnimal;
+    }
+
+
+    @Override
     public Timestamp nowDate(){
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.valueOf(currentDateTime);
     }
 
+    @Override
+    public Review updateLike(Review review, Integer like){
+        return Review.builder()
+                .user(review.getUser())
+                .adoptedAnimal(review.getAdoptedAnimal())
+                .textReview(review.getTextReview())
+                .createdAt(review.getCreatedAt())
+                .like(like) // 좋아요만 수정
+                .build();
+    }
+
+    @Override
+    public ReviewImage uploadImage(Review review, String url){
+        return ReviewImage.builder()
+                        .review(review)
+                        .url(url)
+                        .build();
+    }
 }

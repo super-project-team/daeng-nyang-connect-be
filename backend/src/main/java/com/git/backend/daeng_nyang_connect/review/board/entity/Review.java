@@ -28,7 +28,7 @@ public class Review {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "adopted_animal_idx")
     private AdoptedAnimal adoptedAnimal;
 

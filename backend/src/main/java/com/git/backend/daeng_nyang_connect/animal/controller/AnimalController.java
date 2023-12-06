@@ -1,7 +1,6 @@
 package com.git.backend.daeng_nyang_connect.animal.controller;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
-import com.git.backend.daeng_nyang_connect.animal.dto.request.UpdateAnimalRequestDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.service.AnimalService;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,9 +44,9 @@ public class AnimalController {
     @Transactional
     @PutMapping("/update")
     public ResponseEntity<?> updateAnimal(@RequestParam("animalId") Long animalId,
-                                          @RequestBody UpdateAnimalRequestDTO updateAnimalRequestDTO,
+                                          @RequestBody AnimalRequestDTO animalRequestDTO,
                                           @RequestHeader("X-AUTH-TOKEN") String token){
-        Animal updateAnimal = animalService.updateAnimal(animalId, updateAnimalRequestDTO, token);
+        Animal updateAnimal = animalService.updateAnimal(animalId, animalRequestDTO, token);
         return ResponseEntity.status(200).body(updateAnimal);
     }
 
