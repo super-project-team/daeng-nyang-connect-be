@@ -26,6 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -147,6 +148,14 @@ public class UserService {
             response.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
             return response;
         }
+    }
+
+    @Transactional
+    public void logout(String token){
+        redisTemplate.opsForValue().set("logout : "+ tokenProvider.getEmailBytoken(token), "logout", Duration.ofSeconds(1800));
+        redisTemplate.delete(tokenProvider.getEmailBytoken(token));
+        redisTemplate.delete("RF: " + tokenProvider.getEmailBytoken(token));
+
     }
 
 

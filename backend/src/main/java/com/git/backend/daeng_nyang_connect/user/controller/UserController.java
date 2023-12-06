@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -34,9 +31,14 @@ public class UserController {
     public ResponseEntity<?> signUp(@RequestBody SignUpDto signUpDto){return userService.signUp(signUpDto);}
 
     @PostMapping("/login")
-    private Map<String, String >login(@RequestBody LoginDto loginDto, HttpServletResponse httpServletResponse){
+    public Map<String, String >login(@RequestBody LoginDto loginDto, HttpServletResponse httpServletResponse){
         return userService.login(loginDto, httpServletResponse);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("access_token") String token){
+        userService.logout(token);
+        return ResponseEntity.ok("로그아웃 되었습니다");
+    }
 
 }

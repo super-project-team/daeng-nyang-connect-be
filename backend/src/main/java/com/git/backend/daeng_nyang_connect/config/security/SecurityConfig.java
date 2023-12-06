@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.config.security;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.filter.JwtAuthenticationFilter;
+import com.git.backend.daeng_nyang_connect.user.role.Role;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -69,7 +70,8 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api", "/api/signup", "/api/login").permitAll()
+                                .requestMatchers("/api", "/api/signup", "/api/login","/api/logout").permitAll()
+
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
