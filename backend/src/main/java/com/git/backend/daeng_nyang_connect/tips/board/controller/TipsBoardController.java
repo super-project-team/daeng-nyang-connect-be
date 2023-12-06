@@ -42,7 +42,7 @@ public class TipsBoardController {
 
     @PostMapping("/like")
     public ResponseEntity<String > addLike(@RequestHeader("access_token")String token,
-                                           @RequestParam Long tipsID){
+                                           @RequestParam("tipsId") Long tipsID){
 
         return tipsBoardService.clickLike(tipsID, token);
     }
