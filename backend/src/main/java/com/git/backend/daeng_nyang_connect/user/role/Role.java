@@ -3,9 +3,9 @@ package com.git.backend.daeng_nyang_connect.user.role;
 public enum Role {
 
 
-    USER("ROLE_User"),
+    USER("USER"),
 
-    ADMIN("ROLE_Admin");
+    ADMIN("ADMIN");
 
     private String name;
 

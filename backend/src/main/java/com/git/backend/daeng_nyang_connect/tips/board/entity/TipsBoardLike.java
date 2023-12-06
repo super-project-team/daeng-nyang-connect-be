@@ -26,4 +26,6 @@ public class TipsBoardLike {
     @ManyToOne
     @JoinColumn(name = "tips_board_idx")
     private Tips tips;
+
+
 }

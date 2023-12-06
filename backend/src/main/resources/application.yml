@@ -27,12 +27,15 @@ security:
     secret: ${JWT_SECRET:dlrjsmstlzmfltzldidkdkdkdfdfdddddddf}
     token-validity-in-seconds: 604800
 
-#aws:
-#  accessKeyId: ${AWS_ACCESS_KEY}
-#  secretKey: ${AWS_SECRET_KEY}
-#  region: ${AWS_REGION}
-#  s3:
-#    bucketName: ${AWS_BUCKET}
+cloud:
+  aws:
+    s3:
+      bucket: ${bucket}
+    credentials:
+      access-key: ${access-key}
+      secret-key: ${secret-key}
+    region:
+      static: ap-northeast-2
 
 logging:
   level:

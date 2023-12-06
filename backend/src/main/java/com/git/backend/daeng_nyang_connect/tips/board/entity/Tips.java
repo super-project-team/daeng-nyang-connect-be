@@ -28,7 +28,9 @@ public class Tips {
     private String category;
     private String title;
     private String text;
-    private Integer like;
+
+    @Column(name = "tips_like")
+    private Integer tips_like;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
