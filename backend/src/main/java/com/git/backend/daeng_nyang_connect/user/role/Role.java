@@ -2,11 +2,11 @@ package com.git.backend.daeng_nyang_connect.user.role;
 
 public enum Role {
 
-    NewUser("NewUser"),
+    NewUser("ROLE_NewUser"),
 
-    User("User"),
+    User("ROLE_User"),
 
-    Admin("Admin");
+    Admin("ROLE_Admin");
 
     private String name;
 

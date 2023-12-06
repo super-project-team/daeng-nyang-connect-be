@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -131,6 +132,7 @@ public class UserService {
             response.put("http_status", HttpStatus.UNAUTHORIZED.toString());
             return response;
 
+
         } catch (UsernameNotFoundException e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
@@ -146,6 +148,9 @@ public class UserService {
             return response;
         }
     }
+
+
+
 
 
 
