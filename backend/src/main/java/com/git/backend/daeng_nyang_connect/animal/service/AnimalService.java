@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.animal.service;
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.entity.AnimalImage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 
 import java.sql.Timestamp;
@@ -31,4 +32,6 @@ public interface AnimalService {
 
     // 현재 시간을 Timestamp로 반환
     public Timestamp nowDate();
+
+    void uploadImage(Animal animal, String url);
 }

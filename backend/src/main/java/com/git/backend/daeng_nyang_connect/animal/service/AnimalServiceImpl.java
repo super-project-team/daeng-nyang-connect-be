@@ -57,11 +57,7 @@ public class AnimalServiceImpl  implements AnimalService{
         }
 
         // 4. 댕냥이 이미지 DB에 저장
-        AnimalImage animalImage = AnimalImage.builder()
-                                            .animal(newAnimal)
-                                            .url(url)
-                                            .build();
-        animalImageRepository.save(animalImage);
+        uploadImage(newAnimal, url);
 
         // 4. return 새로운 댕냥이
         return newAnimal;
@@ -129,7 +125,14 @@ public class AnimalServiceImpl  implements AnimalService{
                                     .build();
         animalRepository.save(updateAnimal);
 
-        // 4. 수정된 댕냥이 게시글을 반환
+        // 3. 이미지가 있다면
+        if(!animalRequestDTO.getImages().isEmpty()) {
+            // 4. 이미지 url 변환
+
+            // 5. 이미지 DB에 수정
+            uploadImage(updateAnimal, url);
+        }
+        // 6. 수정된 댕냥이 게시글을 반환
         return updateAnimal;
     }
 
@@ -180,5 +183,14 @@ public class AnimalServiceImpl  implements AnimalService{
     public Timestamp nowDate(){
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.valueOf(currentDateTime);
+    }
+
+    @Override
+    public void uploadImage(Animal animal, String url) {
+        AnimalImage animalImage = AnimalImage.builder()
+                                            .animal(animal)
+                                            .url(url)
+                                            .build();
+        animalImageRepository.save(animalImage);
     }
 }
