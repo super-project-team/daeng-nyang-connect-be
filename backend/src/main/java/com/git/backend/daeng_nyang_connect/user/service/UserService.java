@@ -80,7 +80,7 @@ public class UserService {
                 .town(town)
                 .experience(experience)
                 .gender(String.valueOf(gender))
-                .role(Role.User)
+                .role(Role.USER)
                 .build();
 
         userRepository.save(user);

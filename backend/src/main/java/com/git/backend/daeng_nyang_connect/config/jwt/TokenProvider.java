@@ -44,7 +44,7 @@ public class TokenProvider {
 
     private String getString(String email, long accesstokenValidSecond, Role role){
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("Role", role);
+        claims.put("role", role);
         Date now = new Date();
         Date accessValidate = new Date(now.getTime() + accesstokenValidSecond);
 

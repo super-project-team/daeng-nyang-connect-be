@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a1d68fce-2c6a-4dcf-be79-e63db9a3ec00" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/config/jwt/TokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/config/jwt/TokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/role/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/role/Role.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/git/backend/daeng_nyang_connect/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -241,7 +245,7 @@
       <workItem from="1701707198862" duration="1861000" />
       <workItem from="1701747905117" duration="1032000" />
       <workItem from="1701789568166" duration="11489000" />
-      <workItem from="1701827096196" duration="6402000" />
+      <workItem from="1701827096196" duration="9739000" />
     </task>
     <servers />
   </component>
