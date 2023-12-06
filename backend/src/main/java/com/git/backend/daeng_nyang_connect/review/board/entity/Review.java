@@ -1,7 +1,6 @@
 package com.git.backend.daeng_nyang_connect.review.board.entity;
 
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
-import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 @Entity

@@ -106,8 +106,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
             reviewCommentsLikeRepository.deleteByUser(user);
 
             // 5. 총 좋아요 수 수정 (좋아요 - 1)
-            ReviewComments totalLike = updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId))
-            reviewCommentsRepository.save(totalLike);
+            updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId))
 
             message.put("delete", "좋아요가 성공적으로 삭제되었습니다.");
             return message;
@@ -121,8 +120,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
         reviewCommentsLikeRepository.save(addLike);
 
         // 4. 총 좋아요 수 수정 (좋아요 + 1)
-        ReviewComments totalLike = updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId))
-        reviewCommentsRepository.save(totalLike);
+        updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId))
 
         message.put("add", "좋아요가 성공적으로 추가되었습니다.");
         return message;
@@ -150,14 +148,15 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     }
 
     @Override
-    public ReviewComments updateLike(ReviewComments reviewComments, Integer like){
-        return ReviewComments.builder()
-                .reviewCommentsId(reviewComments.getReviewCommentsId())
-                .user(reviewComments.getUser())
-                .review(reviewComments.getReview())
-                .comment(reviewComments.getComment())
-                .createdAt(reviewComments.getCreatedAt())
-                .like(like) // 좋아요만 수정
-                .build();
+    public void updateLike(ReviewComments reviewComments, Integer like){
+        ReviewComments totalLike = ReviewComments.builder()
+                                                .reviewCommentsId(reviewComments.getReviewCommentsId())
+                                                .user(reviewComments.getUser())
+                                                .review(reviewComments.getReview())
+                                                .comment(reviewComments.getComment())
+                                                .createdAt(reviewComments.getCreatedAt())
+                                                .like(like) // 좋아요만 수정
+                                                .build();
+        reviewCommentsRepository.save(totalLike);
     }
 }

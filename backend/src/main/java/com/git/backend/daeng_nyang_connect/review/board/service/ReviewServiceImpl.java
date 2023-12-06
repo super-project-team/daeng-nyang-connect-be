@@ -52,8 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
             // 5. 이미지 url 변환
 
             // 6. 댕냥이 이미지 DB에 저장
-            ReviewImage reviewImage = uploadImage(newReview, url);
-            reviewImageRepository.save(reviewImage);
+            uploadImage(newReview, url);
         }
 
         // 7. return 새로운 후기
@@ -95,8 +94,7 @@ public class ReviewServiceImpl implements ReviewService {
             // 4. 이미지 url 변환
 
             // 5. 댕냥이 이미지 DB에 저장
-            ReviewImage reviewImage = uploadImage(updateReview, url);
-            reviewImageRepository.save(reviewImage);
+            uploadImage(updateReview, url);
         }
 
         // 4. 수정된 댕냥이 후기를 반환
@@ -130,8 +128,8 @@ public class ReviewServiceImpl implements ReviewService {
             // 3. 만약 해당 댓글에 좋아요가 이미 눌러져 있다면 (좋아요 - 1)
             reviewLikeRepository.deleteByUser(user);
 
-            Review totalLike = updateLike(review, reviewLikeRepository.totalReviewLike(reviewId));
-            reviewRepository.save(totalLike);
+            updateLike(review, reviewLikeRepository.totalReviewLike(reviewId));
+
 
             message.put("message", "좋아요가 성공적으로 삭제되었습니다.");
             return message;
@@ -139,14 +137,13 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 3. 해당 댓글에 좋아요를 처음 누를때 (좋아요 + 1)
         ReviewLike addLike = ReviewLike.builder()
-                .review(review)
-                .user(user)
-                .build();
+                                    .review(review)
+                                    .user(user)
+                                    .build();
         reviewLikeRepository.save(addLike);
 
 
-        Review totalLike = updateLike(review, reviewLikeRepository.totalReviewLike(reviewId));
-        reviewRepository.save(totalLike);
+        updateLike(review, reviewLikeRepository.totalReviewLike(reviewId));
 
         message.put("message", "좋아요가 성공적으로 추가되었습니다.");
         return message;
@@ -191,21 +188,23 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateLike(Review review, Integer like){
-        return Review.builder()
-                .user(review.getUser())
-                .adoptedAnimal(review.getAdoptedAnimal())
-                .textReview(review.getTextReview())
-                .createdAt(review.getCreatedAt())
-                .like(like) // 좋아요만 수정
-                .build();
+    public void updateLike(Review review, Integer like){
+        Review totalLike = Review.builder()
+                                .user(review.getUser())
+                                .adoptedAnimal(review.getAdoptedAnimal())
+                                .textReview(review.getTextReview())
+                                .createdAt(review.getCreatedAt())
+                                .like(like) // 좋아요만 수정
+                                .build();
+        reviewRepository.save(totalLike);
     }
 
     @Override
-    public ReviewImage uploadImage(Review review, String url){
-        return ReviewImage.builder()
-                        .review(review)
-                        .url(url)
-                        .build();
+    public void uploadImage(Review review, String url){
+        ReviewImage reviewImage = ReviewImage.builder()
+                                            .review(review)
+                                            .url(url)
+                                            .build();
+        reviewImageRepository.save(reviewImage);
     }
 }

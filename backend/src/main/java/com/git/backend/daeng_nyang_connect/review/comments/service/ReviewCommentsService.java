@@ -33,5 +33,5 @@ public interface ReviewCommentsService {
     Timestamp nowDate();
 
     // Builder : 총 좋아요 수 반환
-    ReviewComments updateLike(ReviewComments reviewComments, Integer like);
+    void updateLike(ReviewComments reviewComments, Integer like);
 }

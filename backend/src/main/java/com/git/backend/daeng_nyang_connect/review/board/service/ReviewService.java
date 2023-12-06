@@ -40,8 +40,8 @@ public interface ReviewService {
     Timestamp nowDate();
 
     // Builder : 총 좋아요 수 반환
-    Review updateLike(Review review, Integer like);
+    void updateLike(Review review, Integer like);
 
     // Builder : 이미지 업로드
-    ReviewImage uploadImage(Review review, String url);
+    void uploadImage(Review review, String url);
 }
