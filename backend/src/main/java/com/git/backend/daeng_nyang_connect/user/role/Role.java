@@ -2,7 +2,6 @@ package com.git.backend.daeng_nyang_connect.user.role;
 
 public enum Role {
 
-    NewUser("ROLE_NewUser"),
 
     User("ROLE_User"),
 
@@ -17,4 +16,5 @@ public enum Role {
     public String getName() {
         return name;
     }
+
 }
