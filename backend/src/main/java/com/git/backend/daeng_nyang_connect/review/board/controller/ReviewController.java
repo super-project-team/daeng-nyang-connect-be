@@ -2,7 +2,6 @@ package com.git.backend.daeng_nyang_connect.review.board.controller;
 
 
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
-import com.git.backend.daeng_nyang_connect.review.board.dto.request.UpdateReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +16,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/animal/comments")
 public class ReviewController {
-    //    CRUD : 파양동물 댓글 등록 * 삭제 * 정보 수정 * 조회
+    //    CRUD : 입양 해온 동물에 대한 리뷰 등록 * 삭제 * 정보 수정 * 조회
     private final ReviewService reviewService;
     @PostMapping("/add")
-    public ResponseEntity<?> addReview(@RequestParam("adoptedAnimalId") Long adoptedAnimalId,
+    public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
                                          @RequestBody ReviewRequestDTO reviewRequestDTO,
                                          @RequestHeader("X-AUTH-TOKEN") String token){
-        Review newReview = reviewService.addReview(adoptedAnimalId, reviewRequestDTO, token);
+        Review newReview = reviewService.addReview(animalId, reviewRequestDTO, token);
         return ResponseEntity.status(200).body(newReview);
     }
 
@@ -37,22 +36,24 @@ public class ReviewController {
 
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<?> updateReview(@RequestParam("commentsId") Long commentsId,
-                                            @RequestBody UpdateReviewRequestDTO updateReviewRequestDTO,
+    public ResponseEntity<?> updateReview(@RequestParam("reviewId") Long reviewId,
+                                            @RequestBody ReviewRequestDTO reviewRequestDTO,
                                             @RequestHeader("X-AUTH-TOKEN") String token){
-        Review updateReview = reviewService.updateReview(commentsId, updateReviewRequestDTO, token);
+        Review updateReview = reviewService.updateReview(reviewId, reviewRequestDTO, token);
         return ResponseEntity.status(200).body(updateReview);
     }
 
+    // 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping("/all")
     public List<Review> findAllReview(@RequestHeader("X-AUTH-TOKEN") String token){
         return reviewService.findAllReview();
     }
 
+    // 원하는 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping()
-    public List<Review> findAllReviewToAnimal(@RequestParam("animalId") Long animalId,
+    public List<Review> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId,
                                               @RequestHeader("X-AUTH-TOKEN") String token){
-        return reviewService.findAllReviewToAnimal(animalId);
+        return reviewService.findAllReviewByAnimal(animalId);
     }
 
     @PostMapping("/like")

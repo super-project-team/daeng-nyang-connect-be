@@ -27,7 +27,7 @@ public class AdoptedAnimal {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "animal_board_idx")
     private Animal animal;
 

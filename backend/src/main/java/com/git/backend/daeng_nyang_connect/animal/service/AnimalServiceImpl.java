@@ -1,7 +1,6 @@
 package com.git.backend.daeng_nyang_connect.animal.service;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
-import com.git.backend.daeng_nyang_connect.animal.dto.request.UpdateAnimalRequestDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.*;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalImageRepository;
@@ -34,7 +33,22 @@ public class AnimalServiceImpl  implements AnimalService{
         // 1. 토큰으로 유저 확인
 
         // 2. 댕냥이 DB에 저장
-        Animal newAnimal = AnimalRequestDTO.addToEntity(animalRequestDTO, user, nowDate());
+        Animal newAnimal = Animal.builder()
+                                .user(user)
+                                .animalName(animalRequestDTO.getAnimalName())
+                                .age(animalRequestDTO.getAge())
+                                .gender(animalRequestDTO.getGender())
+                                .disease(animalRequestDTO.getDisease())
+                                .training(animalRequestDTO.getTraining())
+                                .neutering(animalRequestDTO.getNeutering())
+                                .textReason(animalRequestDTO.getTextReason())
+                                .healthCheck(animalRequestDTO.getHealthCheck())
+                                .breed(animalRequestDTO.getBreed())
+                                .kind(animalRequestDTO.getKind())
+                                .nurturePeriod(animalRequestDTO.getNurturePeriod())
+                                .adoptionStatus(AdoptionStatus.PROGRESS)
+                                .createdAt(nowDate())
+                                .build();
         animalRepository.save(newAnimal);
 
         // 3. 이미지 url 변환
@@ -87,7 +101,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
 
     @Override
-    public Animal updateAnimal(Long animalId, UpdateAnimalRequestDTO updateAnimalRequestDTO, String token) {
+    public Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
 
 
@@ -95,8 +109,24 @@ public class AnimalServiceImpl  implements AnimalService{
         Animal myAnimal = checkMyBoard(animalId, user);
 
         // 3. 댕냥이 게시글 정보를 DB에서 수정
-        updateAnimalRequestDTO.checkUpdateList(updateAnimalRequestDTO, myAnimal);
-        Animal updateAnimal = AnimalRequestDTO.updateToDTO(updateAnimalRequestDTO, myAnimal);
+        animalRequestDTO.checkUpdateList(animalRequestDTO, myAnimal);
+        Animal updateAnimal = Animal.builder()
+                                    .animalId(myAnimal.getAnimalId())
+                                    .user(myAnimal.getUser())
+                                    .animalName(animalRequestDTO.getAnimalName())
+                                    .age(animalRequestDTO.getAge())
+                                    .gender(animalRequestDTO.getGender())
+                                    .disease(animalRequestDTO.getDisease())
+                                    .training(animalRequestDTO.getTraining())
+                                    .neutering(animalRequestDTO.getNeutering())
+                                    .textReason(animalRequestDTO.getTextReason())
+                                    .healthCheck(animalRequestDTO.getHealthCheck())
+                                    .breed(animalRequestDTO.getBreed())
+                                    .kind(animalRequestDTO.getKind())
+                                    .nurturePeriod(animalRequestDTO.getNurturePeriod())
+                                    .adoptionStatus(myAnimal.getAdoptionStatus())
+                                    .createdAt(myAnimal.getCreatedAt())
+                                    .build();
         animalRepository.save(updateAnimal);
 
         // 4. 수정된 댕냥이 게시글을 반환

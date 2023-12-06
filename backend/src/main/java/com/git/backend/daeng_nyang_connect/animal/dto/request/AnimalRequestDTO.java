@@ -10,6 +10,7 @@ import lombok.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -30,41 +31,53 @@ public class AnimalRequestDTO {
     private Date nurturePeriod;
     private List<AnimalImage> images;
 
-    public static Animal addToEntity(AnimalRequestDTO animalRequestDTO, User user, Timestamp createdAt) {
-        return Animal.builder()
-                    .user(user)
-                    .animalName(animalRequestDTO.getAnimalName())
-                    .age(animalRequestDTO.getAge())
-                    .gender(animalRequestDTO.getGender())
-                    .disease(animalRequestDTO.getDisease())
-                    .training(animalRequestDTO.getTraining())
-                    .neutering(animalRequestDTO.getNeutering())
-                    .healthCheck(animalRequestDTO.getHealthCheck())
-                    .breed(animalRequestDTO.getBreed())
-                    .kind(animalRequestDTO.getKind())
-                    .nurturePeriod(animalRequestDTO.getNurturePeriod())
-                    .adoptionStatus(AdoptionStatus.PROGRESS)
-                    .createdAt(createdAt)
-                    .build();
+    public void checkUpdateList(AnimalRequestDTO updateAnimalRequestDTO, Animal animal) {
+        if (Objects.isNull(updateAnimalRequestDTO.getAnimalName())) {
+            this.animalName = animal.getAnimalName();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getAge())) {
+            this.age = animal.getAge();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getGender())) {
+            this.gender = animal.getGender();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getDisease())) {
+            this.disease = animal.getDisease();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getNurturePeriod())) {
+            this.nurturePeriod = animal.getNurturePeriod();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getTraining())) {
+            this.training = animal.getTraining();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getNeutering())) {
+            this.neutering = animal.getNeutering();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getTextReason())) {
+            this.textReason = animal.getTextReason();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getKind())) {
+            this.kind = animal.getKind();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getBreed())) {
+            this.breed = animal.getBreed();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getHealthCheck())) {
+            this.healthCheck = animal.getHealthCheck();
+        }
+
+        if (Objects.isNull(updateAnimalRequestDTO.getImages())) {
+            this.images = animal.getImages();
+        }
     }
-
-    public static Animal updateToDTO(UpdateAnimalRequestDTO updateAnimalRequestDTO, Animal animal) {
-        return Animal.builder()
-                .user(animal.getUser())
-                .animalName(updateAnimalRequestDTO.getAnimalName())
-                .age(updateAnimalRequestDTO.getAge())
-                .gender(updateAnimalRequestDTO.getGender())
-                .disease(updateAnimalRequestDTO.getDisease())
-                .training(updateAnimalRequestDTO.getTraining())
-                .neutering(updateAnimalRequestDTO.getNeutering())
-                .healthCheck(updateAnimalRequestDTO.getHealthCheck())
-                .breed(updateAnimalRequestDTO.getBreed())
-                .kind(updateAnimalRequestDTO.getKind())
-                .nurturePeriod(updateAnimalRequestDTO.getNurturePeriod())
-                .adoptionStatus(AdoptionStatus.PROGRESS)
-                .createdAt(animal.getCreatedAt())
-                .build();
-    }
-
-
 }

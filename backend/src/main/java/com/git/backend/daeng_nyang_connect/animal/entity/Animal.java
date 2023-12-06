@@ -36,6 +36,7 @@ public class Animal {
     @Column(name = "text_reason")
     private String textReason; // 파양 이유
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "nurture_period")
     private Date nurturePeriod; // 입양 시기
 
