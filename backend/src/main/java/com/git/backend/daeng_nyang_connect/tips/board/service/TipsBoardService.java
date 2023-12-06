@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -98,7 +99,28 @@ public class TipsBoardService {
         }
     }
 
-    
+    public ResponseEntity<String> clickLike(Long tipsId, String token){
+        String email = tokenProvider.getEmailBytoken(token);
+        Optional<User> isUser = userRepository.findByEmail(email);
+        Optional<Tips> isTips = tipsBoardRepository.findById(tipsId);
+
+        if(isTips.isPresent() && isUser.isPresent()){
+            if(tipsBoardLikeRepository.findByUser(isUser.get()).isEmpty()){
+                setHeart(isTips.get(), isUser.get(), isTips.get().getTipsLike(), true);
+                return ResponseEntity.ok().body(tipsId + "번 게시글에 좋아요가 추가 되었습니다");
+            }
+            else{
+                setHeart(isTips.get(), isUser.get(), isTips.get().getTipsLike(), false);
+                return ResponseEntity.ok().body(tipsId + "번 게시글에 좋아요가 취소 되었습니다");
+            }
+
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("잘못된 접근입니다.");
+        }
+
+    }
+
+
 
 
 
