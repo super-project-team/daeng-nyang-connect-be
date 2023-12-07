@@ -40,6 +40,15 @@ dependencies {
 
 	//redis 환경 구성
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
+	//aws
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+	//파일 이름 유틸
+	implementation 'commons-io:commons-io:2.11.0' // 최신 버전 확인 필요
+
 }
 
 tasks.named('test') {
