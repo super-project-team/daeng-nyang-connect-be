@@ -1,5 +1,7 @@
 package com.git.backend.daeng_nyang_connect.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.git.backend.daeng_nyang_connect.animal.entity.AnimalScrap;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -47,7 +49,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<AnimalScrap> myAnimalScrap;
-    private MyPage mypage;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

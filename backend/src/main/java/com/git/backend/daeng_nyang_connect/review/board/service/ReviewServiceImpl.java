@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.review.board.service;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
+import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewImage;
@@ -11,6 +12,7 @@ import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewImageRe
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewLikeRepository;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
+import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +27,16 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
-    private final AnimalRepository animalRepository;
+    private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
     private final ReviewLikeRepository reviewLikeRepository;
     private final AdoptedAnimalRepository adoptedAnimalRepository;
+    private final TokenProvider tokenProvider;
     @Override
     public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
 
         // 2. 해당 유저가 입양한 댕냥이가 맞는지 확인
         AdoptedAnimal myAdoptedAnimal = checkMyAdoptedAnimal(animalId, user);
@@ -47,21 +51,17 @@ public class ReviewServiceImpl implements ReviewService {
                                 .build();
         reviewRepository.save(newReview);
 
-        // 4. 유저가 이미지를 등록했으면
-        if(!reviewRequestDTO.getImages().isEmpty()) {
-            // 5. 이미지 url 변환
+        // 4. 댕냥이 이미지 DB에 저장
+        reviewRequestDTO.getImages().forEach(image -> uploadImage(newReview, image));
 
-            // 6. 댕냥이 이미지 DB에 저장
-            uploadImage(newReview, url);
-        }
-
-        // 7. return 새로운 후기
+        // 6. return 새로운 후기
         return newReview;
     }
 
     @Override
     public void deleteReview(Long reviewId, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
 
         // 2. 내가 작성한 글이 맞는지 확인
         Review myAnimal = checkMyReview(reviewId, user);
@@ -73,7 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
-
+        User user = checkUserByToken(token);
 
         // 2. 내가 작성한 후기가 맞는지 확인
         Review myReview = checkMyReview(reviewId, user);
@@ -90,14 +90,10 @@ public class ReviewServiceImpl implements ReviewService {
                                     .build();
         reviewRepository.save(updateReview);
 
-        if(!reviewRequestDTO.getImages().isEmpty()) {
-            // 4. 이미지 url 변환
+        // 4. 댕냥이 이미지 DB에 저장
+        reviewRequestDTO.getImages().forEach(image -> uploadImage(updateReview, image));
 
-            // 5. 댕냥이 이미지 DB에 저장
-            uploadImage(updateReview, url);
-        }
-
-        // 4. 수정된 댕냥이 후기를 반환
+        // 5. 수정된 댕냥이 후기를 반환
         return updateReview;
     }
 
@@ -116,6 +112,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Map<String, String> likeReview(Long reviewId, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
 
         // 2. 해당 유저가 해당 댕냥이 후기에 좋아요를 눌렀는지 확인
         Review review = reviewRepository.findById(reviewId).orElseThrow(
@@ -200,11 +197,19 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void uploadImage(Review review, String url){
+    public void uploadImage(Review review, ReviewImage image){
         ReviewImage reviewImage = ReviewImage.builder()
                                             .review(review)
-                                            .url(url)
+                                            .url(image.getUrl())
                                             .build();
         reviewImageRepository.save(reviewImage);
+    }
+
+    @Override
+    public User checkUserByToken(String token){
+        String email = tokenProvider.getEmailBytoken(token);
+        return userRepository.findByEmail(email).orElseThrow(
+                ()-> new NoSuchElementException("없는 유저입니다.")
+        );
     }
 }
