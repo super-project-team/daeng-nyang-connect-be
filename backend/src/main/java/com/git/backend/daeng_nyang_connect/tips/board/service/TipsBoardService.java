@@ -126,6 +126,7 @@ public class TipsBoardService {
         }
     }
     //좋아요 클릭 로직
+    @Transactional
     public ResponseEntity<String> clickLike(Long tipsId, String token){
 
         User user = userService.checkUserByToken(token);
