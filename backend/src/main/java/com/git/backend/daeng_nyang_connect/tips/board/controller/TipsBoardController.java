@@ -37,7 +37,6 @@ public class TipsBoardController {
                              @RequestPart("files") List<MultipartFile> fileList){
        return tipsBoardService.postBoard(tipsBoardDto, token, fileList);
 
-
     }
 
     @PostMapping("/like")
