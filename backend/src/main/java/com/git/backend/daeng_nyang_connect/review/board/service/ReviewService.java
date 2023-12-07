@@ -43,5 +43,8 @@ public interface ReviewService {
     void updateLike(Review review, Integer like);
 
     // Builder : 이미지 업로드
-    void uploadImage(Review review, String url);
+    void uploadImage(Review review, ReviewImage image);
+
+    // 토큰으로 user의 email 반환
+    User checkUserByToken(String token);
 }

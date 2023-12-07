@@ -33,5 +33,9 @@ public interface AnimalService {
     // 현재 시간을 Timestamp로 반환
     public Timestamp nowDate();
 
-    void uploadImage(Animal animal, String url);
+    // url로 변환된 이미지 DB에 저장
+    void uploadImage(Animal animal, AnimalImage url);
+
+    // 토큰으로 user의 email 반환
+    User checkUserByToken(String token);
 }

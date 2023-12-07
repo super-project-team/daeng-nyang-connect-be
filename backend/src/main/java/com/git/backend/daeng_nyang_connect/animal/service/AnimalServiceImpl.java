@@ -6,6 +6,7 @@ import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalReposi
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalImageRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalScrapRepository;
+import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class AnimalServiceImpl  implements AnimalService{
     private final AnimalImageRepository animalImageRepository;
     private final AnimalScrapRepository animalScrapRepository;
     private final AdoptedAnimalRepository adoptedAnimalRepository;
+    private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
 
 
@@ -31,6 +33,7 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
 
         // 2. 댕냥이 DB에 저장
         Animal newAnimal = Animal.builder()
@@ -51,13 +54,8 @@ public class AnimalServiceImpl  implements AnimalService{
                                 .build();
         animalRepository.save(newAnimal);
 
-        // 3. 이미지 url 변환
-        if(!animalRequestDTO.getImages().isEmpty()) {
-
-        }
-
-        // 4. 댕냥이 이미지 DB에 저장
-        uploadImage(newAnimal, url);
+        // 3. 이미지를 DB에 저장
+        animalRequestDTO.getImages().forEach(image -> uploadImage(newAnimal, image));
 
         // 4. return 새로운 댕냥이
         return newAnimal;
@@ -66,6 +64,11 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     public AdoptedAnimal completeAnimal(Long animalId, Long adoptedUserId, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
+
+        User adoptedUser = userRepository.findById(adoptedUserId).orElseThrow(
+                ()-> new NoSuchElementException("없는 유저입니다.")
+        );
 
         // 2. 내가 작성한 글이 맞는지 확인
         Animal myAnimal = checkMyBoard(animalId, user);
@@ -87,6 +90,7 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     public void deleteAnimal(Long animalId, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
 
         // 2. 내가 작성한 글이 맞는지 확인
         Animal myAnimal = checkMyBoard(animalId, user);
@@ -99,7 +103,7 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     public Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
-
+        User user = checkUserByToken(token);
 
         // 2. 내가 작성한 글이 맞는지 확인
         Animal myAnimal = checkMyBoard(animalId, user);
@@ -125,14 +129,10 @@ public class AnimalServiceImpl  implements AnimalService{
                                     .build();
         animalRepository.save(updateAnimal);
 
-        // 3. 이미지가 있다면
-        if(!animalRequestDTO.getImages().isEmpty()) {
-            // 4. 이미지 url 변환
+        // 4. 이미지를 DB에 저장
+        animalRequestDTO.getImages().forEach(image -> uploadImage(updateAnimal, image));
 
-            // 5. 이미지 DB에 수정
-            uploadImage(updateAnimal, url);
-        }
-        // 6. 수정된 댕냥이 게시글을 반환
+        // 5. 수정된 댕냥이 게시글을 반환
         return updateAnimal;
     }
 
@@ -146,7 +146,7 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     public Animal scrapAnimal(Long animalId, String token) {
         // 1. 토큰으로 유저 확인
-
+        User user = checkUserByToken(token);
 
         // 2. 게시글 존재 유무 확인
         Animal animalBoard = animalRepository.findById(animalId).orElseThrow(
@@ -186,11 +186,19 @@ public class AnimalServiceImpl  implements AnimalService{
     }
 
     @Override
-    public void uploadImage(Animal animal, String url) {
+    public void uploadImage(Animal animal, AnimalImage image) {
         AnimalImage animalImage = AnimalImage.builder()
                                             .animal(animal)
-                                            .url(url)
+                                            .url(image.getUrl())
                                             .build();
         animalImageRepository.save(animalImage);
+    }
+
+    @Override
+    public User checkUserByToken(String token){
+        String email = tokenProvider.getEmailBytoken(token);
+        return userRepository.findByEmail(email).orElseThrow(
+                ()-> new NoSuchElementException("없는 유저입니다.")
+        );
     }
 }
