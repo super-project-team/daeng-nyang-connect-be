@@ -48,13 +48,13 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(this.role.getName()));
+        authorities.add(new CustomGrantedAuthority(this.role));
         return authorities;
     }
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override

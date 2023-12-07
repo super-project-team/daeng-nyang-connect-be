@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.user.service;
 
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.dto.LoginDto;
 import com.git.backend.daeng_nyang_connect.user.dto.SignUpDto;
@@ -156,6 +157,12 @@ public class UserService {
         redisTemplate.delete(tokenProvider.getEmailBytoken(token));
         redisTemplate.delete("RF: " + tokenProvider.getEmailBytoken(token));
 
+    }
+
+    public User checkUserByToken(String token){
+        String email = tokenProvider.getEmailBytoken(token);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("없는 유저 입니다"));
     }
 
 
