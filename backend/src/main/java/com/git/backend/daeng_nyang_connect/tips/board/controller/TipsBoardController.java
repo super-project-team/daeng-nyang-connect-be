@@ -2,6 +2,7 @@ package com.git.backend.daeng_nyang_connect.tips.board.controller;
 
 
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
+import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
 
 import com.git.backend.daeng_nyang_connect.tips.board.service.TipsBoardService;
@@ -60,6 +61,11 @@ public class TipsBoardController {
     @GetMapping("/getAll")
     public List<TipsBoardDto> getAll(Pageable pageable){
        return tipsBoardService.getAll(pageable);
+    }
+
+    @GetMapping("/getBoard")
+    public TipsBoardDetailDto getThisBoard(@RequestParam("id")Long tipsId){
+        return tipsBoardService.getThisBoard(tipsId);
     }
 
 }

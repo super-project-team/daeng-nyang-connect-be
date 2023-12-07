@@ -4,6 +4,7 @@ package com.git.backend.daeng_nyang_connect.tips.board.service;
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
+import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsBoardLike;
@@ -11,6 +12,8 @@ import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsImage;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardLikeRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsImageRepository;
+import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsComments;
+import com.git.backend.daeng_nyang_connect.tips.comments.repository.TipsCommentsRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
@@ -43,6 +46,7 @@ public class TipsBoardService {
     private final TipsBoardLikeRepository tipsBoardLikeRepository;
     private final UserService userService;
     private final TipsImageRepository tipsImageRepository;
+    private final TipsCommentsRepository tipsCommentsRepository;
 
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -79,20 +83,7 @@ public class TipsBoardService {
         }
     }
 
-    //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
-    @Transactional
-    public List<TipsBoardDto> getAll(Pageable pageable){
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
-        Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
-        List<Tips> tipsList = tipsPage.getContent();
 
-        return tipsList.stream()
-                .map(tips -> {
-                    String author = findUserNickNameByTipsId(tips.getTipsBoardId());
-                    return TipsBoardDto.fromEntity(tips, author);
-                })
-                .collect(Collectors.toList());
-    }
 
     //자기가 쓴 게시물인지 확인
     public Tips checkMyBoard(Long tipsId, String token){
@@ -179,6 +170,30 @@ public class TipsBoardService {
         response.put("msg", "게시글 수정 완료 되었습니다");
         response.put("http_status", HttpStatus.OK.toString());
         return response;
+    }
+    //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
+    @Transactional
+    public List<TipsBoardDto> getAll(Pageable pageable){
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+        Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
+        List<Tips> tipsList = tipsPage.getContent();
+
+        return tipsList.stream()
+                .map(tips -> {
+                    String author = findUserNickNameByTipsId(tips.getTipsBoardId());
+                    return TipsBoardDto.fromEntity(tips, author);
+                })
+                .collect(Collectors.toList());
+    }
+
+    public TipsBoardDetailDto getThisBoard(Long tipsID){
+
+        Tips thisBoard = tipsBoardRepository.findById(tipsID).orElseThrow();
+        List<TipsImage> thisBoardImg = tipsImageRepository.findByTips(thisBoard).orElseThrow();
+        List<TipsComments> thisBoardComments = tipsCommentsRepository.findByTips(thisBoard);
+
+        return TipsBoardDetailDto.fromEntity(thisBoard, thisBoard.getUser().getNickname(), thisBoardImg, thisBoardComments);
+
     }
 
 
