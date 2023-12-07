@@ -22,4 +22,5 @@ public class CustomRestControllerAdvice {
     public ResponseEntity<String> handleCustomException(IllegalArgumentException ie) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ie.getMessage());
     }
+
 }
