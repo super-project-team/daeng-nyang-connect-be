@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface AdoptedAnimalRepository extends JpaRepository<AdoptedAnimal, Long> {
 
-    @Query("SELECT a FROM AdoptedAnimal a WHERE a.animal.animalId =: animalId")
+    @Query("SELECT a FROM AdoptedAnimal a WHERE a.animal.animalId=:animalId")
     Optional<AdoptedAnimal> findByAnimalId(@Param("animalId") Long animalId);
 }

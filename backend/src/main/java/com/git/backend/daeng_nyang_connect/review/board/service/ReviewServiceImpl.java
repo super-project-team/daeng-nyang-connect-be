@@ -1,8 +1,9 @@
 package com.git.backend.daeng_nyang_connect.review.board.service;
 
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.entity.AnimalImage;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
-import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
@@ -14,7 +15,9 @@ import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewReposit
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -32,29 +35,36 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final ReviewLikeRepository reviewLikeRepository;
     private final AdoptedAnimalRepository adoptedAnimalRepository;
+    private final ReviewImageService reviewImageService;
     private final TokenProvider tokenProvider;
     @Override
-    public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, String token) {
+    public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
         // 2. 해당 유저가 입양한 댕냥이가 맞는지 확인
         AdoptedAnimal myAdoptedAnimal = checkMyAdoptedAnimal(animalId, user);
 
+        if(reviewRepository.findByUser(user).isPresent()){
+            throw new DuplicateKeyException("이미 작성한 후기입니다.");
+        }
+
         // 3. 후기를 DB에 저장
         Review newReview = Review.builder()
                                 .user(user)
                                 .adoptedAnimal(myAdoptedAnimal)
                                 .textReview(reviewRequestDTO.getTextReview())
-                                .like(0)
+                                .reviewLike(0)
                                 .createdAt(nowDate())
                                 .build();
         reviewRepository.save(newReview);
 
         // 4. 댕냥이 이미지 DB에 저장
-        reviewRequestDTO.getImages().forEach(image -> uploadImage(newReview, image));
+        if(!files.isEmpty()){
+            uploadImage(newReview, files);
+        }
 
-        // 6. return 새로운 후기
+        // 5. return 새로운 후기
         return newReview;
     }
 
@@ -71,7 +81,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, String token) {
+    public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -82,17 +92,19 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRequestDTO.checkUpdateList(reviewRequestDTO, myReview);
 
         Review updateReview = Review.builder()
+                                    .reviewId(myReview.getReviewId())
                                     .user(myReview.getUser())
                                     .adoptedAnimal(myReview.getAdoptedAnimal())
                                     .textReview(reviewRequestDTO.getTextReview()) // text 수정
-                                    .like(myReview.getLike())
+                                    .reviewLike(myReview.getReviewLike())
                                     .createdAt(myReview.getCreatedAt())
                                     .build();
         reviewRepository.save(updateReview);
 
         // 4. 댕냥이 이미지 DB에 저장
-        reviewRequestDTO.getImages().forEach(image -> uploadImage(updateReview, image));
-
+        if(!files.isEmpty()){
+            uploadImage(updateReview, files);
+        }
         // 5. 수정된 댕냥이 후기를 반환
         return updateReview;
     }
@@ -191,18 +203,21 @@ public class ReviewServiceImpl implements ReviewService {
                                 .adoptedAnimal(review.getAdoptedAnimal())
                                 .textReview(review.getTextReview())
                                 .createdAt(review.getCreatedAt())
-                                .like(like) // 좋아요만 수정
+                                .reviewLike(like) // 좋아요만 수정
                                 .build();
         reviewRepository.save(totalLike);
     }
 
     @Override
-    public void uploadImage(Review review, ReviewImage image){
-        ReviewImage reviewImage = ReviewImage.builder()
-                                            .review(review)
-                                            .url(image.getUrl())
-                                            .build();
-        reviewImageRepository.save(reviewImage);
+    public void uploadImage(Review review, List<MultipartFile> multipartFileList){
+        List<String> imageUrlList = reviewImageService.uploadReviewImgs(review, review.getAdoptedAnimal().getAnimal().getAnimalName(), multipartFileList);
+        for (String imageUrl : imageUrlList) {
+            ReviewImage reviewImage = ReviewImage.builder()
+                    .review(review)
+                    .url(imageUrl)
+                    .build();
+            reviewImageRepository.save(reviewImage);
+        }
     }
 
     @Override

@@ -26,6 +26,7 @@ public class AnimalScrap {
     private User user;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "animal_board_idx")
     private Animal animal;
 }

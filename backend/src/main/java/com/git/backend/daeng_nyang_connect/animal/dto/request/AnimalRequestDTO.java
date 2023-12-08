@@ -6,6 +6,7 @@ import com.git.backend.daeng_nyang_connect.animal.entity.AnimalImage;
 import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -29,55 +30,55 @@ public class AnimalRequestDTO {
     private Kind kind;
     private String breed;
     private Date nurturePeriod;
-    private List<AnimalImage> images;
+    private String city;
 
-    public void checkUpdateList(AnimalRequestDTO updateAnimalRequestDTO, Animal animal) {
-        if (Objects.isNull(updateAnimalRequestDTO.getAnimalName())) {
+    public void checkUpdateList(AnimalRequestDTO animalRequestDTO, Animal animal) {
+        if (Objects.isNull(animalRequestDTO.getAnimalName())) {
             this.animalName = animal.getAnimalName();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getAge())) {
+        if (Objects.isNull(animalRequestDTO.getAge())) {
             this.age = animal.getAge();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getGender())) {
+        if (Objects.isNull(animalRequestDTO.getGender())) {
             this.gender = animal.getGender();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getDisease())) {
+        if (Objects.isNull(animalRequestDTO.getDisease())) {
             this.disease = animal.getDisease();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getNurturePeriod())) {
+        if (Objects.isNull(animalRequestDTO.getNurturePeriod())) {
             this.nurturePeriod = animal.getNurturePeriod();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getTraining())) {
+        if (Objects.isNull(animalRequestDTO.getTraining())) {
             this.training = animal.getTraining();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getNeutering())) {
+        if (Objects.isNull(animalRequestDTO.getNeutering())) {
             this.neutering = animal.getNeutering();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getTextReason())) {
+        if (Objects.isNull(animalRequestDTO.getTextReason())) {
             this.textReason = animal.getTextReason();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getKind())) {
+        if (Objects.isNull(animalRequestDTO.getKind())) {
             this.kind = animal.getKind();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getBreed())) {
+        if (Objects.isNull(animalRequestDTO.getBreed())) {
             this.breed = animal.getBreed();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getHealthCheck())) {
+        if (Objects.isNull(animalRequestDTO.getHealthCheck())) {
             this.healthCheck = animal.getHealthCheck();
         }
 
-        if (Objects.isNull(updateAnimalRequestDTO.getImages())) {
-            this.images = animal.getImages();
+        if (Objects.isNull(animalRequestDTO.getCity())) {
+            this.city = animal.getCity();
         }
     }
 }

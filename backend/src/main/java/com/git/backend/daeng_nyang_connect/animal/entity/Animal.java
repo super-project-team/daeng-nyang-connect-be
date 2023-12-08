@@ -25,6 +25,7 @@ public class Animal {
     private Long animalId;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_idx")
     private User user;
 
