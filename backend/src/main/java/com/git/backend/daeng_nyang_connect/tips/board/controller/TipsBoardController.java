@@ -5,6 +5,7 @@ import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
 
+import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import com.git.backend.daeng_nyang_connect.tips.board.service.TipsBoardService;
 
 import jakarta.persistence.Cacheable;
@@ -66,6 +67,11 @@ public class TipsBoardController {
     @GetMapping("/getBoard")
     public TipsBoardDetailDto getThisBoard(@RequestParam("id")Long tipsId){
         return tipsBoardService.getThisBoard(tipsId);
+    }
+
+    @GetMapping("/search")
+    public List<TipsBoardDto> searchBoard(@RequestParam String keyword){
+        return tipsBoardService.searchBoard(keyword);
     }
 
 }

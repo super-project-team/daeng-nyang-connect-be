@@ -17,6 +17,7 @@ public class TipsCommentsDto {
     private String comment;
     private Timestamp createdAt;
     private Integer tipsCommentLike;
+    private String nickName;
 
 
 }

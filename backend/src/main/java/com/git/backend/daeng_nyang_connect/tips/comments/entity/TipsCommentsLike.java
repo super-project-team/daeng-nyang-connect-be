@@ -1,5 +1,7 @@
 package com.git.backend.daeng_nyang_connect.tips.comments.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,10 +21,12 @@ public class TipsCommentsLike {
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "tips_comments_idx")
+    @JsonBackReference
     private TipsComments tipsComments;
 
     public TipsCommentsLike(User user, TipsComments tipsComments) {

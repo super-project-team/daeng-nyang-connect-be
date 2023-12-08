@@ -7,6 +7,7 @@ import com.git.backend.daeng_nyang_connect.user.dto.LoginDto;
 import com.git.backend.daeng_nyang_connect.user.dto.SignUpDto;
 import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
+import com.git.backend.daeng_nyang_connect.user.repository.MyPageRepository;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
 import jakarta.servlet.http.Cookie;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -44,14 +46,20 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
     private final RedisTemplate<String ,String > redisTemplate;
+    private final MyPageRepository myPageRepository;
+    @Value("${basic-profile}")
+    private String basicProfile;
+
 
 //    //회원 가입 시 userID 자동으로 my page에 저장
 //    근데 그냥 my page 작성 시 토큰으로 user id 찾기해서 저장하는 방법도 있어서 보류
-//    public MyPage myPageEntity(User user){
-//        return MyPage.builder()
-//                .user(user)
-//                .build();
-//    }
+    public MyPage myPageEntity(User user){
+        return MyPage.builder()
+                .user(user)
+                .img(basicProfile)
+                .build();
+    }
+
     @Transactional
     public ResponseEntity<?>signUp(SignUpDto signUpDto){
         String email = signUpDto.getEmail();
@@ -86,6 +94,9 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+
+        MyPage myPage = myPageEntity(user);
+        myPageRepository.save(myPage);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("회원 가입이 되었습니다");
 
