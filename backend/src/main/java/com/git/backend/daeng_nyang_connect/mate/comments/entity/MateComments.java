@@ -31,7 +31,8 @@ public class MateComments {
     private Mate mate;
 
     private String comment;
-    private Integer like;
+    @Column(name = "mate_comments_like")
+    private Integer mateCommentsLike;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

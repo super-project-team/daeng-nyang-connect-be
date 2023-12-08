@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api", "/api/signup", "/api/login","/api/logout", "api/tips/**").permitAll()
+                                .requestMatchers("/api", "/api/signup", "/api/login","/api/logout", "api/tips/**", "/api/mate/**").permitAll()
 //                                .requestMatchers("/api/tips/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
