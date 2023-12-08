@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
 
 //    좋아요 수 합산
-    @Query("SELECT count(al) AS totalLike FROM ReviewLike al WHERE al.review.reviewId =: reviewId")
+    @Query("SELECT count(al) AS totalLike FROM ReviewLike al WHERE al.review.reviewId=:reviewId")
     Integer totalReviewLike(@Param("reviewId")Long reviewId);
 
     Optional<ReviewLike> findByUser(User user);

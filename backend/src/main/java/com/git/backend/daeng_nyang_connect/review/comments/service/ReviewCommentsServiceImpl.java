@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.review.comments.service;
 
+import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
@@ -7,6 +8,7 @@ import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments
 import com.git.backend.daeng_nyang_connect.review.comments.repository.ReviewCommentsLikeRepository;
 import com.git.backend.daeng_nyang_connect.review.comments.repository.ReviewCommentsRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
+import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +26,13 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     private final ReviewRepository reviewRepository;
     private final ReviewCommentsLikeRepository reviewCommentsLikeRepository;
     private final ReviewCommentsRepository reviewCommentsRepository;
+    private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
 
     @Override
     public ReviewComments addCommentsOnReview(Long reviewId, String comment, String token) {
         // 1. 토큰으로 유저 확인
-
+        User user = checkUserByToken(token);
 
         // 2. 댓글 존재 유무 확인
         Review review = reviewRepository.findById(reviewId).orElseThrow(
@@ -41,7 +45,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
                                                 .user(user)
                                                 .review(review)
                                                 .comment(comment)
-                                                .like(0)
+                                                .reviewCommentLike(0)
                                                 .createdAt(nowDate())
                                                 .build();
         reviewCommentsRepository.save(newComment);
@@ -53,6 +57,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     @Override
     public void deleteCommentsOnReview(Long reviewCommentsId, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
 
         // 2. 내가 작성한 글이 맞는지 확인
         ReviewComments myComment = checkMyComments(reviewCommentsId, user);
@@ -64,7 +69,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     @Override
     public ReviewComments updateCommentsOnReview(Long reviewCommentsId, String comment, String token) {
         // 1. 토큰으로 유저 확인
-
+        User user = checkUserByToken(token);
 
         // 2. 내가 작성한 글이 맞는지 확인
         ReviewComments myComment = checkMyComments(reviewCommentsId, user);
@@ -75,7 +80,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
                                                     .user(myComment.getUser())
                                                     .review(myComment.getReview())
                                                     .comment(comment)
-                                                    .like(myComment.getLike())
+                                                    .reviewCommentLike(myComment.getReviewCommentLike())
                                                     .createdAt(myComment.getCreatedAt())
                                                     .build();
         reviewCommentsRepository.save(updateComment);
@@ -92,6 +97,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     @Override
     public Map<String, String> likeCommentsOnReview(Long reviewCommentsId, String token) {
         // 1. 토큰으로 유저 확인
+        User user = checkUserByToken(token);
 
         // 2. 해당 유저가 해당 댕냥이 후기에 좋아요를 눌렀는지 확인
         ReviewComments reviewComments = reviewCommentsRepository.findById(reviewCommentsId).orElseThrow(
@@ -106,7 +112,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
             reviewCommentsLikeRepository.deleteByUser(user);
 
             // 5. 총 좋아요 수 수정 (좋아요 - 1)
-            updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId))
+            updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId));
 
             message.put("delete", "좋아요가 성공적으로 삭제되었습니다.");
             return message;
@@ -120,7 +126,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
         reviewCommentsLikeRepository.save(addLike);
 
         // 4. 총 좋아요 수 수정 (좋아요 + 1)
-        updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId))
+        updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId));
 
         message.put("add", "좋아요가 성공적으로 추가되었습니다.");
         return message;
@@ -155,8 +161,16 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
                                                 .review(reviewComments.getReview())
                                                 .comment(reviewComments.getComment())
                                                 .createdAt(reviewComments.getCreatedAt())
-                                                .like(like) // 좋아요만 수정
+                                                .reviewCommentLike(like) // 좋아요만 수정
                                                 .build();
         reviewCommentsRepository.save(totalLike);
+    }
+
+    @Override
+    public User checkUserByToken(String token){
+        String email = tokenProvider.getEmailBytoken(token);
+        return userRepository.findByEmail(email).orElseThrow(
+                ()-> new NoSuchElementException("없는 유저입니다.")
+        );
     }
 }

@@ -2,6 +2,7 @@ package com.git.backend.daeng_nyang_connect.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.animal.entity.AnimalScrap;
+import com.git.backend.daeng_nyang_connect.user.role.CustomGrantedAuthority;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -53,7 +54,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(this.role.getName()));
+        authorities.add(new CustomGrantedAuthority(this.role));
         return authorities;
     }
 

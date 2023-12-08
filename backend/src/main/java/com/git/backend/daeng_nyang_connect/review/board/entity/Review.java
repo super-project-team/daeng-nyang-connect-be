@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.review.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
@@ -33,11 +34,13 @@ public class Review {
     @Column(name = "text_review")
     private String textReview;
 
-    private Integer like;
+    @Column(name = "review_like")
+    private Integer reviewLike;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ReviewImage> images;
 }

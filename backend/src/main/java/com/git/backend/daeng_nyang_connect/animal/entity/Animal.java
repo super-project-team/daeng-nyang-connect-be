@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.animal.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +23,9 @@ public class Animal {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "animal_board_idx")
     private Long animalId;
+
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_idx")
     private User user;
 
@@ -56,8 +60,11 @@ public class Animal {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnimalImage> images;
+    private String city;
+
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<AnimalImage> images = new ArrayList<>();
 
     public void updateAdoptionStatus(AdoptionStatus adoptionStatus){
         this.adoptionStatus = adoptionStatus;

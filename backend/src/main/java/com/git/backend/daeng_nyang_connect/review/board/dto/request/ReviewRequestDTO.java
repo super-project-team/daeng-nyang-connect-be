@@ -17,7 +17,6 @@ import java.util.Objects;
 @NoArgsConstructor
 public class ReviewRequestDTO {
     private String textReview;
-    private List<ReviewImage> images;
 
     public void checkUpdateList(ReviewRequestDTO updateAnimalRequestDTO, Review animal) {
         if (Objects.isNull(updateAnimalRequestDTO.getTextReview())) {
