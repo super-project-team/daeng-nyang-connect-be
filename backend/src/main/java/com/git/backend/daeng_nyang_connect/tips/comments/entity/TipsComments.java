@@ -1,11 +1,14 @@
 package com.git.backend.daeng_nyang_connect.tips.comments.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,10 +25,12 @@ public class TipsComments {
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "tip_board_idx")
+    @JsonBackReference
     private Tips tips;
 
     private String comment;
@@ -34,4 +39,8 @@ public class TipsComments {
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "tipsComments", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<TipsCommentsLike> likeList;
 }

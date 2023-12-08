@@ -12,6 +12,7 @@ import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsImage;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardLikeRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsImageRepository;
+import com.git.backend.daeng_nyang_connect.tips.comments.dto.TipsCommentsDto;
 import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsComments;
 import com.git.backend.daeng_nyang_connect.tips.comments.repository.TipsCommentsRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -192,7 +193,19 @@ public class TipsBoardService {
         List<TipsImage> thisBoardImg = tipsImageRepository.findByTips(thisBoard).orElseThrow();
         List<TipsComments> thisBoardComments = tipsCommentsRepository.findByTips(thisBoard);
 
-        return TipsBoardDetailDto.fromEntity(thisBoard, thisBoard.getUser().getNickname(), thisBoardImg, thisBoardComments);
+        // 필요한 정보만을 DTO로 변환
+        List<TipsCommentsDto> tipsCommentsDtoList = thisBoardComments.stream()
+                .map(comment -> TipsCommentsDto.builder()
+                        .tipsCommentsId(comment.getTipsCommentsId())
+                        .nickName(comment.getUser().getNickname())
+                        .comment(comment.getComment())
+                        .tipsCommentLike(comment.getTipsCommentsLike())
+                        .createdAt(comment.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+
+        return TipsBoardDetailDto.fromEntity(thisBoard, thisBoardImg, tipsCommentsDtoList);
 
     }
 

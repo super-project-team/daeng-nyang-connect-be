@@ -1,5 +1,7 @@
 package com.git.backend.daeng_nyang_connect.tips.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +19,7 @@ public class TipsImage {
 
     @ManyToOne
     @JoinColumn(name = "tips_board_idx")
+    @JsonBackReference
     private Tips tips;
 
     private String url;

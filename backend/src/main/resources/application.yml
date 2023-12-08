@@ -16,7 +16,7 @@ spring:
       port: 6379
 
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
