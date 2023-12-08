@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface TipsBoardRepository extends JpaRepository<Tips, Long> {
     List<Tips> findByUser(User user);
 
+    List<Tips>findByTitleContaining(String keyword);
 
 }

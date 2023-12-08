@@ -209,6 +209,16 @@ public class TipsBoardService {
 
     }
 
+    public List<TipsBoardDto> searchBoard(String keyword){
+
+        List<Tips> byTitleContaining = tipsBoardRepository.findByTitleContaining(keyword);
+        return byTitleContaining.stream().map(tips -> {
+           String author = findUserNickNameByTipsId(tips.getTipsBoardId());
+           return TipsBoardDto.fromEntity(tips, author);
+        }).collect(Collectors.toList());
+
+    }
+
 
 
 
