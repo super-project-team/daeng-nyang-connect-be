@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.review.comments.service;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
+import com.git.backend.daeng_nyang_connect.review.comments.dto.response.ReviewCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewCommentsLike;
 import com.git.backend.daeng_nyang_connect.review.comments.repository.ReviewCommentsLikeRepository;
@@ -29,6 +30,10 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
 
+    @Override
+    public ReviewCommentsResponseDTO response(ReviewComments reviewComments) {
+        return new ReviewCommentsResponseDTO(reviewComments);
+    }
     @Override
     public ReviewComments addCommentsOnReview(Long reviewId, String comment, String token) {
         // 1. 토큰으로 유저 확인

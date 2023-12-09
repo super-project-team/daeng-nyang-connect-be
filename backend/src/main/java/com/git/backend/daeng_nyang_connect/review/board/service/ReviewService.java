@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.review.board.service;
 
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
+import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewImage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -48,4 +49,8 @@ public interface ReviewService {
 
     // 토큰으로 user 체크 후 user 반환
     User checkUserByToken(String token);
+
+    // 원하는 response 값 저장 후 반환
+    ReviewResponseDTO response(Review review);
+
 }

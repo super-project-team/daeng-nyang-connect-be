@@ -1,11 +1,10 @@
 package com.git.backend.daeng_nyang_connect.review.board.service;
 
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
-import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
-import com.git.backend.daeng_nyang_connect.animal.entity.AnimalImage;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
+import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewImage;
 import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewLike;
@@ -37,6 +36,13 @@ public class ReviewServiceImpl implements ReviewService {
     private final AdoptedAnimalRepository adoptedAnimalRepository;
     private final ReviewImageService reviewImageService;
     private final TokenProvider tokenProvider;
+
+    @Override
+    public ReviewResponseDTO response(Review review) {
+        List<ReviewImage> reviewImages = reviewImageRepository.findByReview(review);
+        return new ReviewResponseDTO(review, reviewImages);
+    }
+
     @Override
     public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
         // 1. 토큰으로 유저 확인
@@ -210,7 +216,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void uploadImage(Review review, List<MultipartFile> multipartFileList){
-        List<String> imageUrlList = reviewImageService.uploadReviewImgs(review, review.getAdoptedAnimal().getAnimal().getAnimalName(), multipartFileList);
+        List<String> imageUrlList = reviewImageService.uploadReviewImages(review, review.getAdoptedAnimal().getAnimal().getAnimalName(), multipartFileList);
         for (String imageUrl : imageUrlList) {
             ReviewImage reviewImage = ReviewImage.builder()
                     .review(review)

@@ -1,19 +1,14 @@
 package com.git.backend.daeng_nyang_connect.animal.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptionStatus;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.entity.AnimalImage;
 import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
-import com.git.backend.daeng_nyang_connect.user.entity.User;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -21,8 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnimalResponseDTO {
-    private Long animalId;
-    private User user;
+    private String userNickname;
     private String animalName;
     private Integer age;
     private String gender;
@@ -37,11 +31,10 @@ public class AnimalResponseDTO {
     private String city;
     private AdoptionStatus adoptionStatus; // 입양 완료 여부
     private Timestamp createdAt;
-    private List<AnimalImage> images;
+    private List<String> images;
 
-    public AnimalResponseDTO(Animal animal, List<AnimalImage> animalImage){
-        this.animalId = animal.getAnimalId();
-        this.user = animal.getUser();
+    public AnimalResponseDTO(Animal animal, List<AnimalImage> animalImages){
+        this.userNickname = animal.getUser().getNickname();
         this.animalName = animal.getAnimalName();
         this.age = animal.getAge();
         this.gender = animal.getGender();
@@ -56,6 +49,9 @@ public class AnimalResponseDTO {
         this.city = animal.getCity();
         this.adoptionStatus = animal.getAdoptionStatus();
         this.createdAt = animal.getCreatedAt();
-        this.images = animalImage;
+
+        for(AnimalImage animalImage : animalImages){
+            this.images.add(animalImage.getUrl());
+        }
     }
 }

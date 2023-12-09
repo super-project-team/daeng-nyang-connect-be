@@ -1,9 +1,8 @@
 package com.git.backend.daeng_nyang_connect.review.comments.service;
 
 
-import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
+import com.git.backend.daeng_nyang_connect.review.comments.dto.response.ReviewCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
-import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewCommentsLike;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 
 import java.sql.Timestamp;
@@ -37,4 +36,7 @@ public interface ReviewCommentsService {
 
     // 토큰으로 user 체크 후 user 반환
     User checkUserByToken(String token);
+
+    // 원하는 response 값 저장 후 반환
+    ReviewCommentsResponseDTO response(ReviewComments reviewComments);
 }
