@@ -1,5 +1,6 @@
-package com.git.backend.daeng_nyang_connect.animal.board.entity;
+package com.git.backend.daeng_nyang_connect.animal.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,8 @@ public class AnimalImage {
     private Long animalImageId;
 
     @ManyToOne
-    @JoinColumn(name = "animal_idx")
+    @JsonBackReference
+    @JoinColumn(name = "animal_board_idx")
     private Animal animal;
 
     private String url;
