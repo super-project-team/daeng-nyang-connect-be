@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.user.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.user.dto.FindDto;
 import com.git.backend.daeng_nyang_connect.user.dto.LoginDto;
 import com.git.backend.daeng_nyang_connect.user.dto.SignUpDto;
 import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
@@ -33,8 +34,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -89,7 +92,7 @@ public class UserService {
                 .city(city)
                 .town(town)
                 .experience(experience)
-                .gender(String.valueOf(gender))
+                .gender(gender)
                 .role(Role.USER)
                 .build();
 
@@ -102,6 +105,7 @@ public class UserService {
 
     }
 
+    //로그인
     @Transactional
     public Map<String, String> login(LoginDto loginDto, HttpServletResponse httpServletResponse) {
         String email = loginDto.getEmail();
@@ -162,6 +166,7 @@ public class UserService {
         }
     }
 
+    //로그아웃
     @Transactional
     public void logout(String token){
         redisTemplate.opsForValue().set("logout : "+ tokenProvider.getEmailBytoken(token), "logout", Duration.ofSeconds(1800));
@@ -170,15 +175,70 @@ public class UserService {
 
     }
 
+    //토큰으로 user 를 체크
     public User checkUserByToken(String token){
         String email = tokenProvider.getEmailBytoken(token);
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("없는 유저 입니다"));
     }
+    //아이디 중복 체크
+    public Map<String ,String > checkUserId(String email){
+        if(userRepository.existsByEmail(email)){
+            Map<String, String> response = new HashMap<>();
+            response.put("msg", "아이디가 중복 되었습니다");
 
+            return response;
+        }
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", "사용 가능한 아이디 입니다.");
+        return response;
+    }
+    //닉네임 중복 체크
+    public Map<String ,String > checkUserNickName(String NickName){
+        if(userRepository.existsByNickname(NickName)){
+            Map<String, String> response = new HashMap<>();
+            response.put("msg", "닉네임이 중복되었습니다");
+            return response;
+        }
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", "사용 가능한 닉네임 입니다.");
+        return response;
+    }
+    //회원 아이디 찾기
+    public Map<String,String> findUserId(FindDto findDto){
+        List<User> user = userRepository.findEmailByNameAndMobile(findDto.getName(), findDto.getMobile());
 
+        List<String> email = user.stream().map(User::getEmail).toList();
 
+        if(user!=null){
+            Map<String, String> response = new HashMap<>();
+            response.put("ID", email.toString());
+            return response;
+        }
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", "해당하는 회원을 찾을 수 없습니다");
+        response.put("http_status", HttpStatus.NOT_FOUND.toString());
+        return response;
+    }
 
+    public Map<String ,String> setNewPassword(FindDto findDto){
+        User user = userRepository.findByNameAndMobileAndEmail(findDto.getName(),findDto.getMobile(),findDto.getEmail());
+
+        if(user!=null) {
+            user.setPassword(passwordEncoder.encode(findDto.getNewPassword()));
+            userRepository.save(user);
+            Map<String, String> response = new HashMap<>();
+            response.put("msg", "비밀번호 변경이 완료 되었습니다");
+            response.put("http_status", HttpStatus.OK.toString());
+            return response;
+        }else {
+            Map<String, String> response = new HashMap<>();
+            response.put("msg", "해당하는 회원을 찾을 수 없습니다");
+            response.put("http_status", HttpStatus.NOT_FOUND.toString());
+            return response;
+        }
+
+    }
 
 
 }

@@ -6,6 +6,7 @@ import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
+import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardLikeDto;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsBoardLike;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsImage;
@@ -13,7 +14,10 @@ import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardLikeRe
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsImageRepository;
 import com.git.backend.daeng_nyang_connect.tips.comments.dto.TipsCommentsDto;
+import com.git.backend.daeng_nyang_connect.tips.comments.dto.TipsCommentsLikeDto;
 import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsComments;
+import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsCommentsLike;
+import com.git.backend.daeng_nyang_connect.tips.comments.repository.TipsCommentsLikeRepository;
 import com.git.backend.daeng_nyang_connect.tips.comments.repository.TipsCommentsRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
@@ -39,15 +43,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Cacheable
 public class TipsBoardService {
-
-    private final TokenProvider tokenProvider;
-    private final UserRepository userRepository;
     private final TipsBoardRepository tipsBoardRepository;
     private final TipsImgUpload tipsImgUpload;
     private final TipsBoardLikeRepository tipsBoardLikeRepository;
     private final UserService userService;
     private final TipsImageRepository tipsImageRepository;
     private final TipsCommentsRepository tipsCommentsRepository;
+    private final TipsCommentsLikeRepository tipsCommentsLikeRepository;
 
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -187,27 +189,6 @@ public class TipsBoardService {
                 .collect(Collectors.toList());
     }
 
-    public TipsBoardDetailDto getThisBoard(Long tipsID){
-
-        Tips thisBoard = tipsBoardRepository.findById(tipsID).orElseThrow();
-        List<TipsImage> thisBoardImg = tipsImageRepository.findByTips(thisBoard).orElseThrow();
-        List<TipsComments> thisBoardComments = tipsCommentsRepository.findByTips(thisBoard);
-
-        // 필요한 정보만을 DTO로 변환
-        List<TipsCommentsDto> tipsCommentsDtoList = thisBoardComments.stream()
-                .map(comment -> TipsCommentsDto.builder()
-                        .tipsCommentsId(comment.getTipsCommentsId())
-                        .nickName(comment.getUser().getNickname())
-                        .comment(comment.getComment())
-                        .tipsCommentLike(comment.getTipsCommentsLike())
-                        .createdAt(comment.getCreatedAt())
-                        .build())
-                .collect(Collectors.toList());
-
-
-        return TipsBoardDetailDto.fromEntity(thisBoard, thisBoardImg, tipsCommentsDtoList);
-
-    }
 
     public List<TipsBoardDto> searchBoard(String keyword){
 
@@ -219,7 +200,37 @@ public class TipsBoardService {
 
     }
 
+    public TipsBoardDetailDto getThisBoard(Long tipsID){
 
+        Tips thisBoard = tipsBoardRepository.findById(tipsID).orElseThrow();
+        List<TipsImage> thisBoardImg = tipsImageRepository.findByTips(thisBoard).orElseThrow();
+        List<TipsComments> thisBoardComments = tipsCommentsRepository.findByTips(thisBoard);
+        List<TipsBoardLike> tipsBoardLikes = tipsBoardLikeRepository.findByTips(thisBoard);
+
+        // 필요한 정보만을 DTO로 변환
+        List<TipsCommentsDto> tipsCommentsDtoList = thisBoardComments.stream()
+                .map(comment -> TipsCommentsDto.builder()
+                        .tipsCommentsId(comment.getTipsCommentsId())
+                        .tipsId(comment.getTips().getTipsBoardId())
+                        .userId(comment.getUser().getUserId())
+                        .nickName(comment.getUser().getNickname())
+                        .comment(comment.getComment())
+                        .tipsCommentLike(comment.getTipsCommentsLike())
+                        .createdAt(comment.getCreatedAt())
+                        .commentsLikes(comment.getLikeList())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<TipsBoardLikeDto> tipsBoardLikeDtos = tipsBoardLikes.stream()
+                .map(like -> TipsBoardLikeDto.builder()
+                        .TipsBoardLikeId(like.getTipsBoardLikeId())
+                        .userId(like.getUser().getUserId())
+                        .build())
+                .toList();
+
+        return TipsBoardDetailDto.fromEntity1(thisBoard, thisBoardImg, tipsCommentsDtoList,tipsBoardLikeDtos);
+
+    }
 
 
 }
