@@ -35,11 +35,11 @@ public class ReviewImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    //Animal 게시판 이미지 s3 디렉토리 경로 및 파일 이름 생성
-    public String buildFileName(String animalName,String originFileName, int sequence){
+    // 입양 후기 이미지 s3 디렉토리 경로 및 파일 이름 생성
+    public String buildFileName(String adoptedAnimalName,String originFileName, int sequence){
 
         String fileExtension = FilenameUtils.getExtension(originFileName);
-        String fileName = "review" + "/" + animalName + "/" + animalName;
+        String fileName = "review" + "/" + adoptedAnimalName + "/" + adoptedAnimalName;
 
         if (!fileExtension.isEmpty()) {
             fileName += "_" + sequence + "." + fileExtension;
@@ -50,13 +50,13 @@ public class ReviewImageService {
         return fileName;
     }
 
-    public List<String> uploadReviewImgs(Review review, String animalName, List<MultipartFile> multipartFileList){
+    public List<String> uploadReviewImages(Review review, String adoptedAnimalName, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
 
         for (int i = 0; i < multipartFileList.size(); i++) {
             MultipartFile file = multipartFileList.get(i);
             try {
-                String fileName = buildFileName(animalName, file.getOriginalFilename(), i + 1);
+                String fileName = buildFileName(adoptedAnimalName, file.getOriginalFilename(), i + 1);
                 String uploadedUrl = uploadReviewImg(review, file, fileName);
                 filenameList.add(uploadedUrl);
             } catch (FileUploadFailedException e) {

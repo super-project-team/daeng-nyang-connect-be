@@ -36,9 +36,10 @@ public class AnimalServiceImpl  implements AnimalService{
 
     @Override
     public AnimalResponseDTO response(Animal animal) {
-        List<AnimalImage> animalImage = animalImageRepository.findByAnimal(animal);
-        return new AnimalResponseDTO(animal, animalImage);
+        List<AnimalImage> animalImages = animalImageRepository.findByAnimal(animal);
+        return new AnimalResponseDTO(animal, animalImages);
     }
+
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
         // 1. 토큰으로 유저 확인

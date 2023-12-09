@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface AnimalService {
-    AnimalResponseDTO response(Animal animal);
-
     // 댕냥 게시판에 내 파양동물 등록
     Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token);
 
@@ -46,4 +44,7 @@ public interface AnimalService {
 
     // 동물의 입양 여부 확인
     AdoptionStatus checkAnimalStatus(Long animalId);
+
+    // response dto 변환
+    AnimalResponseDTO response(Animal animal);
 }

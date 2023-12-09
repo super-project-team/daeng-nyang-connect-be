@@ -1,7 +1,9 @@
 package com.git.backend.daeng_nyang_connect.review.board.controller;
 
 
+import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
+import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,8 @@ public class ReviewController {
                                        @RequestPart("files") List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
         Review newReview = reviewService.addReview(animalId, reviewRequestDTO, files, token);
-        return ResponseEntity.status(200).body(newReview);
+        ReviewResponseDTO response = reviewService.response(newReview);
+        return ResponseEntity.status(200).body(response);
     }
 
     @Transactional
@@ -45,7 +48,8 @@ public class ReviewController {
                                           @RequestPart("files") List<MultipartFile> files,
                                           @RequestHeader("access_token") String token){
         Review updateReview = reviewService.updateReview(reviewId, reviewRequestDTO, files, token);
-        return ResponseEntity.status(200).body(updateReview);
+        ReviewResponseDTO response = reviewService.response(updateReview);
+        return ResponseEntity.status(200).body(response);
     }
 
     // 입양간 동물에 대한 리뷰 전체 출력

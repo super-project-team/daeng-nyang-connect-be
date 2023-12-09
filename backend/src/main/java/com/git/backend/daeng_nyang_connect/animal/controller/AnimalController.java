@@ -3,9 +3,7 @@ package com.git.backend.daeng_nyang_connect.animal.controller;
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
-import com.git.backend.daeng_nyang_connect.animal.entity.AdoptionStatus;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
-import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.animal.service.AnimalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +27,8 @@ public class AnimalController {
                                        @RequestPart("files") List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
         Animal newAnimal = animalService.addAnimal(animalRequestDTO, files, token);
-        AnimalResponseDTO animalResponseDTO = animalService.response(newAnimal);
-        return ResponseEntity.status(200).body(animalResponseDTO);
+        AnimalResponseDTO response = animalService.response(newAnimal);
+        return ResponseEntity.status(200).body(response);
     }
 
     @Transactional
@@ -58,7 +55,8 @@ public class AnimalController {
                                           @RequestPart("files") List<MultipartFile> files,
                                           @RequestHeader("access_token") String token){
         Animal updateAnimal = animalService.updateAnimal(animalId, animalRequestDTO, files, token);
-        return ResponseEntity.status(200).body(updateAnimal);
+        AnimalResponseDTO response = animalService.response(updateAnimal);
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/all")

@@ -1,6 +1,8 @@
 package com.git.backend.daeng_nyang_connect.review.comments.controller;
 
 
+import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
+import com.git.backend.daeng_nyang_connect.review.comments.dto.response.ReviewCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
 import com.git.backend.daeng_nyang_connect.review.comments.service.ReviewCommentsService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,8 @@ public class ReviewCommentsController {
                                          @RequestBody String comment,
                                          @RequestHeader("access_token") String token){
         ReviewComments newComments = reviewCommentsService.addCommentsOnReview(reviewId, comment, token);
-        return ResponseEntity.status(200).body(newComments);
+        ReviewCommentsResponseDTO response = reviewCommentsService.response(newComments);
+        return ResponseEntity.status(200).body(response);
     }
 
     @Transactional
@@ -41,7 +44,8 @@ public class ReviewCommentsController {
                                             @RequestBody String comment,
                                             @RequestHeader("access_token") String token){
         ReviewComments updateComments = reviewCommentsService.updateCommentsOnReview(reviewCommentsId, comment, token);
-        return ResponseEntity.status(200).body(updateComments);
+        ReviewCommentsResponseDTO response = reviewCommentsService.response(updateComments);
+        return ResponseEntity.status(200).body(response);
     }
 
     // 내가 원하는 리뷰의 댓글 목록 전체 출력
