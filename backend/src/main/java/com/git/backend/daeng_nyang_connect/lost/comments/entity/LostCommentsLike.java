@@ -17,7 +17,7 @@ public class LostCommentsLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lost_comments_like_idx")
-    private Long likeId;
+    private Long lostCommentsLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")

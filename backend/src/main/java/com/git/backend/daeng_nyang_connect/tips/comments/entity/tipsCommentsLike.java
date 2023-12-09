@@ -17,13 +17,13 @@ public class tipsCommentsLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tips_comments_like_idx")
-    private Long likeId;
+    private Long tipsCommentsLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "guide_comments_idx")
+    @JoinColumn(name = "tips_comments_idx")
     private TipsComments tipsComments;
 }

@@ -29,8 +29,7 @@ public class LostComments {
     @JoinColumn(name = "lost_board_idx")
     private Lost lost;
 
-    private String nickname;
-    private String contents;
+    private String comment;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

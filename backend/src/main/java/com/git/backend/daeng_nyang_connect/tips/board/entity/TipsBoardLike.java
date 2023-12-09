@@ -16,14 +16,20 @@ import lombok.NoArgsConstructor;
 public class TipsBoardLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tips_board_like_idx")
-    private Long likeId;
+    @Column(name = "tip_board_like_idx")
+    private Long tipsBoardLikeId;
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "guide_board_idx")
+    @JoinColumn(name = "tip_board_idx")
     private Tips tips;
+
+
+    public TipsBoardLike(Tips tips, User user) {
+        this.tips = tips;
+        this.user = user;
+    }
 }

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class LostImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lost_image_idx")
-    private Long imageId;
+    private Long lostImageId;
 
     @ManyToOne
     @JoinColumn(name = "lost_idx")
