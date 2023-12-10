@@ -3,13 +3,10 @@ package com.git.backend.daeng_nyang_connect.config.security;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.filter.JwtAuthenticationFilter;
-import com.git.backend.daeng_nyang_connect.user.role.Role;
-import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -70,9 +67,11 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
-                                        "api/tips/search","api/tips/getBoard","api/tips/getAll", "/api/mate/**").permitAll()
+                                .requestMatchers("/api", "/api/signup", "/api/IdCheck", "/api/NicknameCheck", "/api/login", "/api/logout", "/api/findPassword", "/api/findId", "/api/myPage",
+                                        "/api/tips/search", "/api/tips/getBoard", "/api/tips/getAll").permitAll()
                                 .requestMatchers("/api/tips/**").hasRole("USER")
+                                .requestMatchers("/api/mate/all", "/api/mate/my_board", "/api/my_pet/all", "/api/my_pet/my_board").authenticated()
+                                .requestMatchers("/api/mate/**", "/api/my_pet/**").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 

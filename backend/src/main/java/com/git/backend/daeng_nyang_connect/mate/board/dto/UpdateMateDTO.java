@@ -14,6 +14,4 @@ public class UpdateMateDTO {
     private String category;
     private String place;
     private String text;
-    private Timestamp createdAt;
-    private Integer mateLike;
 }

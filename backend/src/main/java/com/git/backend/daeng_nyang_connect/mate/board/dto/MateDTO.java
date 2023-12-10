@@ -1,6 +1,6 @@
 package com.git.backend.daeng_nyang_connect.mate.board.dto;
 
-import com.git.backend.daeng_nyang_connect.user.entity.User;
+import com.git.backend.daeng_nyang_connect.mate.board.entity.Mate;
 import lombok.*;
 
 import java.sql.Timestamp;
