@@ -1,6 +1,5 @@
 package com.git.backend.daeng_nyang_connect.user.dto;
 
-import com.git.backend.daeng_nyang_connect.user.role.Role;
 import lombok.*;
 
 @Getter
@@ -8,9 +7,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoginDto {
+public class FindDto {
 
+    private String name;
+    private String mobile;
     private String email;
-    private String password;
+
+    private String newPassword;
 
 }

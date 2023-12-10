@@ -1,15 +1,16 @@
 package com.git.backend.daeng_nyang_connect.tips.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsComments;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -34,6 +35,19 @@ public class Tips {
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    List<TipsBoardLike> likeList;
+
+    @OneToMany(mappedBy = "tips",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    List<TipsImage> images;
+
+    @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    List<TipsComments> comments;
+
 
     public void setTipsLike(Integer tipsLike) {
         this.tipsLike = tipsLike;
