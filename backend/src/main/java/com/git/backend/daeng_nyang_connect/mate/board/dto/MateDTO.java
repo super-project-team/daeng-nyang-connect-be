@@ -13,11 +13,24 @@ import java.sql.Timestamp;
 public class MateDTO {
 
     private Long mateBoardId;
-    private User userId;
+    private Long userId;
+    private String nickname;
     private String category;
     private String place;
     private String text;
     private Timestamp createdAt;
     private Integer mateLike;
 
+    public static MateDTO fromMateEntity(Mate mate, String nickname) {
+        return MateDTO.builder()
+                .mateBoardId(mate.getMateBoardId())
+                .category(mate.getCategory())
+                .userId(mate.getUser().getUserId())
+                .nickname(nickname)
+                .place(mate.getPlace())
+                .text(mate.getText())
+                .createdAt(mate.getCreatedAt())
+                .mateLike(mate.getMateLike())
+                .build();
+    }
 }

@@ -12,11 +12,11 @@ import java.util.List;
 @Builder
 public class MateCommentsResponseDTO {
     private Long mateCommentsId;
-    private String comment;
-    private Timestamp createdAt;
-    private List<MateCommentsLikeDTO> mateCommentsLikes;
-
     private Long userId;
     private String nickname;
+    private String comment;
+    private Timestamp createdAt;
+    private Integer mateCommentsLike;
+    private List<MateCommentsLikeDTO> mateCommentsLikes;
 }
 

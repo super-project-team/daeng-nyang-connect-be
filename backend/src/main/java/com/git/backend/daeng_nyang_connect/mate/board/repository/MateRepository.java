@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface MateRepository extends JpaRepository<Mate, Long> {
 
+    List<Mate> findByTextContaining(String keyword);
+
     List<Mate> findByUserEmail(String userEmail);
 }

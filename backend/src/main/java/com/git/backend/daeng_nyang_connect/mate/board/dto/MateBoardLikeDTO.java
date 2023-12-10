@@ -8,8 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class MateBoardLikeDTO {
-
     private Long mateBoardLikeId;
-
     private Long userId;
 }

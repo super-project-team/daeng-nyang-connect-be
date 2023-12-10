@@ -26,4 +26,9 @@ public class MateCommentsLike {
     @ManyToOne
     @JoinColumn(name = "mate_comments_idx")
     private MateComments mateComments;
+
+    public MateCommentsLike(User user, MateComments mateComments) {
+        this.user = user;
+        this.mateComments = mateComments;
+    }
 }
