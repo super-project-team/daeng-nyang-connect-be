@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.mate.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.git.backend.daeng_nyang_connect.mate.board.entity.Mate;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class MateDTO {
     private String category;
     private String place;
     private String text;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
     private Integer mateLike;
 

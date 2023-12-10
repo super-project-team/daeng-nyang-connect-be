@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.mypet.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.git.backend.daeng_nyang_connect.mypet.comments.dto.MyPetCommentsResponseDTO;
 import lombok.*;
 
@@ -16,12 +17,13 @@ public class MyPetResponseDTO {
     private Long userId;
     private String nickname;
     private String kind;
-    private String breed;
+    // private String breed;
     private String text;
-    private Timestamp createdAt;
     private List<String> img;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private Timestamp createdAt;
     private List<MyPetCommentsResponseDTO> comments;
-    private Integer myPetLike;
+    // private Integer myPetLike;
     private List<MyPetBoardLikeDTO> myPetLikes;
 
 }

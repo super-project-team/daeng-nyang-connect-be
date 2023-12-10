@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,12 +41,12 @@ public class MyPetService {
     private final MyPetImgUpload myPetImgUpload;
     private final MyPetBoardLikeRepository myPetBoardLikeRepository;
 
-    private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다";
-    private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다";
-    private static final String MSG_OWNER_ACCESS_DENIED = "게시물 소유자가 아닙니다";
+    private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
+    private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
+    private static final String MSG_OWNER_ACCESS_DENIED = "게시물의 소유자가 아닙니다.";
 
     public Page<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 12, pageable.getSort());
         Page<MyPet> myPetPage = myPetRepository.findAll(customPageable);
         return myPetPage.map(this::convertToMyPetResponseDTO);
     }
@@ -87,10 +86,10 @@ public class MyPetService {
                 .userId(myPet.getUser().getUserId())
                 .nickname(myPet.getUser().getNickname())
                 .kind(myPet.getKind())
-                .breed(myPet.getBreed())
+           //     .breed(myPet.getBreed())
                 .text(myPet.getText())
-                .createdAt(myPet.getCreatedAt())
                 .img(imgUrls)
+                .createdAt(myPet.getCreatedAt())
                 .comments(comments)
                 .myPetLikes(likes)
                 .build();
@@ -102,7 +101,7 @@ public class MyPetService {
                 .nickname(comments.getUser().getNickname())
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
-                .myPetCommentsLike(comments.getMyPetCommentsLike())
+             //   .myPetCommentsLike(comments.getMyPetCommentsLike())
                 .myPetCommentsLikes(convertToMyPetCommentsLikeDTOList(comments.getMyPetCommentsLikes()))
                 .build();
     }
@@ -115,14 +114,12 @@ public class MyPetService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public List<MyPetDTO> searchBoard(String keyword){
-
-        List<MyPet> findByTextContaining = myPetRepository.findByTextContaining(keyword);
-        return findByTextContaining.stream().map(myPet -> {
+    public Page<MyPetDTO> searchBoard(String keyword, Pageable pageable){
+        Page<MyPet> myPetPage = myPetRepository.findByTextContaining(keyword, pageable);
+        return myPetPage.map(myPet -> {
             String author = findUserNickNameByMyPet(myPet.getMyPetBoardId());
             return MyPetDTO.fromMyPetEntity(myPet, author);
-        }).collect(Collectors.toList());
-
+        });
     }
 
     private String findUserNickNameByMyPet(Long myPetBoardId) {
@@ -153,11 +150,11 @@ public class MyPetService {
             myPetRepository.save(myPet);
             myPetImgUpload.uploadMyPetImgs(myPet, myPetDTO.getText(), img);
 
-            return createSuccessResponse("게시물이 등록 되었습니다", HttpStatus.CREATED);
+            return createSuccessResponse("게시물이 등록되었습니다.", HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
             return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return createErrorResponse("게시물 등록 중 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+            return createErrorResponse("게시물 등록 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -178,68 +175,79 @@ public class MyPetService {
                 myPetImgUpload.uploadMyPetImgs(myPet, updateMyPetDTO.getText(), img);
             }
 
-            return createSuccessResponse("게시물이 업데이트 되었습니다", HttpStatus.OK);
+            return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            return createErrorResponse(MSG_BOARD_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (AccessDeniedException e) {
             return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
         }
     }
 
+    @Transactional
     public Map<String, String> deleteMyPet(Long myPetBoardId, String token) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                    .orElseThrow(() -> new RuntimeException(MSG_USER_NOT_FOUND));
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
             MyPet myPet = myPetRepository.findById(myPetBoardId)
-                    .orElseThrow(() -> new RuntimeException(MSG_BOARD_NOT_FOUND));
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
             checkOwnership(myPet, user);
             myPetRepository.delete(myPet);
 
-            return createSuccessResponse("게시물이 삭제되었습니다", HttpStatus.OK);
+            return createSuccessResponse("게시물이 삭제되었습니다.", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            return createErrorResponse(MSG_BOARD_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (AccessDeniedException e) {
             return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
         }
     }
 
     @Transactional
-    public void setHeart(MyPet myPet, User user, Integer likeCount, Boolean msg) {
+    public void setHeart(MyPet myPet, User user, Boolean msg) {
+        boolean hasUserLiked = myPetBoardLikeRepository.findByMyPetAndUser(myPet, user).isPresent();
+
         if (msg) {
-            MyPetBoardLike myPetBoardLike = new MyPetBoardLike(myPet, user);
-            likeCount++;
-            myPet.setMyPetLike(likeCount);
-            myPetBoardLikeRepository.save(myPetBoardLike);
-            myPetRepository.save(myPet);
+            // 좋아요 추가
+            if (!hasUserLiked) {
+                MyPetBoardLike myPetBoardLike = new MyPetBoardLike(myPet, user);
+                myPet.getMyPetLikes().add(myPetBoardLike);
+                myPet.setMyPetLike(myPet.getMyPetLike() + 1);
+                myPetRepository.save(myPet);
+            }
         } else {
-            myPetBoardLikeRepository.deleteByUser(user);
-            likeCount--;
-            myPet.setMyPetLike(likeCount);
-            myPetRepository.save(myPet);
+            // 좋아요 취소
+            if (hasUserLiked) {
+                MyPetBoardLike userLike = myPetBoardLikeRepository.findByMyPetAndUser(myPet, user)
+                        .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 게시글에 없습니다."));
+                myPet.getMyPetLikes().remove(userLike);
+                myPetBoardLikeRepository.delete(userLike);
+                myPet.setMyPetLike(myPet.getMyPetLike() - 1);
+                myPetRepository.save(myPet);
+            }
         }
     }
 
     @Transactional
-    public ResponseEntity<Map<String, String>> clickLike(Long myPet, String token) {
+    public Map<String, String> clickLike(Long myPetId, String token) {
         User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                 .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-        MyPet isMyPet = myPetRepository.findById(myPet)
-                .orElseThrow();
+        MyPet myPet = myPetRepository.findById(myPetId)
+                .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
-        Map<String, String> response = new HashMap<>();
+        // 이미 좋아요를 눌렀는지 확인
+        boolean hasUserLiked = myPetBoardLikeRepository.findByMyPetAndUser(myPet, user).isPresent();
 
-        if (myPetBoardLikeRepository.findByUser(user).isEmpty()) {
-            setHeart(isMyPet, user, isMyPet.getMyPetLike(), true);
-            response.put("message", myPet + "번 게시글에 좋아요가 추가 되었습니다");
+        if (!hasUserLiked) {
+            // 좋아요 추가
+            setHeart(myPet, user, true);
+            return createSuccessResponse(myPetId + "번 게시글에 좋아요가 추가되었습니다.", HttpStatus.OK);
         } else {
-            setHeart(isMyPet, user, isMyPet.getMyPetLike(), false);
-            response.put("message", myPet + "번 게시글에 좋아요가 취소 되었습니다");
+            // 좋아요 취소
+            setHeart(myPet, user, false);
+            return createSuccessResponse(myPetId + "번 게시글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
-
-        return ResponseEntity.ok(response);
     }
 
     private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {

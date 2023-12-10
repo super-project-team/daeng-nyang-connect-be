@@ -5,8 +5,9 @@ import com.git.backend.daeng_nyang_connect.mypet.comments.service.MyPetCommentsS
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,28 +19,28 @@ public class MyPetCommentsController {
     private final MyPetCommentsService myPetCommentsService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadComment(@RequestHeader("access_token") String token,
+    public Map<?, ?> uploadComment(@RequestHeader("access_token") String token,
                                            @RequestParam("id")Long myPet,
                                            @RequestBody MyPetCommentsDTO myPetCommentsDTO){
         return myPetCommentsService.uploadComment(token, myPet, myPetCommentsDTO);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateComment(@RequestHeader("access_token") String token,
+    public Map<?, ?> updateComment(@RequestHeader("access_token") String token,
                                            @RequestParam("id")Long myPetCommentsId,
                                            @RequestBody MyPetCommentsDTO myPetCommentsDTO){
         return myPetCommentsService.updateComment(token, myPetCommentsId, myPetCommentsDTO);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteComment(@RequestHeader("access_token") String token,
+    public Map<?, ?> deleteComment(@RequestHeader("access_token") String token,
                                            @RequestParam("id")Long myPetCommentsId){
         return myPetCommentsService.deleteComment(token, myPetCommentsId);
     }
 
     @PostMapping("/like")
-    public ResponseEntity<?> addLike(@RequestHeader("access_token") String token,
-                                     @RequestParam("id")Long myPetCommentsId){
+    public Map<?, ?> addLike(@RequestHeader("access_token") String token,
+                             @RequestParam("id")Long myPetCommentsId){
         return myPetCommentsService.clickLike(myPetCommentsId, token);
     }
 

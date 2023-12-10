@@ -27,8 +27,8 @@ public class MyPetCommentsLike {
     @JoinColumn(name = "my_pet_comments_idx")
     private MyPetComments myPetComments;
 
-    public MyPetCommentsLike(User user, MyPetComments myPetComments) {
-        this.user = user;
+    public MyPetCommentsLike(MyPetComments myPetComments, User user) {
         this.myPetComments = myPetComments;
+        this.user = user;
     }
 }

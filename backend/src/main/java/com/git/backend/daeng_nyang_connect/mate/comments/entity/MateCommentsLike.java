@@ -27,8 +27,8 @@ public class MateCommentsLike {
     @JoinColumn(name = "mate_comments_idx")
     private MateComments mateComments;
 
-    public MateCommentsLike(User user, MateComments mateComments) {
-        this.user = user;
+    public MateCommentsLike( MateComments mateComments, User user) {
         this.mateComments = mateComments;
+        this.user = user;
     }
 }

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,8 +36,8 @@ public class MateController {
     }
 
     @GetMapping("/search")
-    public List<MateDTO> searchBoard(@RequestParam String keyword){
-        return mateService.searchBoard(keyword);
+    public Page<MateDTO> searchBoard(@RequestParam String keyword, Pageable pageable) {
+        return mateService.searchBoard(keyword, pageable);
     }
 
     @PostMapping("/upload")
@@ -64,7 +63,7 @@ public class MateController {
 
     @Transactional
     @PostMapping("/like")
-    public ResponseEntity<Map<String, String>> addLike(@RequestHeader("access_token") String token,
+    public Map<String, String> addLike(@RequestHeader("access_token") String token,
                                                        @RequestParam("mateBoardId") Long mateBoardId) {
         return mateService.clickLike(mateBoardId, token);
     }

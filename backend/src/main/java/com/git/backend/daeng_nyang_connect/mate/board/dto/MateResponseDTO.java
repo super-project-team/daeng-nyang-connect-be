@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.mate.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.git.backend.daeng_nyang_connect.mate.comments.dto.MateCommentsResponseDTO;
 import lombok.*;
 
@@ -17,12 +18,13 @@ public class MateResponseDTO {
     private Long userId;
     private String nickname;
     private String category;
-    private List<String> img;
     private String place;
-    private Timestamp createdAt;
     private String text;
+    private List<String> img;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private Timestamp createdAt;
     private List<MateCommentsResponseDTO> comments;
-    private Integer mateLike;
+//    private Integer mateLike;
     private List<MateBoardLikeDTO> mateLikes;
 
 }

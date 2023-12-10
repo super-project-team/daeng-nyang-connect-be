@@ -11,15 +11,16 @@ import com.git.backend.daeng_nyang_connect.mypet.comments.repository.MyPetCommen
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +33,19 @@ public class MyPetCommentsService {
     private final MyPetCommentsLikeRepository myPetCommentsLikeRepository;
     private final UserRepository userRepository;
 
-    public ResponseEntity<?> uploadComment(String token, Long myPet, MyPetCommentsDTO myPetCommentsDTO){
+    private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
+    private static final String MSG_COMMENT_NOT_FOUND = "댓글을 찾을 수 없습니다.";
+    private static final String MSG_OWNER_ACCESS_DENIED = "댓글의 소유자가 아닙니다.";
 
-        User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                .orElseThrow();
-        MyPet byId = myPetRepository.findById(myPet).orElseThrow();
+    @Transactional
+    public Map<String, String> uploadComment(String token,Long myPet, MyPetCommentsDTO myPetCommentsDTO ) {
+        try {
+            User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
+                    .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
 
-        MyPetComments myPetComments = MyPetComments.builder()
+            MyPet byId = myPetRepository.findById(myPet).orElseThrow();
+
+            MyPetComments myPetComments = MyPetComments.builder()
                 .myPetCommentsId(myPetCommentsDTO.getMyPetCommentsId())
                 .comment(myPetCommentsDTO.getComment())
                 .myPet(byId)
@@ -47,89 +54,125 @@ public class MyPetCommentsService {
                 .myPetCommentsLike(0)
                 .build();
 
-        myPetCommentsRepository.save(myPetComments);
+            myPetCommentsRepository.save(myPetComments);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "댓글이 등록 되었습니다");
-        response.put("http_status", HttpStatus.OK.toString());
-        return ResponseEntity.ok(response);
-    }
-
-    public ResponseEntity<?> updateComment(String token, Long myPetCommentsId, MyPetCommentsDTO myPetCommentsDTO){
-
-        MyPetComments myPetComments = checkMyComment(myPetCommentsId, token);
-
-        myPetComments.setComment(myPetCommentsDTO.getComment());
-        myPetComments.setCreatedAt(myPetComments.getCreatedAt());
-
-        myPetCommentsRepository.save(myPetComments);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "댓글 수정 완료 되었습니다");
-        response.put("http_status", HttpStatus.OK.toString());
-        return ResponseEntity.ok(response);
-    }
-
-
-    public ResponseEntity<?> deleteComment(String token, Long myPetCommentsId){
-
-        MyPetComments myPetComments = checkMyComment(myPetCommentsId, token);
-        myPetCommentsRepository.delete(myPetComments);
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "댓글 삭제 완료 되었습니다");
-        response.put("http_status", HttpStatus.OK.toString());
-        return ResponseEntity.ok(response);
-
-    }
-
-    //내가 쓴 댓글인지 확인
-    public MyPetComments checkMyComment(Long myPetCommentsId, String token){
-        User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                .orElseThrow();
-
-        MyPetComments myPetComments = myPetCommentsRepository.findById(myPetCommentsId)
-                .orElseThrow();
-        List<MyPetComments> byUser = myPetCommentsRepository.findByUser(user);
-
-        if(byUser.contains(myPetComments)){
-            return myPetComments;
-        }else{
-            return null;
+            return createSuccessResponse("댓글이 등록되었습니다.", HttpStatus.CREATED);
+        } catch (EntityNotFoundException e) {
+            return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return createErrorResponse("댓글 등록 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //좋아요 로직
-    public void setHeart(MyPetComments myPetComments, User user, Integer likeCount, Boolean msg){
-        if(msg){
-            MyPetCommentsLike myPetCommentsLike = new MyPetCommentsLike(user,myPetComments);
-            likeCount++;
-            myPetComments.setMyPetCommentsLike(likeCount);
-            myPetCommentsLikeRepository.save(myPetCommentsLike);
+
+    public Map<String, String> updateComment(String token, Long myPetCommentsId, MyPetCommentsDTO myPetCommentsDTO) {
+
+        try {
+            User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
+
+            MyPetComments myPetComments = myPetCommentsRepository.findById(myPetCommentsId)
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
+
+            checkOwnership(myPetComments, user);
+            updateMyPetCommentsFields(myPetComments, myPetCommentsDTO);
             myPetCommentsRepository.save(myPetComments);
-        }else{
-            myPetCommentsLikeRepository.deleteByUser(user);
-            likeCount--;
-            myPetComments.setMyPetCommentsLike(likeCount);
-            myPetCommentsRepository.save(myPetComments);
+
+            return createSuccessResponse("댓글이 수정되었습니다.", HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return createErrorResponse(MSG_COMMENT_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (AccessDeniedException e) {
+            return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Transactional
+    public Map<String, String> deleteComment(String token, Long myPetCommentsId) {
+        try {
+            User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
+
+            MyPetComments myPetComments = myPetCommentsRepository.findById(myPetCommentsId)
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
+
+            checkOwnership(myPetComments, user);
+            myPetCommentsRepository.delete(myPetComments);
+
+            return createSuccessResponse("댓글이 삭제되었습니다.", HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return createErrorResponse(MSG_COMMENT_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (AccessDeniedException e) {
+            return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Transactional
+    public void setHeart(MyPetComments myPetComments, User user, Boolean msg) {
+        boolean hasUserLiked = myPetCommentsLikeRepository.findByMyPetCommentsAndUser(myPetComments, user).isPresent();
+
+        if (msg) {
+            // 좋아요 추가
+            if (!hasUserLiked) {
+                MyPetCommentsLike myPetCommentsLike = new MyPetCommentsLike(myPetComments, user);
+                myPetComments.getMyPetCommentsLikes().add(myPetCommentsLike);
+                myPetComments.setMyPetCommentsLike(myPetComments.getMyPetCommentsLike() + 1);
+                myPetCommentsRepository.save(myPetComments);
+            }
+        } else {
+            // 좋아요 취소
+            if (hasUserLiked) {
+                MyPetCommentsLike userLike = myPetCommentsLikeRepository.findByMyPetCommentsAndUser(myPetComments, user)
+                        .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 댓글에 없습니다."));
+                myPetComments.getMyPetCommentsLikes().remove(userLike);
+                myPetCommentsLikeRepository.delete(userLike);
+                myPetComments.setMyPetCommentsLike(myPetComments.getMyPetCommentsLike() - 1);
+                myPetCommentsRepository.save(myPetComments);
+            }
         }
     }
     //좋아요 클릭
     @Transactional
-    public ResponseEntity<String> clickLike(Long myPetCommentsId, String token){
+    public Map<String, String> clickLike(Long myPetCommentsId, String token){
 
         User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-        MyPetComments isMyPetComment = myPetCommentsRepository.findById(myPetCommentsId)
-                .orElseThrow();
+        MyPetComments myPetComments = myPetCommentsRepository.findById(myPetCommentsId)
+                .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
 
-        if(myPetCommentsLikeRepository.findByUser(user).isEmpty()){
-            setHeart(isMyPetComment, user, isMyPetComment.getMyPetCommentsLike(), true);
-            return ResponseEntity.ok().body(myPetCommentsId + "번 게시글에 좋아요가 추가 되었습니다");
-        }
-        else{
-            setHeart(isMyPetComment, user, isMyPetComment.getMyPetCommentsLike(), false);
-            return ResponseEntity.ok().body(myPetCommentsId + "번 게시글에 좋아요가 취소 되었습니다");
+        // 이미 좋아요를 눌렀는지 확인
+        boolean hasUserLiked = myPetCommentsLikeRepository.findByMyPetCommentsAndUser(myPetComments, user).isPresent();
+
+        if (!hasUserLiked) {
+            // 좋아요 추가
+            setHeart(myPetComments, user, true);
+            return createSuccessResponse(myPetCommentsId + "번 댓글에 좋아요가 추가되었습니다.", HttpStatus.OK);
+        } else {
+            // 좋아요 취소
+            setHeart(myPetComments, user, false);
+            return createSuccessResponse(myPetCommentsId + "번 댓글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
     }
 
+    private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", message);
+        response.put("http_status", httpStatus.toString());
+        return response;
+    }
+    private Map<String, String> createErrorResponse(String message, HttpStatus httpStatus) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error_msg", message);
+        response.put("http_status", httpStatus.toString());
+        return response;
+    }
+
+    private void checkOwnership(MyPetComments myPetComments, User user) {
+        if (!myPetComments.getUser().equals(user)) {
+            throw new AccessDeniedException(MSG_OWNER_ACCESS_DENIED);
+        }
+    }
+
+    private void updateMyPetCommentsFields(MyPetComments myPetComments, MyPetCommentsDTO myPetCommentsDTO) {
+        myPetComments.setComment(myPetCommentsDTO.getComment());
+    }
 }

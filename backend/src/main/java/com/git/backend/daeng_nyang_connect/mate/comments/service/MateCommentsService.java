@@ -11,17 +11,16 @@ import com.git.backend.daeng_nyang_connect.mate.comments.repository.MateComments
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -34,102 +33,148 @@ public class MateCommentsService {
     private final MateCommentsLikeRepository mateCommentsLikeRepository;
     private final UserRepository userRepository;
 
-    public ResponseEntity<?> uploadComment(String token, Long mate, MateCommentsDTO mateCommentsDTO){
+    private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
+    private static final String MSG_COMMENT_NOT_FOUND = "댓글을 찾을 수 없습니다.";
+    private static final String MSG_OWNER_ACCESS_DENIED = "댓글의 소유자가 아닙니다.";
 
-        User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                .orElseThrow();
-        Mate byId = mateRepository.findById(mate).orElseThrow();
+    @Transactional
+    public Map<String, String> uploadComment(String token,Long mate, MateCommentsDTO mateCommentsDTO ) {
+        try {
+            User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
+                    .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
 
-        MateComments mateComments = MateComments.builder()
-                .mateCommentsId(mateCommentsDTO.getMateCommentsId())
-                .comment(mateCommentsDTO.getComment())
-                .mate(byId)
-                .createdAt(mateCommentsDTO.getCreatedAt())
-                .user(user)
-                .mateCommentsLike(0)
-                .build();
+            Mate byId = mateRepository.findById(mate).orElseThrow();
 
-        mateCommentsRepository.save(mateComments);
+            MateComments mateComments = MateComments.builder()
+                    .mateCommentsId(mateCommentsDTO.getMateCommentsId())
+                    .comment(mateCommentsDTO.getComment())
+                    .mate(byId)
+                    .createdAt(mateCommentsDTO.getCreatedAt())
+                    .user(user)
+                    .mateCommentsLike(0)
+                   .build();
 
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "댓글이 등록 되었습니다");
-        response.put("http_status", HttpStatus.OK.toString());
-        return ResponseEntity.ok(response);
-    }
+            mateCommentsRepository.save(mateComments);
 
-    public ResponseEntity<?> updateComment(String token, Long mateCommentsId, MateCommentsDTO mateCommentsDTO){
-
-        MateComments mateComments = checkMyComment(mateCommentsId, token);
-
-        mateComments.setComment(mateCommentsDTO.getComment());
-        mateComments.setCreatedAt(mateComments.getCreatedAt());
-
-        mateCommentsRepository.save(mateComments);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "댓글 수정 완료 되었습니다");
-        response.put("http_status", HttpStatus.OK.toString());
-        return ResponseEntity.ok(response);
-    }
-
-    public ResponseEntity<?> deleteComment(String token, Long mateCommentsId){
-
-        MateComments mateComments = checkMyComment(mateCommentsId, token);
-        mateCommentsRepository.delete(mateComments);
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "댓글 삭제 완료 되었습니다");
-        response.put("http_status", HttpStatus.OK.toString());
-        return ResponseEntity.ok(response);
-
-    }
-
-    //내가 쓴 댓글인지 확인
-    public MateComments checkMyComment(Long mateCommentsId, String token){
-        User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                .orElseThrow();
-
-        MateComments mateComments = mateCommentsRepository.findById(mateCommentsId)
-                .orElseThrow();
-        List<MateComments> byUser = mateCommentsRepository.findByUser(user);
-
-        if(byUser.contains(mateComments)){
-            return mateComments;
-        }else{
-            return null;
+            return createSuccessResponse("댓글이 등록되었습니다.", HttpStatus.CREATED);
+        } catch (EntityNotFoundException e) {
+            return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return createErrorResponse("댓글 등록 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //좋아요 로직
-    public void setHeart(MateComments mateComments, User user, Integer likeCount, Boolean msg){
-        if(msg){
-            MateCommentsLike mateCommentsLike = new MateCommentsLike(user,mateComments);
-            likeCount++;
-            mateComments.setMateCommentsLike(likeCount);
-            mateCommentsLikeRepository.save(mateCommentsLike);
+
+    public Map<String, String> updateComment(String token, Long mateCommentsId, MateCommentsDTO mateCommentsDTO) {
+
+        try {
+            User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
+
+            MateComments mateComments = mateCommentsRepository.findById(mateCommentsId)
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
+
+            checkOwnership(mateComments, user);
+            updateMateCommentsFields(mateComments, mateCommentsDTO);
             mateCommentsRepository.save(mateComments);
-        }else{
-            mateCommentsLikeRepository.deleteByUser(user);
-            likeCount--;
-            mateComments.setMateCommentsLike(likeCount);
-            mateCommentsRepository.save(mateComments);
+
+            return createSuccessResponse("댓글이 수정되었습니다.", HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return createErrorResponse(MSG_COMMENT_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (AccessDeniedException e) {
+            return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Transactional
+    public Map<String, String> deleteComment(String token, Long mateCommentsId) {
+        try {
+            User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
+
+            MateComments mateComments = mateCommentsRepository.findById(mateCommentsId)
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
+
+            checkOwnership(mateComments, user);
+            mateCommentsRepository.delete(mateComments);
+
+            return createSuccessResponse("댓글이 삭제되었습니다.", HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return createErrorResponse(MSG_COMMENT_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (AccessDeniedException e) {
+            return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Transactional
+    public void setHeart(MateComments mateComments, User user, Boolean msg) {
+        boolean hasUserLiked = mateCommentsLikeRepository.findByMateCommentsAndUser(mateComments, user).isPresent();
+
+        if (msg) {
+            // 좋아요 추가
+            if (!hasUserLiked) {
+                MateCommentsLike mateCommentsLike = new MateCommentsLike(mateComments, user);
+                mateComments.getMateCommentsLikes().add(mateCommentsLike);
+                mateComments.setMateCommentsLike(mateComments.getMateCommentsLike() + 1);
+                mateCommentsRepository.save(mateComments);
+            }
+        } else {
+            // 좋아요 취소
+            if (hasUserLiked) {
+                MateCommentsLike userLike = mateCommentsLikeRepository.findByMateCommentsAndUser(mateComments, user)
+                        .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 댓글에 없습니다."));
+                mateComments.getMateCommentsLikes().remove(userLike);
+                mateCommentsLikeRepository.delete(userLike);
+                mateComments.setMateCommentsLike(mateComments.getMateCommentsLike() - 1);
+                mateCommentsRepository.save(mateComments);
+            }
         }
     }
     //좋아요 클릭
     @Transactional
-    public ResponseEntity<String> clickLike(Long mateCommentId, String token){
+    public Map<String, String> clickLike(Long mateCommentId, String token){
 
         User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-        MateComments isMateComment = mateCommentsRepository.findById(mateCommentId)
-                .orElseThrow();
+        MateComments mateComments = mateCommentsRepository.findById(mateCommentId)
+                .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
 
-        if(mateCommentsLikeRepository.findByUser(user).isEmpty()){
-            setHeart(isMateComment, user, isMateComment.getMateCommentsLike(), true);
-            return ResponseEntity.ok().body(mateCommentId + "번 게시글에 좋아요가 추가 되었습니다");
-        }
-        else{
-            setHeart(isMateComment, user, isMateComment.getMateCommentsLike(), false);
-            return ResponseEntity.ok().body(mateCommentId + "번 게시글에 좋아요가 취소 되었습니다");
+        // 이미 좋아요를 눌렀는지 확인
+        boolean hasUserLiked = mateCommentsLikeRepository.findByMateCommentsAndUser(mateComments, user).isPresent();
+
+        if (!hasUserLiked) {
+            // 좋아요 추가
+            setHeart(mateComments, user, true);
+            return createSuccessResponse(mateCommentId + "번 댓글에 좋아요가 추가되었습니다.", HttpStatus.OK);
+        } else {
+            // 좋아요 취소
+            setHeart(mateComments, user, false);
+            return createSuccessResponse(mateCommentId + "번 댓글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
     }
+
+    private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", message);
+        response.put("http_status", httpStatus.toString());
+        return response;
+    }
+
+    private Map<String, String> createErrorResponse(String message, HttpStatus httpStatus) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error_msg", message);
+        response.put("http_status", httpStatus.toString());
+        return response;
+    }
+
+    private void checkOwnership(MateComments mateComments, User user) {
+        if (!mateComments.getUser().equals(user)) {
+            throw new AccessDeniedException(MSG_OWNER_ACCESS_DENIED);
+        }
+    }
+
+    private void updateMateCommentsFields(MateComments mateComments, MateCommentsDTO mateCommentsDTO) {
+        mateComments.setComment(mateCommentsDTO.getComment());
+    }
+
 }

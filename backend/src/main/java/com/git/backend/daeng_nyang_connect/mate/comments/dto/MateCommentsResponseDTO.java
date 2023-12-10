@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.mate.comments.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -15,8 +16,9 @@ public class MateCommentsResponseDTO {
     private Long userId;
     private String nickname;
     private String comment;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-    private Integer mateCommentsLike;
+//    private Integer mateCommentsLike;
     private List<MateCommentsLikeDTO> mateCommentsLikes;
 }
 

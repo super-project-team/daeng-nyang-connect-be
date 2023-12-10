@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +40,9 @@ public class MateService {
     private final UserRepository userRepository;
     private final MateBoardLikeRepository mateBoardLikeRepository;
 
-    private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다";
-    private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다";
-    private static final String MSG_OWNER_ACCESS_DENIED = "게시물 소유자가 아닙니다";
+    private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
+    private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
+    private static final String MSG_OWNER_ACCESS_DENIED = "게시물의 소유자가 아닙니다.";
 
     public Page<MateResponseDTO> findAllMates(Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 12, pageable.getSort());
@@ -90,10 +89,10 @@ public class MateService {
                 .userId(mate.getUser().getUserId())
                 .nickname(mate.getUser().getNickname())
                 .category(mate.getCategory())
-                .img(imgUrls)
                 .place(mate.getPlace())
-                .createdAt(mate.getCreatedAt())
                 .text(mate.getText())
+                .img(imgUrls)
+                .createdAt(mate.getCreatedAt())
                 .comments(comments)
                 .mateLikes(likes)
                 .build();
@@ -106,7 +105,7 @@ public class MateService {
                 .nickname(comments.getUser().getNickname())
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
-                .mateCommentsLike(comments.getMateCommentsLike())
+                //.mateCommentsLike(comments.getMateCommentsLike())
                 .mateCommentsLikes(convertToMateCommentsLikeDTOList(comments.getMateCommentsLikes()))
                 .build();
     }
@@ -119,14 +118,12 @@ public class MateService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public List<MateDTO> searchBoard(String keyword){
-
-        List<Mate> findByTextContaining = mateRepository.findByTextContaining(keyword);
-        return findByTextContaining.stream().map(mate -> {
+    public Page<MateDTO> searchBoard(String keyword, Pageable pageable) {
+        Page<Mate> matePage = mateRepository.findByTextContaining(keyword, pageable);
+        return matePage.map(mate -> {
             String author = findUserNickNameByMate(mate.getMateBoardId());
             return MateDTO.fromMateEntity(mate, author);
-        }).collect(Collectors.toList());
-
+        });
     }
 
     private String findUserNickNameByMate(Long mateBoardId) {
@@ -157,11 +154,11 @@ public class MateService {
             mateRepository.save(mate);
             mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), img);
 
-            return createSuccessResponse("게시물이 등록 되었습니다", HttpStatus.CREATED);
+            return createSuccessResponse("게시물이 등록되었습니다.", HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
             return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return createErrorResponse("게시물 등록 중 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+            return createErrorResponse("게시물 등록 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -182,68 +179,80 @@ public class MateService {
                 mateImgUpload.uploadMateImgs(mate, updateMateDTO.getText(), img);
             }
 
-            return createSuccessResponse("게시물이 업데이트 되었습니다", HttpStatus.OK);
+            return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            return createErrorResponse(MSG_BOARD_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (AccessDeniedException e) {
             return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
         }
     }
 
+    @Transactional
     public Map<String, String> deleteMate(Long mateBoardId, String token) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
-                    .orElseThrow(() -> new RuntimeException(MSG_USER_NOT_FOUND));
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
             Mate mate = mateRepository.findById(mateBoardId)
-                    .orElseThrow(() -> new RuntimeException(MSG_BOARD_NOT_FOUND));
+                    .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
             checkOwnership(mate, user);
             mateRepository.delete(mate);
 
-            return createSuccessResponse("게시물이 삭제되었습니다", HttpStatus.OK);
+            return createSuccessResponse("게시물이 삭제되었습니다.", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return createErrorResponse(MSG_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            return createErrorResponse(MSG_BOARD_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (AccessDeniedException e) {
             return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
         }
     }
 
     @Transactional
-    public void setHeart(Mate mate, User user, Integer likeCount, Boolean msg) {
+    public void setHeart(Mate mate, User user, Boolean msg) {
+        boolean hasUserLiked = mateBoardLikeRepository.findByMateAndUser(mate, user).isPresent();
+
         if (msg) {
-            MateBoardLike mateBoardLike = new MateBoardLike(mate, user);
-            likeCount++;
-            mate.setMateLike(likeCount);
-            mateBoardLikeRepository.save(mateBoardLike);
-            mateRepository.save(mate);
+            // 좋아요 추가
+            if (!hasUserLiked) {
+                MateBoardLike mateBoardLike = new MateBoardLike(mate, user);
+                mate.getMateLikes().add(mateBoardLike);
+                mate.setMateLike(mate.getMateLike() + 1);
+                mateRepository.save(mate);
+            }
         } else {
-            mateBoardLikeRepository.deleteByUser(user);
-            likeCount--;
-            mate.setMateLike(likeCount);
-            mateRepository.save(mate);
+            // 좋아요 취소
+            if (hasUserLiked) {
+                MateBoardLike userLike = mateBoardLikeRepository.findByMateAndUser(mate, user)
+                        .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 게시글에 없습니다."));
+                mate.getMateLikes().remove(userLike);
+                mateBoardLikeRepository.delete(userLike);
+                mate.setMateLike(mate.getMateLike() - 1);
+                mateRepository.save(mate);
+            }
         }
     }
 
     @Transactional
-    public ResponseEntity<Map<String, String>> clickLike(Long mate, String token) {
+    public Map<String, String> clickLike(Long mateId, String token) {
         User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                 .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-        Mate isMate = mateRepository.findById(mate)
-                .orElseThrow();
+        Mate mate = mateRepository.findById(mateId)
+                .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
-        Map<String, String> response = new HashMap<>();
+        // 이미 좋아요를 눌렀는지 확인
+        boolean hasUserLiked = mateBoardLikeRepository.findByMateAndUser(mate, user).isPresent();
 
-        if (mateBoardLikeRepository.findByUser(user).isEmpty()) {
-            setHeart(isMate, user, isMate.getMateLike(), true);
-            response.put("message", mate + "번 게시글에 좋아요가 추가 되었습니다");
+        if (!hasUserLiked) {
+            // 좋아요 추가
+            setHeart(mate, user, true);
+            return createSuccessResponse(mateId + "번 게시글에 좋아요가 추가되었습니다.", HttpStatus.OK);
         } else {
-            setHeart(isMate, user, isMate.getMateLike(), false);
-            response.put("message", mate + "번 게시글에 좋아요가 취소 되었습니다");
+            // 좋아요 취소
+            setHeart(mate, user, false);
+            return createSuccessResponse(mateId + "번 게시글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
 
-        return ResponseEntity.ok(response);
     }
 
     private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {

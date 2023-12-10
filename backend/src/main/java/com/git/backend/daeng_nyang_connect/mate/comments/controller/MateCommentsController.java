@@ -5,7 +5,6 @@ import com.git.backend.daeng_nyang_connect.mate.comments.service.MateCommentsSer
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -20,27 +19,27 @@ public class MateCommentsController {
     private final MateCommentsService mateCommentsService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadComment(@RequestHeader("access_token") String token,
+    public Map<?, ?> uploadComment(@RequestHeader("access_token") String token,
                                 @RequestParam("id")Long mate,
                                 @RequestBody MateCommentsDTO mateCommentsDTO){
         return mateCommentsService.uploadComment(token, mate, mateCommentsDTO);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateComment(@RequestHeader("access_token") String token,
+    public Map<?, ?> updateComment(@RequestHeader("access_token") String token,
                                    @RequestParam("id")Long mateCommentsId,
                                    @RequestBody MateCommentsDTO mateCommentsDTO){
         return mateCommentsService.updateComment(token, mateCommentsId, mateCommentsDTO);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteComment(@RequestHeader("access_token") String token,
+    public Map<?, ?> deleteComment(@RequestHeader("access_token") String token,
                                     @RequestParam("id")Long mateCommentsId){
         return mateCommentsService.deleteComment(token, mateCommentsId);
     }
 
     @PostMapping("/like")
-    public ResponseEntity<?> addLike(@RequestHeader("access_token") String token,
+    public Map<?, ?> addLike(@RequestHeader("access_token") String token,
                                            @RequestParam("id")Long mateCommentsId){
         return mateCommentsService.clickLike(mateCommentsId, token);
     }
