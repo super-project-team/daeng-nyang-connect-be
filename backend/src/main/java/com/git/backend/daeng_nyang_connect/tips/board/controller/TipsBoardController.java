@@ -64,6 +64,7 @@ public class TipsBoardController {
        return tipsBoardService.getAll(pageable);
     }
 
+
     @GetMapping("/getBoard")
     public TipsBoardDetailDto getThisBoard(@RequestParam("id")Long tipsId){
         return tipsBoardService.getThisBoard(tipsId);

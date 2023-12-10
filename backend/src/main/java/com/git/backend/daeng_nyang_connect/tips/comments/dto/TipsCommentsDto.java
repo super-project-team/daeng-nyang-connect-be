@@ -1,8 +1,10 @@
 package com.git.backend.daeng_nyang_connect.tips.comments.dto;
 
+import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsCommentsLike;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,5 +21,7 @@ public class TipsCommentsDto {
     private Integer tipsCommentLike;
     private String nickName;
 
+
+    private List<TipsCommentsLike> commentsLikes;
 
 }
