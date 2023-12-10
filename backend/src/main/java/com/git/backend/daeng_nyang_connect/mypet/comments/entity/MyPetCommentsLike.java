@@ -26,4 +26,9 @@ public class MyPetCommentsLike {
     @ManyToOne
     @JoinColumn(name = "my_pet_comments_idx")
     private MyPetComments myPetComments;
+
+    public MyPetCommentsLike(User user, MyPetComments myPetComments) {
+        this.user = user;
+        this.myPetComments = myPetComments;
+    }
 }
