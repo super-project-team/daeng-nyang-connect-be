@@ -72,7 +72,7 @@ public class SecurityConfig {
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll").permitAll()
-                                .requestMatchers("/api/tips/**").hasRole("USER")
+                                .requestMatchers("/api/tips/**", "api/myPage/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 

@@ -31,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.server.NotAcceptableStatusException;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -107,7 +108,7 @@ public class UserService {
 
     //로그인
     @Transactional
-    public Map<String, String> login(LoginDto loginDto, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> login(LoginDto loginDto, HttpServletResponse httpServletResponse) {
         String email = loginDto.getEmail();
         String password = loginDto.getPassword();
 
@@ -140,14 +141,14 @@ public class UserService {
             response.put("access_token", accessToken);
             response.put("refresh_token", refreshToken);
             response.put("http_status", HttpStatus.OK.toString());
-            return response;
+            return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
             response.put("message", "잘못된 자격 증명입니다");
             response.put("http_status", HttpStatus.UNAUTHORIZED.toString());
-            return response;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
 
         } catch (UsernameNotFoundException e) {
@@ -155,14 +156,15 @@ public class UserService {
             Map<String, String> response = new HashMap<>();
             response.put("message", "가입되지 않은 회원입니다");
             response.put("http_status", HttpStatus.NOT_FOUND.toString());
-            return response;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
         } catch (Exception e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
             response.put("message", "알 수 없는 오류가 발생했습니다");
             response.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
-            return response;
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
+
         }
     }
 
@@ -182,46 +184,68 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("없는 유저 입니다"));
     }
     //아이디 중복 체크
-    public Map<String ,String > checkUserId(String email){
-        if(userRepository.existsByEmail(email)){
+    public ResponseEntity<?> checkUserId(String email) {
+        try {
+            if (userRepository.findByEmail(email).isEmpty()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("msg", "사용가능한 아이디 입니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                Map<String, String > response = new HashMap<>();
+                response.put("msg", "이미 사용 중인 아이디 입니다.");
+                response.put("http_status", HttpStatus.FORBIDDEN.toString());
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+        } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
-            response.put("msg", "아이디가 중복 되었습니다");
-
-            return response;
+            response.put("msg", "알 수 없는 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
         }
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "사용 가능한 아이디 입니다.");
-        return response;
     }
     //닉네임 중복 체크
-    public Map<String ,String > checkUserNickName(String NickName){
-        if(userRepository.existsByNickname(NickName)){
+    public ResponseEntity<?> checkUserNickName(String nickName) {
+        try {
+            if (userRepository.findByNickname(nickName) == null) {
+                Map<String, String> response = new HashMap<>();
+                response.put("msg", "사용가능한 닉네임 입니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                Map<String, String> response = new HashMap<>();
+                response.put("msg", "이미 사용 중인 닉네임 입니다.");
+                response.put("http_status", HttpStatus.FORBIDDEN.toString());
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+        } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
-            response.put("msg", "닉네임이 중복되었습니다");
-            return response;
+            response.put("msg", "알 수 없는 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
         }
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "사용 가능한 닉네임 입니다.");
-        return response;
     }
-    //회원 아이디 찾기
-    public Map<String,String> findUserId(FindDto findDto){
+
+    public ResponseEntity<?> findUserId(FindDto findDto) {
         List<User> user = userRepository.findEmailByNameAndMobile(findDto.getName(), findDto.getMobile());
 
         List<String> email = user.stream().map(User::getEmail).toList();
 
-        if(user!=null){
+        try {
+            if (!user.isEmpty()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("ID", email.toString());
+                return ResponseEntity.ok(response);
+            } else {
+                Map<String, String> response = new HashMap<>();
+                response.put("msg", "회원 정보를 찾을 수없습니다.");
+                response.put("http_status", HttpStatus.NOT_FOUND.toString());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
-            response.put("ID", email.toString());
-            return response;
+            response.put("msg", "알 수 없는 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
         }
-        Map<String, String> response = new HashMap<>();
-        response.put("msg", "해당하는 회원을 찾을 수 없습니다");
-        response.put("http_status", HttpStatus.NOT_FOUND.toString());
-        return response;
     }
 
-    public Map<String ,String> setNewPassword(FindDto findDto){
+    public ResponseEntity<?> setNewPassword(FindDto findDto){
         User user = userRepository.findByNameAndMobileAndEmail(findDto.getName(),findDto.getMobile(),findDto.getEmail());
 
         if(user!=null) {
@@ -230,12 +254,12 @@ public class UserService {
             Map<String, String> response = new HashMap<>();
             response.put("msg", "비밀번호 변경이 완료 되었습니다");
             response.put("http_status", HttpStatus.OK.toString());
-            return response;
+            return ResponseEntity.ok(response);
         }else {
             Map<String, String> response = new HashMap<>();
             response.put("msg", "해당하는 회원을 찾을 수 없습니다");
             response.put("http_status", HttpStatus.NOT_FOUND.toString());
-            return response;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
     }

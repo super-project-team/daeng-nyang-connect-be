@@ -33,17 +33,17 @@ public class UserController {
     public ResponseEntity<?> signUp(@RequestBody SignUpDto signUpDto){return userService.signUp(signUpDto);}
 
     @GetMapping("/IdCheck")
-    public Map<String ,String >IdCheck(@RequestBody SignUpDto signUpDto){
+    public ResponseEntity<?> IdCheck(@RequestBody SignUpDto signUpDto){
         return userService.checkUserId(signUpDto.getEmail());
     }
 
     @GetMapping("/NicknameCheck")
-    public Map<String ,String >NicknameCheck(@RequestBody SignUpDto signUpDto){
-        return userService.checkUserNickName(signUpDto.getEmail());
+    public ResponseEntity<?> NicknameCheck(@RequestBody SignUpDto signUpDto){
+        return userService.checkUserNickName(signUpDto.getNickname());
     }
 
     @PostMapping("/login")
-    public Map<String, String >login(@RequestBody LoginDto loginDto, HttpServletResponse httpServletResponse){
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto, HttpServletResponse httpServletResponse){
         return userService.login(loginDto, httpServletResponse);
     }
 
@@ -54,12 +54,12 @@ public class UserController {
     }
 
     @GetMapping("/findId")
-    public Map<String ,String>findUserId(@RequestBody FindDto findDto){
+    public ResponseEntity<?> findUserId(@RequestBody FindDto findDto){
         return userService.findUserId(findDto);
     }
 
     @PostMapping("/findPassword")
-    public Map<String ,String>findPassword(@RequestBody FindDto findDto){
+    public ResponseEntity<?> findPassword(@RequestBody FindDto findDto){
         return userService.setNewPassword(findDto);
     }
 
