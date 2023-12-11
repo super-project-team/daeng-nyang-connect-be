@@ -51,6 +51,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final RedisTemplate<String ,String > redisTemplate;
     private final MyPageRepository myPageRepository;
+
     @Value("${basic-profile}")
     private String basicProfile;
 
