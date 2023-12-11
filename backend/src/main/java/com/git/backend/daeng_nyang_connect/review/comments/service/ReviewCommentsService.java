@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.review.comments.service;
 
 
+import com.git.backend.daeng_nyang_connect.review.comments.dto.request.ReviewCommentsRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.dto.response.ReviewCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -11,13 +12,13 @@ import java.util.Map;
 
 public interface ReviewCommentsService {
     // 댓글 작성
-    ReviewComments addCommentsOnReview(Long reviewId, String commentsRequestDTO, String token);
+    ReviewComments addCommentsOnReview(Long reviewId, ReviewCommentsRequestDTO commentDTO, String token);
 
     // 댓글 삭제
     void deleteCommentsOnReview(Long reviewCommentsId, String token);
 
     // 댓글 수정
-    ReviewComments updateCommentsOnReview(Long reviewCommentsId, String updateCommentsRequestDTO, String token);
+    ReviewComments updateCommentsOnReview(Long reviewCommentsId, ReviewCommentsRequestDTO commentDTO, String token);
 
     // 해당 후기에 대한 댓글 출력
     List<ReviewComments> findAllCommentsByReview(Long reviewId);
@@ -39,4 +40,8 @@ public interface ReviewCommentsService {
 
     // 원하는 response 값 저장 후 반환
     ReviewCommentsResponseDTO response(ReviewComments reviewComments);
+
+    // 원하는 response 값 List에 저장 후 반환
+    List<ReviewCommentsResponseDTO> responseList(List<ReviewComments> reviewCommentList);
+
 }

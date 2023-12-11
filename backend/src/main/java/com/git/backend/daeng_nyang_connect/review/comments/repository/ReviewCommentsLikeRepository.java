@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface ReviewCommentsLikeRepository extends JpaRepository<ReviewCommentsLike, Long> {
 
 //    좋아요 수 합산
-    @Query("SELECT count(al) AS totalLike FROM ReviewLike al WHERE al.review.reviewId =: reviewId")
-    Integer totalReviewLike(@Param("reviewId")Long reviewId);
+    @Query("SELECT count(al) AS totalLike FROM ReviewCommentsLike al WHERE al.reviewComments.reviewCommentsId=:reviewCommentsId")
+    Integer totalReviewLike(@Param("reviewCommentsId")Long reviewCommentsId);
 
-    Optional<ReviewLike> findByUser(User user);
+    Optional<ReviewCommentsLike> findByUser(User user);
 
     void deleteByUser(User user);
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,15 +55,19 @@ public class ReviewController {
 
     // 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping("/all")
-    public List<Review> findAllReview(@RequestHeader("access_token") String token){
-        return reviewService.findAllReview();
+    public ResponseEntity<?> findAllReview(@RequestHeader("access_token") String token){
+        List<Review> reviewList = reviewService.findAllReview();
+        List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);
+        return ResponseEntity.status(200).body(responseList);
     }
 
     // 원하는 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping()
-    public List<Review> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId,
+    public ResponseEntity<?> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId,
                                               @RequestHeader("access_token") String token){
-        return reviewService.findAllReviewByAnimal(animalId);
+        List<Review> reviewList = reviewService.findAllReviewByAnimal(animalId);
+        List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);
+        return ResponseEntity.status(200).body(responseList);
     }
     @Transactional
     @PostMapping("/like")

@@ -3,7 +3,9 @@ package com.git.backend.daeng_nyang_connect.animal.controller;
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.entity.AdoptionStatus;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
 import com.git.backend.daeng_nyang_connect.animal.service.AnimalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,9 +62,36 @@ public class AnimalController {
         return ResponseEntity.status(200).body(response);
     }
 
+    // 조회 - 전체 * kind(동물 종류) * city(지역별) * 입양 완료 상태별
     @GetMapping("/all")
-    public List<Animal> findAllAnimal(@RequestHeader("access_token") String token){
-        return animalService.findAllAnimal();
+    public ResponseEntity<?> findAllAnimal(@RequestHeader("access_token") String token){
+        List<Animal> animalList = animalService.findAllAnimal();
+        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
+        return ResponseEntity.status(200).body(responseList);
+    }
+
+    @GetMapping("/kind/{kind}")
+    public ResponseEntity<?> findAnimalByKind(@RequestParam("kind") Kind kind,
+                                              @RequestHeader("access_token") String token) {
+        List<Animal> animalList = animalService.findAnimalByKind(kind);
+        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
+        return ResponseEntity.status(200).body(responseList);
+    }
+
+    @GetMapping("/city/{city}")
+    public ResponseEntity<?> findAnimalByCity(@PathVariable("city") String city,
+                                              @RequestHeader("access_token") String token) {
+        List<Animal> animalList = animalService.findAnimalByCity(city);
+        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
+        return ResponseEntity.status(200).body(responseList);
+    }
+
+    @GetMapping("/adoptionStatus/{adoptionStatus}")
+    public ResponseEntity<?> findAnimalByAdoptionStatus(@PathVariable("adoptionStatus") AdoptionStatus adoptionStatus,
+                                                        @RequestHeader("access_token") String token) {
+        List<Animal> animalList = animalService.findAnimalByAdoptionStatus(adoptionStatus);
+        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
+        return ResponseEntity.status(200).body(responseList);
     }
 
     @PostMapping("/scrap")
