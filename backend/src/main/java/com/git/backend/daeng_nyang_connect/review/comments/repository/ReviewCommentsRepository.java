@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface ReviewCommentsRepository extends JpaRepository<ReviewComments, Long> {
 
-    @Query("SELECT rc FROM ReviewComments rc WHERE rc.review.reviewId =: reviewId")
+    @Query("SELECT rc FROM ReviewComments rc WHERE rc.review.reviewId=:reviewId")
     List<ReviewComments> findAllCommentsByReviewId(@Param("reviewId")Long reviewId);
 }

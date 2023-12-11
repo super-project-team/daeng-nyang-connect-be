@@ -21,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +33,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final AdoptedAnimalRepository adoptedAnimalRepository;
     private final ReviewImageService reviewImageService;
     private final TokenProvider tokenProvider;
-
-    @Override
-    public ReviewResponseDTO response(Review review) {
-        List<ReviewImage> reviewImages = reviewImageRepository.findByReview(review);
-        return new ReviewResponseDTO(review, reviewImages);
-    }
 
     @Override
     public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
@@ -205,6 +196,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void updateLike(Review review, Integer like){
         Review totalLike = Review.builder()
+                                .reviewId(review.getReviewId())
                                 .user(review.getUser())
                                 .adoptedAnimal(review.getAdoptedAnimal())
                                 .textReview(review.getTextReview())
@@ -232,5 +224,22 @@ public class ReviewServiceImpl implements ReviewService {
         return userRepository.findByEmail(email).orElseThrow(
                 ()-> new NoSuchElementException("없는 유저입니다.")
         );
+    }
+
+    @Override
+    public ReviewResponseDTO response(Review review) {
+        List<ReviewImage> reviewImages = reviewImageRepository.findByReview(review);
+        return new ReviewResponseDTO(review, reviewImages);
+    }
+
+    @Override
+    public List<ReviewResponseDTO> responseList(List<Review> reviewList) {
+        List<ReviewResponseDTO> responseList = new ArrayList<>();
+
+        for (Review review : reviewList){
+            responseList.add(response(review));
+        }
+
+        return responseList;
     }
 }

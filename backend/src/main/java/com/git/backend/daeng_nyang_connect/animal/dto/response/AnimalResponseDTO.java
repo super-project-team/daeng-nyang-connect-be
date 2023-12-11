@@ -7,6 +7,7 @@ import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class AnimalResponseDTO {
     private String city;
     private AdoptionStatus adoptionStatus; // 입양 완료 여부
     private Timestamp createdAt;
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
     public AnimalResponseDTO(Animal animal, List<AnimalImage> animalImages){
         this.userNickname = animal.getUser().getNickname();

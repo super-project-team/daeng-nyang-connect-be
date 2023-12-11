@@ -18,8 +18,8 @@ import java.util.Objects;
 public class ReviewRequestDTO {
     private String textReview;
 
-    public void checkUpdateList(ReviewRequestDTO updateAnimalRequestDTO, Review animal) {
-        if (Objects.isNull(updateAnimalRequestDTO.getTextReview())) {
+    public void checkUpdateList(ReviewRequestDTO reviewRequestDTO, Review animal) {
+        if (Objects.isNull(reviewRequestDTO.getTextReview())) {
             this.textReview = animal.getTextReview();
         }
     }
