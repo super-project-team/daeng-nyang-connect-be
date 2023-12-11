@@ -5,6 +5,7 @@ import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewImage;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,7 +18,7 @@ public class ReviewResponseDTO {
     private String adoptedAnimalName;
     private String textReview;
     private Timestamp createdAt;
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
     public ReviewResponseDTO(Review review, List<ReviewImage> reviewImages) {
         this.userNickname = review.getUser().getNickname();

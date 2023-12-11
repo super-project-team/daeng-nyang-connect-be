@@ -18,10 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +30,6 @@ public class AnimalServiceImpl  implements AnimalService{
     private final AdoptedAnimalRepository adoptedAnimalRepository;
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
-
-    @Override
-    public AnimalResponseDTO response(Animal animal) {
-        List<AnimalImage> animalImages = animalImageRepository.findByAnimal(animal);
-        return new AnimalResponseDTO(animal, animalImages);
-    }
 
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
@@ -163,6 +154,21 @@ public class AnimalServiceImpl  implements AnimalService{
     }
 
     @Override
+    public List<Animal> findAnimalByKind(Kind kind) {
+        return animalRepository.findAnimalByKind(kind);
+    }
+
+    @Override
+    public List<Animal> findAnimalByCity(String city) {
+        return animalRepository.findAnimalByCity(city);
+    }
+
+    @Override
+    public List<Animal> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus) {
+        return animalRepository.findAnimalByAdoptionStatus(adoptionStatus);
+    }
+
+    @Override
     public Map<String, String> scrapAnimal(Long animalId, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
@@ -244,5 +250,22 @@ public class AnimalServiceImpl  implements AnimalService{
                 () -> new NullPointerException("없는 동물입니다.")
         );
         return animal.getAdoptionStatus();
+    }
+
+    @Override
+    public AnimalResponseDTO response(Animal animal) {
+        List<AnimalImage> animalImages = animalImageRepository.findByAnimal(animal);
+        return new AnimalResponseDTO(animal, animalImages);
+    }
+
+    @Override
+    public List<AnimalResponseDTO> responseList(List<Animal> animalList) {
+        List<AnimalResponseDTO> responseList = new ArrayList<>();
+
+        for (Animal animal : animalList){
+            responseList.add(response(animal));
+        }
+
+        return responseList;
     }
 }

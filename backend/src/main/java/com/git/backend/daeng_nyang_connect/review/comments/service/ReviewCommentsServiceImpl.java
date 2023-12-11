@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.review.comments.service;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
+import com.git.backend.daeng_nyang_connect.review.comments.dto.request.ReviewCommentsRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.dto.response.ReviewCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewCommentsLike;
@@ -16,10 +17,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,11 +29,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     private final TokenProvider tokenProvider;
 
     @Override
-    public ReviewCommentsResponseDTO response(ReviewComments reviewComments) {
-        return new ReviewCommentsResponseDTO(reviewComments);
-    }
-    @Override
-    public ReviewComments addCommentsOnReview(Long reviewId, String comment, String token) {
+    public ReviewComments addCommentsOnReview(Long reviewId, ReviewCommentsRequestDTO comment, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -49,7 +43,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
         ReviewComments newComment = ReviewComments.builder()
                                                 .user(user)
                                                 .review(review)
-                                                .comment(comment)
+                                                .comment(comment.getComment())
                                                 .reviewCommentLike(0)
                                                 .createdAt(nowDate())
                                                 .build();
@@ -72,7 +66,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     }
 
     @Override
-    public ReviewComments updateCommentsOnReview(Long reviewCommentsId, String comment, String token) {
+    public ReviewComments updateCommentsOnReview(Long reviewCommentsId, ReviewCommentsRequestDTO commentDTO, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -80,11 +74,13 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
         ReviewComments myComment = checkMyComments(reviewCommentsId, user);
 
         // 3. 댕냥이 후기 정보를 DB에서 수정
+        commentDTO.checkUpdateList(commentDTO, myComment);
+
         ReviewComments updateComment = ReviewComments.builder()
                                                     .reviewCommentsId(myComment.getReviewCommentsId())
                                                     .user(myComment.getUser())
                                                     .review(myComment.getReview())
-                                                    .comment(comment)
+                                                    .comment(commentDTO.getComment())
                                                     .reviewCommentLike(myComment.getReviewCommentLike())
                                                     .createdAt(myComment.getCreatedAt())
                                                     .build();
@@ -95,6 +91,9 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
 
     @Override
     public List<ReviewComments> findAllCommentsByReview(Long reviewId) {
+        if(reviewRepository.findById(reviewId).isEmpty()){
+            throw new NoSuchElementException("없는 후기입니다.");
+        }
         // 해당 댕냥이에 대한 후기 찾기
         return reviewCommentsRepository.findAllCommentsByReviewId(reviewId);
     }
@@ -177,5 +176,21 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
         return userRepository.findByEmail(email).orElseThrow(
                 ()-> new NoSuchElementException("없는 유저입니다.")
         );
+    }
+
+    @Override
+    public ReviewCommentsResponseDTO response(ReviewComments reviewComments) {
+        return new ReviewCommentsResponseDTO(reviewComments);
+    }
+
+    @Override
+    public List<ReviewCommentsResponseDTO> responseList(List<ReviewComments> reviewCommentList) {
+        List<ReviewCommentsResponseDTO> responseList = new ArrayList<>();
+
+        for (ReviewComments reviewComments : reviewCommentList){
+            responseList.add(response(reviewComments));
+        }
+
+        return responseList;
     }
 }
