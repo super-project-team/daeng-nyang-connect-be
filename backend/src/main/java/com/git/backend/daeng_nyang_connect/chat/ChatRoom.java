@@ -11,7 +11,7 @@ import java.util.Set;
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_room_ids")
+    @Column(name = "chat_room_idx")
     private Long chatRoomId;
 
     @Column(name = "room_name")

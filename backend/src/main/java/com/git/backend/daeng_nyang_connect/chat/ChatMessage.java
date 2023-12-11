@@ -10,12 +10,13 @@ import java.time.LocalDateTime;
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "chat_message_idx")
     private Long chatMessageId;
     @ManyToOne
     @JoinColumn(name = "chat_room_idx")
     private ChatRoom chatRoom;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_idx")
     private User user;
 
     private String content;
