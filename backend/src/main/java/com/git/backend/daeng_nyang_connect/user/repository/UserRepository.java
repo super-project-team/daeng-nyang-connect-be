@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -18,5 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User > findEmailByNameAndMobile(String name, String mobile);
 
     User findByNameAndMobileAndEmail(String name, String mobile, String email);
+
+    User findByNickname(String nickName);
 }
 
