@@ -19,7 +19,7 @@ public class TipsImage {
 
     @ManyToOne
     @JoinColumn(name = "tips_board_idx")
-    @JsonBackReference(value = "tipsReference")
+    @JsonBackReference(value = "tipsImgReference")
     private Tips tips;
 
     private String url;

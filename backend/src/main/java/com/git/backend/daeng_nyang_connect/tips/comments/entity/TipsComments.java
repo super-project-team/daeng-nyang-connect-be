@@ -42,6 +42,6 @@ public class TipsComments {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "tipsComments", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference(value = "tipsCommentsReference")
+    @JsonManagedReference(value = "tipsCommentsLikeReference")
     private List<TipsCommentsLike> likeList;
 }

@@ -41,7 +41,7 @@ public class Tips {
     List<TipsBoardLike> likeList;
 
     @OneToMany(mappedBy = "tips",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference(value = "tipsReference")
+    @JsonManagedReference(value = "tipsImgReference")
     List<TipsImage> images;
 
     @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
