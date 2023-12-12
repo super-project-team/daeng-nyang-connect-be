@@ -21,7 +21,6 @@ public class TipsCommentsLike {
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
-    @JsonBackReference(value = "userLikeReference")
     private User user;
 
     @ManyToOne
