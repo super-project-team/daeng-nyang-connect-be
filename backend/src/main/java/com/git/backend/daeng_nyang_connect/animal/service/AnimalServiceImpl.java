@@ -222,7 +222,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
     @Override
     public void uploadImage(Animal animal, List<MultipartFile> multipartFileList) {
-        List<String> imageUrlList = animalImageService.uploadAnimalImgs(animal, animal.getAnimalName(), multipartFileList);
+        List<String> imageUrlList = animalImageService.uploadImages(animal.getAnimalName(), multipartFileList);
         if(animal.getImages() != null && !animal.getImages().isEmpty()) {
             animalImageRepository.deleteByAnimal(animal);
         }

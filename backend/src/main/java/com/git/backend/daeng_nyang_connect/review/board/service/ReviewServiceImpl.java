@@ -208,7 +208,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void uploadImage(Review review, List<MultipartFile> multipartFileList){
-        List<String> imageUrlList = reviewImageService.uploadReviewImages(review, review.getAdoptedAnimal().getAnimal().getAnimalName(), multipartFileList);
+        List<String> imageUrlList = reviewImageService.uploadImageList(review.getAdoptedAnimal().getAnimal().getAnimalName(), multipartFileList);
         for (String imageUrl : imageUrlList) {
             ReviewImage reviewImage = ReviewImage.builder()
                     .review(review)
