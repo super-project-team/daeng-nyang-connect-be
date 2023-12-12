@@ -70,8 +70,11 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers( "/api/**", "/error",  "/api/signup", "/api/login","/api/logout", "api/tips/**").permitAll()
-//                                .requestMatchers("/api/animal/**").hasRole("USER")
+                                .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
+                                        "api/tips/search","api/tips/getBoard","api/tips/getAll",
+                                        "api/animal/all/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
+                                        "api/review/all", "api/review", "api/review/comment").permitAll()
+                                .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
@@ -83,7 +86,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001","http://localhost:8080/"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));

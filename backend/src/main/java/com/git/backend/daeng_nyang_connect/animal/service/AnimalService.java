@@ -5,6 +5,7 @@ import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptionStatus;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
+import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,15 @@ public interface AnimalService {
     // 댕냥 게시판에 등록된 파양동물 전체 출력
     List<Animal> findAllAnimal();
 
+    // 댕냥 게시판에 등록된 파양동물을 동물 종류별로 출력
+    List<Animal> findAnimalByKind(Kind kind);
+
+    // 댕냥 게시판에 등록된 파양동물을 동물 지역별로 출력
+    List<Animal> findAnimalByCity(String city);
+
+    // 댕냥 게시판에 등록된 파양동물을 동물 입양 상태별로 출력
+    List<Animal> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus);
+
     // 댕냥 게시판에 등록된 파양동물 스크랩
     Map<String, String> scrapAnimal(Long animalId, String token);
 
@@ -45,6 +55,9 @@ public interface AnimalService {
     // 동물의 입양 여부 확인
     AdoptionStatus checkAnimalStatus(Long animalId);
 
-    // response dto 변환
+    // 원하는 response 값 저장 후 반환
     AnimalResponseDTO response(Animal animal);
+
+    // 원하는 response 값 List에 저장 후 반환
+    List<AnimalResponseDTO> responseList(List<Animal> animalList);
 }

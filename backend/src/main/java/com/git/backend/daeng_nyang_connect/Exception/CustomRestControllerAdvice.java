@@ -15,13 +15,13 @@ public class CustomRestControllerAdvice {
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleCustomException(NoSuchElementException ne) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ne.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST + " : " + ne.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleCustomException(IllegalArgumentException ie) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ie.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST + " : " +  ie.getMessage());
     }
 
 
@@ -29,13 +29,13 @@ public class CustomRestControllerAdvice {
     @ExceptionHandler(DuplicateKeyException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleCustomException(DuplicateKeyException  de) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(de.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST + " : " +  de.getMessage());
     }
 
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleCustomException(IllegalStateException ie) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ie.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST + " : " +  ie.getMessage());
     }
 
 }

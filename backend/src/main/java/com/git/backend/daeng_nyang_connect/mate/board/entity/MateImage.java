@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "mate_image")
 public class MateImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mate_image_idx")
+    @Column(name = "mate_img_idx")
     private Long mateImageId;
 
     @ManyToOne

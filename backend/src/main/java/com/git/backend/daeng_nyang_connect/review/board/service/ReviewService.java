@@ -53,4 +53,7 @@ public interface ReviewService {
     // 원하는 response 값 저장 후 반환
     ReviewResponseDTO response(Review review);
 
+    // 원하는 response 값 List에 저장 후 반환
+    List<ReviewResponseDTO> responseList(List<Review> reviewList);
+
 }
