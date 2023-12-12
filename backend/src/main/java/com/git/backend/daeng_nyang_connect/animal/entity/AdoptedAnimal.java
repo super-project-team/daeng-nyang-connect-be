@@ -1,5 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,7 @@ public class AdoptedAnimal {
     private Long adoptedAnimalId;
 
     @ManyToOne
+    @JsonBackReference(value = "scrap")
     @JoinColumn(name = "user_idx")
     private User user;
 
