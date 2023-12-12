@@ -4,6 +4,7 @@ import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class ReviewCommentsResponseDTO {
     private String adoptedAnimalName;
     private String textReview;
     private String comment;
-    private Timestamp createdAt;
+    private String createdAt;
 
     public ReviewCommentsResponseDTO(ReviewComments reviewComments) {
         this.reviewId = reviewComments.getReview().getReviewId();
@@ -24,6 +25,11 @@ public class ReviewCommentsResponseDTO {
         this.adoptedAnimalName = reviewComments.getReview().getAdoptedAnimal().getAnimal().getAnimalName();
         this.textReview = reviewComments.getReview().getTextReview();
         this.comment = reviewComments.getComment();
-        this.createdAt = reviewComments.getCreatedAt();
+        this.createdAt = TimestampToFormattedString(reviewComments.getCreatedAt());
+    }
+
+    public String TimestampToFormattedString(Timestamp time) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초");
+        return dateFormat.format(time);
     }
 }

@@ -5,6 +5,7 @@ import com.git.backend.daeng_nyang_connect.review.board.entity.ReviewImage;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,17 +18,22 @@ public class ReviewResponseDTO {
     private String userNickname;
     private String adoptedAnimalName;
     private String textReview;
-    private Timestamp createdAt;
+    private String createdAt;
     private List<String> images = new ArrayList<>();
 
     public ReviewResponseDTO(Review review, List<ReviewImage> reviewImages) {
         this.userNickname = review.getUser().getNickname();
         this.adoptedAnimalName = review.getAdoptedAnimal().getAnimal().getAnimalName();
         this.textReview = review.getTextReview();
-        this.createdAt = review.getCreatedAt();
+        this.createdAt = TimestampToFormattedString(review.getCreatedAt());
 
         for(ReviewImage reviewImage : reviewImages){
             this.images.add(reviewImage.getUrl());
         }
+    }
+
+    public String TimestampToFormattedString(Timestamp time) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초");
+        return dateFormat.format(time);
     }
 }
