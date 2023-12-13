@@ -62,6 +62,6 @@ public class Lost {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "lost", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "Lost")
     private List<LostImage> images;
 }

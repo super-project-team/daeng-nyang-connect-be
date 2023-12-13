@@ -20,6 +20,6 @@ public class LostImage {
 
     @ManyToOne
     @JoinColumn(name = "lost_board_idx")
-    @JsonBackReference
+    @JsonBackReference(value = "Lost")
     private Lost lost;
 }
