@@ -20,21 +20,26 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final TokenProvider tokenProvider;
 
-    public void handleChatMessage(Message message) {
-        //토큰을 받아 해당 유저도 같이 확인
-        User sender = userRepository.findByNickname(message.getSender().getNickname());
-        ChatRoom chatRoom = chatRoomRepository.findByRoomName(message.getRoomName());
+    public void handleChatMessage(MessageDTO message, String token) {
+        String email = tokenProvider.getEmailBytoken(token);
+        User sender = userRepository.findByEmail(email).orElseThrow();
+        ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow();
 
-        if (sender == null || chatRoom == null || !chatRoom.getUsers().contains(sender)) {
+        if (!chatRoom.getUsers().contains(sender)) {
             throw new NoSuchElementException("x");
         }
-        message.setSender(sender);
+
+        Message sendMessage = Message.builder()
+                                    .content(message.getContent())
+                                    .chatRoom(chatRoom)
+                                    .sender(sender)
+                                    .build();
 
         // 메시지 저장
-        messageRepository.save(message);
+        messageRepository.save(sendMessage);
 
         // 채팅방 내 모든 사용자에게 메시지 전송
-        messagingTemplate.convertAndSend("/topic/messages/" + message.getRoomName(), message);
+        messagingTemplate.convertAndSend("/topic/messages/" + chatRoom.getRoomName(), message);
     }
 
     public void sendChatRequest(String receiverUsername, String senderName) {
