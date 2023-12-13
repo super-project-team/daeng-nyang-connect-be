@@ -56,7 +56,7 @@ public class LostController {
     }
 
     //하나의 lost
-    @GetMapping("/one")
+    @GetMapping("/getBoard")
     public LostBoardDetailDTO getOne(@RequestParam("lostId")Long lostBoardId){
         return lostService.getThis(lostBoardId);
     }
