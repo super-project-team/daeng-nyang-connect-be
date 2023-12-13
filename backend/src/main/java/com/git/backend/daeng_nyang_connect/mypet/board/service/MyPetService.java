@@ -1,10 +1,10 @@
 package com.git.backend.daeng_nyang_connect.mypet.board.service;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetBoardLikeDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetResponseDTO;
-import com.git.backend.daeng_nyang_connect.mypet.board.dto.UpdateMyPetDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPet;
 import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPetBoardLike;
 import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPetImage;
@@ -51,21 +51,20 @@ public class MyPetService {
         return myPetPage.map(this::convertToMyPetResponseDTO);
     }
 
-    public List<MyPetResponseDTO> findUserMyPet(String token) {
-        String userEmail = tokenProvider.getEmailBytoken(token);
+    public MyPetResponseDTO getThisBoard(Long myPet) {
 
-        if (userEmail == null) {
-            return Collections.emptyList();
-        }
+        MyPet thisBoard = myPetRepository.findById(myPet)
+                .orElseThrow(() -> new NoSuchElementException(MSG_BOARD_NOT_FOUND));
 
-        List<MyPet> userMyPet = myPetRepository.findByUserEmail(userEmail);
-
-        return userMyPet.stream()
-                .map(this::convertToMyPetResponseDTO)
-                .collect(Collectors.toList());
+        return convertToMyPetResponseDTO(thisBoard);
     }
 
     private MyPetResponseDTO convertToMyPetResponseDTO(MyPet myPet) {
+
+        List<Long> images = myPet.getImg().stream()
+                .map(MyPetImage::getMyPetImgId)
+                .collect(Collectors.toList());
+
         List<String> imgUrls = myPet.getImg().stream()
                 .map(MyPetImage::getUrl)
                 .collect(Collectors.toList());
@@ -85,10 +84,12 @@ public class MyPetService {
                 .myPetBoardId(myPet.getMyPetBoardId())
                 .userId(myPet.getUser().getUserId())
                 .nickname(myPet.getUser().getNickname())
+                .userThumbnail(myPet.getUser().getMyPage().getImg())
                 .kind(myPet.getKind())
-           //     .breed(myPet.getBreed())
+                //     .breed(myPet.getBreed())
                 .text(myPet.getText())
                 .img(imgUrls)
+                .myPetImgId(images)
                 .createdAt(myPet.getCreatedAt())
                 .comments(comments)
                 .myPetLikes(likes)
@@ -99,9 +100,9 @@ public class MyPetService {
                 .myPetCommentsId(comments.getMyPetCommentsId())
                 .userId(comments.getUser().getUserId())
                 .nickname(comments.getUser().getNickname())
+                .userThumbnail(comments.getUser().getMyPage().getImg())
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
-             //   .myPetCommentsLike(comments.getMyPetCommentsLike())
                 .myPetCommentsLikes(convertToMyPetCommentsLikeDTOList(comments.getMyPetCommentsLikes()))
                 .build();
     }
@@ -132,7 +133,7 @@ public class MyPetService {
     }
 
     @Transactional
-    public Map<String, String> uploadMyPet(MyPetDTO myPetDTO, String token, List<MultipartFile> img) {
+    public Map<String, String> postMyPet(MyPetDTO myPetDTO, String token, List<MultipartFile> img) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
@@ -141,7 +142,6 @@ public class MyPetService {
                     .myPetBoardId(myPetDTO.getMyPetBoardId())
                     .user(user)
                     .kind(myPetDTO.getKind())
-                    .breed(myPetDTO.getBreed())
                     .text(myPetDTO.getText())
                     .createdAt(myPetDTO.getCreatedAt())
                     .myPetLike(0)
@@ -159,20 +159,24 @@ public class MyPetService {
     }
 
     @Transactional
-    public Map<String, String> updateMyPet(UpdateMyPetDTO updateMyPetDTO, String token, List<MultipartFile> img) {
+    public Map<String, String> modifyMyPet(Long myPetId, Long myPetImgId, MyPetDTO myPetDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-            MyPet myPet = myPetRepository.findById(updateMyPetDTO.getMyPetBoardId())
+            MyPet myPet = myPetRepository.findById(myPetId)
                     .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
             checkOwnership(myPet, user);
-            updateMyPetFields(myPet, updateMyPetDTO);
+            modifyMyPetFields(myPet, myPetDTO);
             myPetRepository.save(myPet);
 
-            if (img != null && !img.isEmpty()) {
-                myPetImgUpload.uploadMyPetImgs(myPet, updateMyPetDTO.getText(), img);
+            deleteMyPetImageIfRequested(myPetImgId);
+
+            if (myPetImgId != null) {
+                myPetImgUpload.uploadModifyMyPetImg(myPet, myPetDTO.getText(), multipartFile);
+            } else if (multipartFile != null && !multipartFile.isEmpty()) {
+                myPetImgUpload.uploadMyPetImgs(myPet, myPetDTO.getText(), Collections.singletonList(multipartFile));
             }
 
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);
@@ -183,13 +187,19 @@ public class MyPetService {
         }
     }
 
+    private void deleteMyPetImageIfRequested(Long myPetImgId) {
+        if (myPetImgId != null) {
+            myPetImgUpload.deleteMyPetImg(myPetImgId);
+        }
+    }
+
     @Transactional
-    public Map<String, String> deleteMyPet(Long myPetBoardId, String token) {
+    public Map<String, String> deleteMyPet(Long myPetId, String token) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-            MyPet myPet = myPetRepository.findById(myPetBoardId)
+            MyPet myPet = myPetRepository.findById(myPetId)
                     .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
             checkOwnership(myPet, user);
@@ -270,10 +280,10 @@ public class MyPetService {
         }
     }
 
-    private void updateMyPetFields(MyPet myPet, UpdateMyPetDTO updateMyPetDTO) {
-        myPet.setKind(updateMyPetDTO.getKind());
-        myPet.setBreed(updateMyPetDTO.getBreed());
-        myPet.setText(updateMyPetDTO.getText());
+    private void modifyMyPetFields(MyPet myPet, MyPetDTO myPetDTO) {
+        myPet.setKind(myPetDTO.getKind());
+        // myPet.setBreed(myPetDTO.getBreed());
+        myPet.setText(myPetDTO.getText());
     }
 
 }

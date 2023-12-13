@@ -15,6 +15,7 @@ public class MyPetCommentsDTO {
     private Long myPetCommentsId;
     private Long userId;
     private String nickName;
+    private String userThumbnail;
     private String comment;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;

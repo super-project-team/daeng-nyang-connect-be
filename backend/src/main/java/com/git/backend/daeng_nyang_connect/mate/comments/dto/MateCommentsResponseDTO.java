@@ -15,10 +15,10 @@ public class MateCommentsResponseDTO {
     private Long mateCommentsId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private String comment;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-//    private Integer mateCommentsLike;
     private List<MateCommentsLikeDTO> mateCommentsLikes;
 }
 

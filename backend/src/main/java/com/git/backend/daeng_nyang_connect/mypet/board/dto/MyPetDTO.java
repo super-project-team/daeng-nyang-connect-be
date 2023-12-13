@@ -16,8 +16,9 @@ public class MyPetDTO {
     private Long myPetBoardId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private String kind;
-    private String breed;
+    // private String breed;
     private String text;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
@@ -28,8 +29,9 @@ public class MyPetDTO {
                 .myPetBoardId(myPet.getMyPetBoardId())
                 .userId(myPet.getUser().getUserId())
                 .nickname(nickname)
+                .userThumbnail(myPet.getUser().getMyPage().getImg())
                 .kind(myPet.getKind())
-                .breed(myPet.getBreed())
+                // .breed(myPet.getBreed())
                 .text(myPet.getText())
                 .createdAt(myPet.getCreatedAt())
                 .myPetLike(myPet.getMyPetLike())

@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +36,6 @@ public class MateImgUpload {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    //tips 게시판 이미지 s3 디렉토리 경로 및 파일 이름 생성
     public String buildFileName(String title,String originFileName){
         String randomString = UUID.randomUUID().toString().substring(0, 8);
         return "mate" + "/" + title  + "/" + title+randomString;
@@ -79,26 +80,69 @@ public class MateImgUpload {
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
 
-    public String uploadModifyMateImg(Mate mate, String title, MultipartFile multipartFile) throws FileUploadFailedException{
+    public String uploadModifyMateImg(Mate mate, String title, MultipartFile multipartFile) throws FileUploadFailedException {
+        // 기존 이미지 삭제
+        deleteMateImg(mate.getMateBoardId());
 
-        String fileName = buildFileName(title,Objects.requireNonNull(multipartFile.getOriginalFilename()));
-
+        // 새 이미지 추가
+        String fileName = buildFileName(title, Objects.requireNonNull(multipartFile.getOriginalFilename()));
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentDisposition("inline");
 
-        try(InputStream inputStream = multipartFile.getInputStream()){
-            amazonS3Client.putObject(new EncryptedPutObjectRequest(bucketName, fileName, inputStream,objectMetadata)
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            amazonS3Client.putObject(new EncryptedPutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Amazon S3 파일 업로드 실패: {}", e.getMessage(), e);
             throw new FileUploadFailedException("파일 업로드에 실패했습니다");
         }
 
+        // 데이터베이스에 새 이미지 정보 저장
+        MateImage mateImage = MateImage.builder()
+                .mate(mate)
+                .url(amazonS3Client.getUrl(bucketName, fileName).toString())
+                .build();
+        mateImageRepository.save(mateImage);
+
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
 
+    // 이미지 삭제 메서드
+    public void deleteMateImg(Long mateId) {
+        // 기존 이미지 정보 조회
+        List<MateImage> mateImages = mateImageRepository.findByMate_MateBoardId(mateId);
+
+        // 기존 이미지 삭제
+        mateImages.forEach(image -> {
+            // Amazon S3에서 이미지 삭제
+            deleteImageFromS3(image.getUrl());
+
+            // DB에서 이미지 정보 삭제
+            mateImageRepository.delete(image);
+        });
+    }
+    // Amazon S3에서 이미지 삭제하는 메서드
+    private void deleteImageFromS3(String imageUrl) {
+        try {
+            String fileName = extractFileNameFromUrl(imageUrl);
+            amazonS3Client.deleteObject(bucketName, fileName);
+        } catch (Exception e) {
+            log.error("Amazon S3 파일 삭제 실패: {}", e.getMessage(), e);
+        }
+    }
+
+    private String extractFileNameFromUrl(String imageUrl) {
+        try {
+            URI uri = new URI(imageUrl);
+            String path = uri.getPath();
+            return path.substring(path.lastIndexOf('/') + 1);
+        } catch (URISyntaxException e) {
+            log.error("이미지 URL에서 파일명 추출 실패: {}", e.getMessage(), e);
+            throw new RuntimeException("이미지 URL에서 파일명 추출 실패");
+        }
+    }
     @Transactional
     public List<MateImage > getMateImg(Mate mate){
         List<MateImage> mateImages = mateImageRepository.findByMate(mate)
