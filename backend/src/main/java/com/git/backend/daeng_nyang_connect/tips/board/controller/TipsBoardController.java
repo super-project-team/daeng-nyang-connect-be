@@ -30,7 +30,7 @@ public class TipsBoardController {
     private final TipsBoardService tipsBoardService;
 
 
-    @PostMapping("/upload")
+    @PostMapping("/post")
     public Map<?,?> upload(@RequestHeader("access_token")String token,
                              @RequestPart("data") TipsBoardDto tipsBoardDto,
                              @RequestPart("files") List<MultipartFile> fileList){
