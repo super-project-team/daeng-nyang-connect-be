@@ -1,6 +1,8 @@
 package com.git.backend.daeng_nyang_connect.user.controller;
 
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
+import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
+import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardLikeDto;
 import com.git.backend.daeng_nyang_connect.user.dto.ModifyUserDto;
 import com.git.backend.daeng_nyang_connect.user.dto.MyBoardDto;
 import com.git.backend.daeng_nyang_connect.user.dto.MyPageDto;
@@ -11,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,6 +59,11 @@ public class MyPageController {
     @GetMapping("/getMyBoard")
     public MyBoardDto getMyBoard(@RequestHeader("access_token") String token){
         return findMyBoardService.getMyBoard(token);
+    }
+
+    @GetMapping("/getMyLikeBoard")
+    public List<Object>  getMyLikeBoard(@RequestHeader("access_token") String token){
+        return findMyBoardService.getLikeBoard(token);
     }
 
 }

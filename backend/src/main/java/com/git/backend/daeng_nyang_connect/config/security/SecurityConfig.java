@@ -31,31 +31,6 @@ public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//
-//        httpS.headers().frameOptions().sameOrigin()
-//                .and()
-//                .formLogin().disable()
-//                .csrf().disable()
-//                .cors().configurationSource(corsConfigurationSource()).and()
-//                .httpBasic().disable()
-//                .rememberMe().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/resources/static/**", "/api/register", "/api/login").permitAll()
-//                //나중에 글 작성 api에 Role_user
-//                .and()
-//                .exceptionHandling()
-////                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-//                //             .accessDeniedHandler(new CustomerAccessDeniedHandler())
-//                .and()
-//                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity

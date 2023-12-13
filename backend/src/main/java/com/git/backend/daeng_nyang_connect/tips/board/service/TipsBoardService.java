@@ -113,7 +113,7 @@ public class TipsBoardService {
             tipsBoardLikeRepository.save(tipsBoardLike);
             tipsBoardRepository.save(tips);
         }else{
-            tipsBoardLikeRepository.deleteByUser(user);
+            tipsBoardLikeRepository.deleteByUserAndTips(user,tips);
             likeCount--;
             tips.setTipsLike(likeCount);
             tipsBoardRepository.save(tips);
@@ -128,7 +128,7 @@ public class TipsBoardService {
                 .orElseThrow();
 
 
-        if(tipsBoardLikeRepository.findByUser(user).isEmpty()){
+        if(tipsBoardLikeRepository.findByTipsAndUser(isTips,user)==null){
             setHeart(isTips, user, isTips.getTipsLike(), true);
             return ResponseEntity.ok().body(tipsId + "번 게시글에 좋아요가 추가 되었습니다");
             }
@@ -136,7 +136,6 @@ public class TipsBoardService {
             setHeart(isTips, user, isTips.getTipsLike(), false);
             return ResponseEntity.ok().body(tipsId + "번 게시글에 좋아요가 취소 되었습니다");
             }
-
     }
     //게시물 삭제
     public Map<String,String> delete(String token, Long tipsId) {

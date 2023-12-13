@@ -6,15 +6,23 @@ import com.git.backend.daeng_nyang_connect.lost.board.entity.Lost;
 import com.git.backend.daeng_nyang_connect.lost.board.repository.LostRepository;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.entity.Mate;
+import com.git.backend.daeng_nyang_connect.mate.board.entity.MateBoardLike;
+import com.git.backend.daeng_nyang_connect.mate.board.repository.MateBoardLikeRepository;
 import com.git.backend.daeng_nyang_connect.mate.board.repository.MateRepository;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPet;
+import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPetBoardLike;
+import com.git.backend.daeng_nyang_connect.mypet.board.repository.MyPetBoardLikeRepository;
 import com.git.backend.daeng_nyang_connect.mypet.board.repository.MyPetRepository;
+import com.git.backend.daeng_nyang_connect.review.board.dto.FindReviewDto;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
+import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardLikeDto;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
+import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsBoardLike;
+import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardLikeRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardRepository;
 import com.git.backend.daeng_nyang_connect.user.dto.MyBoardDto;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -24,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,13 +43,19 @@ import java.util.Optional;
 public class FindMyBoardService {
 
     private final UserService userService;
-    private final UserRepository userRepository;
     private final TipsBoardRepository tipsBoardRepository;
     private final LostRepository lostRepository;
     private final ReviewRepository reviewRepository;
     private final MyPetRepository myPetRepository;
     private final MateRepository mateRepository;
-    private final AnimalRepository animalRepository;
+
+    private final TipsBoardLikeRepository tipsBoardLikeRepository;
+    private final MateBoardLikeRepository mateBoardLikeRepository;
+    private final MyPetBoardLikeRepository myPetBoardLikeRepository;
+
+
+
+
 
     /**
      *
@@ -61,27 +76,93 @@ public class FindMyBoardService {
 
 
         List<TipsBoardDto> tipsBoardDtoList = tips.stream().
-                map(title -> TipsBoardDto.builder()
-                        .title(title.getTitle())
-                        .build())
-                .toList();
+                map(tipsDto -> TipsBoardDto.builder()
+                        .tipsBoardId(tipsDto.getTipsBoardId())
+                        .title(tipsDto.getTitle())
+                        .createdAt(tipsDto.getCreatedAt())
+                        .build()).toList();
 
-        List<ReviewRequestDTO> reviewRequestDTOS = tips.stream().
-                map(title -> ReviewRequestDTO.builder()
-                        .textReview(title.getTitle())
-                        .build())
-                .toList();
+        List<FindReviewDto> reviewRequestDTOS = review.stream().
+                map(reviewDto -> FindReviewDto.builder()
+                        .reviewId(reviewDto.getReviewId())
+                        .text(reviewDto.getTextReview())
+                        .createdAt(reviewDto.getCreatedAt())
+                        .build()).toList();
 
-        List<MyPetDTO> myPetDTOList = tips.stream().
-                map(title -> MyPetDTO.builder()
-                        .text(title.getTitle())
-                        .build())
-                .toList();
+        List<MyPetDTO> myPetDTOList = myPets.stream().
+                map(myPet -> MyPetDTO.builder()
+                        .myPetBoardId(myPet.getMyPetBoardId())
+                        .text(myPet.getText())
+                        .createdAt(myPet.getCreatedAt())
+                        .build()).toList();
 
-        List<MateDTO> mateDTOList = myPetDTOList.stream()
-                .map(title -> MateDTO.builder()
-                        .text(title.getText()).build()).toList();
+        List<MateDTO> mateDTOList = mates.stream()
+                .map(mate -> MateDTO.builder()
+                        .mateBoardId(mate.getMateBoardId())
+                        .text(mate.getText())
+                        .createdAt(mate.getCreatedAt())
+                        .build()).toList();
 
-        return MyBoardDto.fromEntity(tipsBoardDtoList, mateDTOList, reviewRequestDTOS);
+        List<LostBoardDTO> lostDto = lost.stream()
+                .map(lostList -> LostBoardDTO.builder()
+                        .lostBoardId(lostList.getLostBoardId())
+                        .text(lostList.getText())
+                        .createdAt(lostList.getCreatedAt())
+                        .build()).toList();
+
+        return MyBoardDto.fromEntity(tipsBoardDtoList,mateDTOList,lostDto,reviewRequestDTOS,myPetDTOList);
     }
+
+    public List<Object> getLikeBoard(String token){
+        User user = userService.checkUserByToken(token);
+        List<Object> likedItems = new ArrayList<>();
+
+
+        List<TipsBoardLike> tipsLikes = tipsBoardLikeRepository.findAllByUser(user);
+        List<TipsBoardDto> tipsBoardDtoList = new ArrayList<>();
+
+        List<MateBoardLike> mateBoardLikes = mateBoardLikeRepository.findAllByUser(user);
+        List<MateDTO> mateDTOList = new ArrayList<>();
+
+        List<MyPetBoardLike> myPetBoardLikes = myPetBoardLikeRepository.findAllByUser(user);
+        List<MyPetDTO> myPetDTOList = new ArrayList<>();
+
+
+
+        for (TipsBoardLike tipsLike : tipsLikes) {
+            Tips byId = tipsBoardRepository.findById(tipsLike.getTips().getTipsBoardId()).orElseThrow();
+            TipsBoardDto dto = TipsBoardDto.builder()
+                    .tipsBoardId(byId.getTipsBoardId())
+                    .title(byId.getTitle())
+                    .build();
+            tipsBoardDtoList.add(dto);
+        }
+
+        for (MateBoardLike mateLike : mateBoardLikes) {
+            Mate byId = mateRepository.findById(mateLike.getMate().getMateBoardId()).orElseThrow();
+            MateDTO dto = MateDTO.builder()
+                    .mateBoardId(byId.getMateBoardId())
+                    .text(byId.getText())
+                    .build();
+            mateDTOList.add(dto);
+        }
+
+        for (MyPetBoardLike myPetLike : myPetBoardLikes) {
+            MyPet byId = myPetRepository.findById(myPetLike.getMyPet().getMyPetBoardId()).orElseThrow();
+            MyPetDTO dto = MyPetDTO.builder()
+                    .myPetBoardId(byId.getMyPetBoardId())
+                    .text(byId.getText())  // 여기서 text로 변경
+                    .build();
+            myPetDTOList.add(dto);
+        }
+        likedItems.addAll(tipsBoardDtoList);
+        likedItems.addAll(mateDTOList);
+        likedItems.addAll(myPetDTOList);
+
+        return likedItems;
+
+    }
+
+
+
 }
