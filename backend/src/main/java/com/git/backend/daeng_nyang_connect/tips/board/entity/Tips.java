@@ -36,16 +36,16 @@ public class Tips {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "tipsLike")
     List<TipsBoardLike> likeList;
 
-    @OneToMany(mappedBy = "tips",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "tips",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "tipsImgReference")
     List<TipsImage> images;
 
-    @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "tipsCommentsReference")
     List<TipsComments> comments;
 
 

@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.tips.comments.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -25,12 +26,12 @@ public class TipsComments {
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
-    @JsonBackReference
+    @JsonBackReference(value = "userReference")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "tip_board_idx")
-    @JsonBackReference
+    @JoinColumn(name = "tips_board_idx")
+    @JsonBackReference(value = "tipsCommentsReference")
     private Tips tips;
 
     private String comment;
@@ -40,7 +41,7 @@ public class TipsComments {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "tipsComments", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "tipsComments", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "tipsCommentsLikeReference")
     private List<TipsCommentsLike> likeList;
 }

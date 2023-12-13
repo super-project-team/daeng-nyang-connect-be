@@ -21,12 +21,11 @@ public class AnimalScrap {
     private Long animalScrapId;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference(value = "scrap")
     @JoinColumn(name = "user_idx")
     private User user;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "animal_board_idx")
     private Animal animal;
 }

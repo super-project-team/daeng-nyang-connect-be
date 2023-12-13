@@ -35,7 +35,7 @@ public class TipsCommentsService {
 
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-    public Map<?,?> postComment(String token, Long tipsId, TipsCommentsDto tipsCommentsDto){
+    public ResponseEntity<?> postComment(String token, Long tipsId, TipsCommentsDto tipsCommentsDto){
 
         User user = userService.checkUserByToken(token);
         Tips byId = tipsBoardRepository.findById(tipsId).orElseThrow();
@@ -54,7 +54,7 @@ public class TipsCommentsService {
         Map<String, String> response = new HashMap<>();
         response.put("msg", "댓글이 등록 되었습니다");
         response.put("http_status", HttpStatus.OK.toString());
-        return response;
+        return ResponseEntity.ok(response);
     }
     //내가 쓴 댓글인지 확인
     public TipsComments checkMyComment(Long tipsCommentId, String token){
