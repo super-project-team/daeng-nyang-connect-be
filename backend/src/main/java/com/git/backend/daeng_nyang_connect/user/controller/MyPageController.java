@@ -2,7 +2,9 @@ package com.git.backend.daeng_nyang_connect.user.controller;
 
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.user.dto.ModifyUserDto;
+import com.git.backend.daeng_nyang_connect.user.dto.MyBoardDto;
 import com.git.backend.daeng_nyang_connect.user.dto.MyPageDto;
+import com.git.backend.daeng_nyang_connect.user.service.FindMyBoardService;
 import com.git.backend.daeng_nyang_connect.user.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,8 @@ import java.util.Map;
 public class MyPageController {
 
     private final MyPageService myPageService;
+    private final FindMyBoardService findMyBoardService;
+
 
     @GetMapping("/get")
     public MyPageDto getMyPage(@RequestHeader("access_token")String token){
@@ -46,6 +50,11 @@ public class MyPageController {
     public Map<String,String > modifyPassword(@RequestHeader("access_token")String token,
                                               @RequestBody ModifyUserDto modifyUserDto){
         return myPageService.modifyPassword(token, modifyUserDto);
+    }
+
+    @GetMapping("/getMyBoard")
+    public MyBoardDto getMyBoard(@RequestHeader("access_token") String token){
+        return findMyBoardService.getMyBoard(token);
     }
 
 }

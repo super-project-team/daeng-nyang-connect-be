@@ -229,7 +229,7 @@ public class TipsBoardService {
                         .build())
                 .toList();
 
-        return TipsBoardDetailDto.fromEntity1(thisBoard, thisBoardImg, tipsCommentsDtoList,tipsBoardLikeDtos);
+        return TipsBoardDetailDto.fromEntity(thisBoard, thisBoardImg, tipsCommentsDtoList,tipsBoardLikeDtos);
 
     }
 
