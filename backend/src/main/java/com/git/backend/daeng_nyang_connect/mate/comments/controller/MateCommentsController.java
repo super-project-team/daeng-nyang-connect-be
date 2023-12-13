@@ -19,7 +19,7 @@ public class MateCommentsController {
     private final MateCommentsService mateCommentsService;
 
     @PostMapping("/upload")
-    public Map<?, ?> uploadComment(@RequestHeader("access_token") String token,
+    public Map<?,?> uploadComment(@RequestHeader("access_token") String token,
                                 @RequestParam("id")Long mate,
                                 @RequestBody MateCommentsDTO mateCommentsDTO){
         return mateCommentsService.uploadComment(token, mate, mateCommentsDTO);

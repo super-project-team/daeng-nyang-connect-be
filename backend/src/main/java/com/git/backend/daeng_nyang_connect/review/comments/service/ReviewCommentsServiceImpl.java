@@ -12,6 +12,7 @@ import com.git.backend.daeng_nyang_connect.review.comments.repository.ReviewComm
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -21,6 +22,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@EnableCaching
 public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     private final ReviewRepository reviewRepository;
     private final ReviewCommentsLikeRepository reviewCommentsLikeRepository;

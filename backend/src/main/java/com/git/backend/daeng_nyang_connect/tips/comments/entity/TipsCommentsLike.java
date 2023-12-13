@@ -21,12 +21,12 @@ public class TipsCommentsLike {
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
-    @JsonBackReference
+    @JsonBackReference(value = "userLikeReference")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "tips_comments_idx")
-    @JsonBackReference
+    @JsonBackReference(value = "tipsCommentsLikeReference")
     private TipsComments tipsComments;
 
     public TipsCommentsLike(User user, TipsComments tipsComments) {

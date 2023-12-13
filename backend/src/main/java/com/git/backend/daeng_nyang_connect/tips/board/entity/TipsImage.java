@@ -14,12 +14,12 @@ import lombok.*;
 @Table(name = "tips_image")
 public class TipsImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_idx")
+    @Column(name = "tips_image_idx")
     private Long tipsImageId;
 
     @ManyToOne
     @JoinColumn(name = "tips_board_idx")
-    @JsonBackReference
+    @JsonBackReference(value = "tipsImgReference")
     private Tips tips;
 
     private String url;

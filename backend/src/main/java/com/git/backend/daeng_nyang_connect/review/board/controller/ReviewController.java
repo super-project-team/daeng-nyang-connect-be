@@ -24,7 +24,7 @@ import java.util.Map;
 public class ReviewController {
     //    CRUD : 입양 해온 동물에 대한 리뷰 등록 * 삭제 * 정보 수정 * 조회
     private final ReviewService reviewService;
-    @PostMapping("/add")
+    @PostMapping("/post")
     public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
                                        @RequestPart("dto") ReviewRequestDTO reviewRequestDTO,
                                        @RequestPart("files") List<MultipartFile> files,
@@ -43,7 +43,7 @@ public class ReviewController {
     }
 
     @Transactional
-    @PutMapping("/update")
+    @PutMapping("/modify")
     public ResponseEntity<?> updateReview(@RequestParam("reviewId") Long reviewId,
                                           @RequestPart("dto") ReviewRequestDTO reviewRequestDTO,
                                           @RequestPart("files") List<MultipartFile> files,
@@ -55,7 +55,7 @@ public class ReviewController {
 
     // 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping("/all")
-    public ResponseEntity<?> findAllReview(@RequestHeader("access_token") String token){
+    public ResponseEntity<?> findAllReview(){
         List<Review> reviewList = reviewService.findAllReview();
         List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);
         return ResponseEntity.status(200).body(responseList);
@@ -63,8 +63,7 @@ public class ReviewController {
 
     // 원하는 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping()
-    public ResponseEntity<?> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId,
-                                              @RequestHeader("access_token") String token){
+    public ResponseEntity<?> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId){
         List<Review> reviewList = reviewService.findAllReviewByAnimal(animalId);
         List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);
         return ResponseEntity.status(200).body(responseList);
