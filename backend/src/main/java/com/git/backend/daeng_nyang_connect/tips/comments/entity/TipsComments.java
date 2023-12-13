@@ -30,7 +30,7 @@ public class TipsComments {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "tip_board_idx")
+    @JoinColumn(name = "tips_board_idx")
     @JsonBackReference(value = "tipsCommentsReference")
     private Tips tips;
 
@@ -41,7 +41,7 @@ public class TipsComments {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "tipsComments", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tipsComments", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "tipsCommentsLikeReference")
     private List<TipsCommentsLike> likeList;
 }

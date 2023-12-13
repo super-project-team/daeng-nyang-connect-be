@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private MyPage myPage;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "scrap")
     private List<AnimalScrap> myAnimalScrap;
 
     @Override

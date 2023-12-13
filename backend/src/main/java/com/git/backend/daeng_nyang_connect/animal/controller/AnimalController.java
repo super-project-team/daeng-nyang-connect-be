@@ -71,7 +71,7 @@ public class AnimalController {
     }
 
     @GetMapping("/kind/{kind}")
-    public ResponseEntity<?> findAnimalByKind(@RequestParam("kind") Kind kind,
+    public ResponseEntity<?> findAnimalByKind(@PathVariable("kind") Kind kind,
                                               @RequestHeader("access_token") String token) {
         List<Animal> animalList = animalService.findAnimalByKind(kind);
         List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
