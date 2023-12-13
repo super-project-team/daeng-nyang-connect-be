@@ -18,7 +18,7 @@ public class LostCommentsController {
     private final LostCommentsService lostCommentsService;
 
     //댓글 등록
-    @PostMapping("/add")
+    @PostMapping("/post")
     public Map<?,?>addComments(@RequestHeader("access_token") String token,
                                @RequestParam("lostId")Long lostBoardId,
                                @RequestBody LostCommentsDTO lostCommentsDTO){

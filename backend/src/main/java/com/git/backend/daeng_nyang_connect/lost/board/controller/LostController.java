@@ -24,7 +24,7 @@ public class LostController {
     private final LostService lostService;
 
     //lost 등록
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<?,?> addLost(@RequestHeader("access_token") String token,
                             @RequestPart("data") LostBoardDetailDTO lostBoardDetailDTO,
                             @RequestPart("files") List<MultipartFile> fileList){
@@ -50,13 +50,13 @@ public class LostController {
     }
 
     //모든 lost
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public List<LostBoardDTO> getAll(Pageable pageable){
         return lostService.getAll(pageable);
     }
 
     //하나의 lost
-    @GetMapping("/one")
+    @GetMapping("/getBoard")
     public LostBoardDetailDTO getOne(@RequestParam("lostId")Long lostBoardId){
         return lostService.getThis(lostBoardId);
     }
