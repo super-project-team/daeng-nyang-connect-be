@@ -50,7 +50,7 @@ public class LostController {
     }
 
     //모든 lost
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public List<LostBoardDTO> getAll(Pageable pageable){
         return lostService.getAll(pageable);
     }
