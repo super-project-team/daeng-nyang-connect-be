@@ -25,7 +25,7 @@ public class MyPetController {
 
     private final MyPetService myPetService;
 
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public Page<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
         return myPetService.findAllMyPet(pageable);
     }
@@ -40,14 +40,14 @@ public class MyPetController {
         return myPetService.searchBoard(keyword, pageable);
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/post")
     public Map<?,?> uploadMyPet(@RequestHeader("access_token") String token,
                                @RequestPart("data") MyPetDTO myPetDTO,
                                @RequestPart("files") List<MultipartFile> fileList){
         return myPetService.uploadMyPet(myPetDTO, token, fileList);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/modify")
     public Map<?,?> updateMyPet(@RequestHeader("access_token") String token,
                                @RequestPart("data") UpdateMyPetDTO updateMyPetDTO,
                                @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
