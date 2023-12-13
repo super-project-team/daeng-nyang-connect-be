@@ -37,15 +37,15 @@ public class Tips {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference(value = "tipsLike")
     List<TipsBoardLike> likeList;
 
     @OneToMany(mappedBy = "tips",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference(value = "tipsImgReference")
     List<TipsImage> images;
 
     @OneToMany(mappedBy = "tips", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference(value = "tipsCommentsReference")
     List<TipsComments> comments;
 
 

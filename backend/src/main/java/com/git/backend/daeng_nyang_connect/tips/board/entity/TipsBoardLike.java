@@ -28,7 +28,7 @@ public class TipsBoardLike {
 
     @ManyToOne
     @JoinColumn(name = "tip_board_idx")
-    @JsonBackReference
+    @JsonBackReference(value = "tipsLike")
     private Tips tips;
 
 
