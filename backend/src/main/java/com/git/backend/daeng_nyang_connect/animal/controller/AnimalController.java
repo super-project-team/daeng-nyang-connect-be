@@ -25,7 +25,7 @@ import java.util.Map;
 public class AnimalController {
 //    CRUD : 파양동물 등록 * 삭제 * 정보 수정 * 조회
     private final AnimalService animalService;
-    @PostMapping("/add")
+    @PostMapping("/post")
     public ResponseEntity<?> addAnimal(@RequestPart("dto")AnimalRequestDTO animalRequestDTO,
                                        @RequestPart("files") List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
@@ -52,7 +52,7 @@ public class AnimalController {
     }
 
     @Transactional
-    @PutMapping("/update")
+    @PutMapping("/modify")
     public ResponseEntity<?> updateAnimal(@RequestParam("animalId") Long animalId,
                                           @RequestPart("dto") AnimalRequestDTO animalRequestDTO,
                                           @RequestPart("files") List<MultipartFile> files,

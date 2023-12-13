@@ -24,7 +24,7 @@ import java.util.Map;
 public class ReviewController {
     //    CRUD : 입양 해온 동물에 대한 리뷰 등록 * 삭제 * 정보 수정 * 조회
     private final ReviewService reviewService;
-    @PostMapping("/add")
+    @PostMapping("/post")
     public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
                                        @RequestPart("dto") ReviewRequestDTO reviewRequestDTO,
                                        @RequestPart("files") List<MultipartFile> files,
@@ -43,7 +43,7 @@ public class ReviewController {
     }
 
     @Transactional
-    @PutMapping("/update")
+    @PutMapping("/modify")
     public ResponseEntity<?> updateReview(@RequestParam("reviewId") Long reviewId,
                                           @RequestPart("dto") ReviewRequestDTO reviewRequestDTO,
                                           @RequestPart("files") List<MultipartFile> files,
