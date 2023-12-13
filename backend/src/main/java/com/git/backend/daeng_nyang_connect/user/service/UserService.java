@@ -70,7 +70,7 @@ public class UserService {
         String email = signUpDto.getEmail();
         String password = signUpDto.getPassword();
         String name = signUpDto.getName();
-        String nickName = signUpDto.getNickname();
+        String nickName = signUpDto.getNickName();
         String mobile = signUpDto.getMobile();
         String city = signUpDto.getCity();
         String town = signUpDto.getTown();

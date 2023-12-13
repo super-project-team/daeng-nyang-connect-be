@@ -213,6 +213,7 @@ public class TipsBoardService {
                         .tipsCommentsId(comment.getTipsCommentsId())
                         .tipsId(comment.getTips().getTipsBoardId())
                         .userId(comment.getUser().getUserId())
+                        .userThumbnail(comment.getUser().getMyPage().getImg())
                         .nickName(comment.getUser().getNickname())
                         .comment(comment.getComment())
                         .tipsCommentLike(comment.getTipsCommentsLike())

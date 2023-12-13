@@ -29,6 +29,7 @@ public class TipsBoardDetailDto {
 
     //게시글 작성 유저 닉네임 필요
     private String userNickname;
+    private String userThumbnail;
 
     private List<TipsCommentsDto> comments;
     private List<TipsBoardLikeDto> likes;
@@ -46,6 +47,7 @@ public class TipsBoardDetailDto {
                 .tipsLike(tips.getTipsLike())
                 .boardCreatedAt(tips.getCreatedAt())
                 .userNickname(tips.getUser().getNickname())
+                .userThumbnail(tips.getUser().getMyPage().getImg())
                 .comments(comments)
                 .likes(likes)
                 .build();
