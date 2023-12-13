@@ -50,10 +50,9 @@ public class MyPetController {
     @PutMapping("/modify")
     public Map<?,?> modifyMyPet(@RequestHeader("access_token") String token,
                                 @RequestParam("myPetId") Long myPetId,
-                                @RequestParam("myPetImgId") Long myPetImgId,
                                 @RequestPart("data") MyPetDTO myPetDTO,
-                                @RequestPart("files") MultipartFile multipartFile) throws FileUploadFailedException {
-        return myPetService.modifyMyPet(myPetId, myPetImgId, myPetDTO, token, multipartFile);
+                                @RequestPart(value = "files", required = false) MultipartFile multipartFile) throws FileUploadFailedException {
+        return myPetService.modifyMyPet(myPetId, myPetDTO, token, multipartFile);
     }
 
     @DeleteMapping("/delete")

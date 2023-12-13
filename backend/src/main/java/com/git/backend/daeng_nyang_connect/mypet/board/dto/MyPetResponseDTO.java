@@ -18,13 +18,10 @@ public class MyPetResponseDTO {
     private String nickname;
     private String userThumbnail;
     private String kind;
-    // private String breed;
     private String text;
     private List<String> img;
-    private List<Long> myPetImgId;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
     private List<MyPetCommentsResponseDTO> comments;
     private List<MyPetBoardLikeDTO> myPetLikes;
-
 }

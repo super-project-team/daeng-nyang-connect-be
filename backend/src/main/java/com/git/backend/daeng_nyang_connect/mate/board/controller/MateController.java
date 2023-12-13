@@ -50,10 +50,9 @@ public class MateController {
     @PutMapping("/modify")
     public Map<?,?> modifyMate(@RequestHeader("access_token") String token,
                                @RequestParam("mateId") Long mateId,
-                               @RequestParam("mateImgId") Long mateImgId,
                                @RequestPart("data") MateDTO mateDTO,
-                               @RequestPart("files")  MultipartFile multipartFile) throws FileUploadFailedException {
-        return mateService.modifyMate(mateId, mateImgId, mateDTO, token, multipartFile);
+                               @RequestPart(value = "files", required = false) MultipartFile multipartFile) throws FileUploadFailedException {
+        return mateService.modifyMate(mateId, mateDTO, token, multipartFile);
     }
 
     @DeleteMapping("/delete")
