@@ -19,18 +19,10 @@ public class LostBoardDTO {
     private Long lostBoardId;
     private String category;
     private String place;
-    private String reward;
-    private String phone;
-    private String kind;
     private String breed;
-    private String gender;
-    private String color;
     private Date lostDate;
-    private String lostTime;
     private String text;
-    private Timestamp createdAt;
     private List<LostImage> images;
-    private String nickname;
 
     public static LostBoardDTO fromEntity(Lost lost){
         return LostBoardDTO.builder()
