@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.tips.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import lombok.*;
 
@@ -18,6 +19,8 @@ public class TipsBoardDto {
     private String title;
     private String text;
     private Integer tipsLike;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
 
     //게시글 조회시 유저 닉네임 필요

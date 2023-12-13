@@ -19,22 +19,22 @@ public class MyPetCommentsController {
     private final MyPetCommentsService myPetCommentsService;
 
     @PostMapping("/post")
-    public Map<?, ?> postComment(@RequestHeader("access_token") String token,
-                                 @RequestParam("id")Long myPet,
-                                 @RequestBody MyPetCommentsDTO myPetCommentsDTO){
-        return myPetCommentsService.postComment(token, myPet, myPetCommentsDTO);
+    public Map<?, ?> uploadComment(@RequestHeader("access_token") String token,
+                                           @RequestParam("id")Long myPet,
+                                           @RequestBody MyPetCommentsDTO myPetCommentsDTO){
+        return myPetCommentsService.uploadComment(token, myPet, myPetCommentsDTO);
     }
 
     @PutMapping("/modify")
-    public Map<?, ?> modifyComment(@RequestHeader("access_token") String token,
-                                   @RequestParam("id")Long myPetCommentsId,
-                                   @RequestBody MyPetCommentsDTO myPetCommentsDTO){
-        return myPetCommentsService.modifyComment(token, myPetCommentsId, myPetCommentsDTO);
+    public Map<?, ?> updateComment(@RequestHeader("access_token") String token,
+                                           @RequestParam("id")Long myPetCommentsId,
+                                           @RequestBody MyPetCommentsDTO myPetCommentsDTO){
+        return myPetCommentsService.updateComment(token, myPetCommentsId, myPetCommentsDTO);
     }
 
     @DeleteMapping("/delete")
     public Map<?, ?> deleteComment(@RequestHeader("access_token") String token,
-                                   @RequestParam("id")Long myPetCommentsId){
+                                           @RequestParam("id")Long myPetCommentsId){
         return myPetCommentsService.deleteComment(token, myPetCommentsId);
     }
 

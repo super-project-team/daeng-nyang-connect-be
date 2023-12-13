@@ -10,6 +10,7 @@ import lombok.*;
 public class TipsBoardLikeDto {
     private Long TipsBoardLikeId;
     private Long userId;
+    private Long tipsId;
 
 
 }

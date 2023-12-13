@@ -16,6 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewRequestDTO {
+
     private String textReview;
 
     public void checkUpdateList(ReviewRequestDTO reviewRequestDTO, Review animal) {

@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.user.service;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.user.dto.ModifyUserDto;
+import com.git.backend.daeng_nyang_connect.user.dto.MyBoardDto;
 import com.git.backend.daeng_nyang_connect.user.dto.MyPageDto;
 import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -28,6 +30,7 @@ public class MyPageService {
     private final UserService userService;
     private final ProfileImgService profileImgService;
     private final PasswordEncoder passwordEncoder;
+
 
 
     public MyPageDto getMyInfo(String token){
@@ -94,6 +97,8 @@ public class MyPageService {
         response.put("http_status", HttpStatus.OK.toString());
         return response;
     }
+
+
 
 
 

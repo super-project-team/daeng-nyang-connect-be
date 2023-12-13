@@ -36,7 +36,7 @@ public class TipsBoardDetailDto {
 
 
 
-    public static TipsBoardDetailDto fromEntity1(Tips tips, List<TipsImage> tipsImage, List<TipsCommentsDto> comments,
+    public static TipsBoardDetailDto fromEntity(Tips tips, List<TipsImage> tipsImage, List<TipsCommentsDto> comments,
                                                  List<TipsBoardLikeDto> likes) {
         return TipsBoardDetailDto.builder()
                 .tipsBoardId(tips.getTipsBoardId())
