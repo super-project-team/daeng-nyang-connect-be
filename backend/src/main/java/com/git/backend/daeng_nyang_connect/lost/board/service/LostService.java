@@ -152,6 +152,7 @@ public class LostService {
                         .lostBoardId(lostComments.getLost().getLostBoardId())
                         .userId(lostComments.getUser().getUserId())
                         .nickname(lostComments.getUser().getNickname())
+                        .userThumbnail(lostComments.getUser().getMyPage().getImg())
                         .comment(lostComments.getComment())
                         .createdAt(lostComments.getCreatedAt())
                         .build())
@@ -165,16 +166,5 @@ public class LostService {
         return byTextContaining.stream()
                 .map(LostBoardDTO::fromEntity)
                 .collect(Collectors.toList());
-    }
-
-
-    //
-    public String findUserNicknameByLostId(Long lostId){
-        Lost lost = lostRepository.findById(lostId).orElse(null);
-        if (lost != null && lost.getUser() != null){
-            return lost.getUser().getNickname();
-        } else {
-            return null;
-        }
     }
 }

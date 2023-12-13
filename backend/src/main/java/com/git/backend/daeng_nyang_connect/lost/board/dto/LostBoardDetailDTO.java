@@ -57,6 +57,7 @@ public class LostBoardDetailDTO {
                 .createdAt(lost.getCreatedAt())
                 .text(lost.getText())
                 .nickname(lost.getUser().getNickname())
+                .userThumbnail(lost.getUser().getMyPage().getImg())
                 .images(lostImages)
                 .lostComments(lostComments)
                 .build();

@@ -29,7 +29,6 @@ public class LostBoardDTO {
     private String lostTime;
     private String text;
     private Timestamp createdAt;
-    private String thumbnailImage;
     private List<LostImage> images;
     private String nickname;
 
