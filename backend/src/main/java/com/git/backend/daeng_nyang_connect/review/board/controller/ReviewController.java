@@ -55,7 +55,7 @@ public class ReviewController {
 
     // 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping("/all")
-    public ResponseEntity<?> findAllReview(@RequestHeader("access_token") String token){
+    public ResponseEntity<?> findAllReview(){
         List<Review> reviewList = reviewService.findAllReview();
         List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);
         return ResponseEntity.status(200).body(responseList);
@@ -63,8 +63,7 @@ public class ReviewController {
 
     // 원하는 입양간 동물에 대한 리뷰 전체 출력
     @GetMapping()
-    public ResponseEntity<?> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId,
-                                              @RequestHeader("access_token") String token){
+    public ResponseEntity<?> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId){
         List<Review> reviewList = reviewService.findAllReviewByAnimal(animalId);
         List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);
         return ResponseEntity.status(200).body(responseList);

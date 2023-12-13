@@ -5,6 +5,7 @@ import com.git.backend.daeng_nyang_connect.tips.comments.service.TipsCommentsSer
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -19,9 +20,9 @@ public class TipsCommentsController {
     private final TipsCommentsService tipsCommentsService;
 
     @PostMapping("/post")
-    public Map<?,?>postComments(@RequestParam("id")Long tipsId,
-                                @RequestHeader("access_token")String token,
-                                @RequestBody TipsCommentsDto tipsCommentsDto){
+    public ResponseEntity<?> postComments(@RequestParam("id")Long tipsId,
+                                       @RequestHeader("access_token")String token,
+                                       @RequestBody TipsCommentsDto tipsCommentsDto){
 
         return tipsCommentsService.postComment(token, tipsId, tipsCommentsDto);
     }

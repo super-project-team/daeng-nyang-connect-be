@@ -49,8 +49,7 @@ public class ReviewCommentsController {
 
     // 내가 원하는 리뷰의 댓글 목록 전체 출력
     @GetMapping()
-    public ResponseEntity<?> findAllCommentsByReview(@RequestParam("reviewId") Long reviewId,
-                                              @RequestHeader("access_token") String token){
+    public ResponseEntity<?> findAllCommentsByReview(@RequestParam("reviewId") Long reviewId){
         List<ReviewComments> reviewCommentList = reviewCommentsService.findAllCommentsByReview(reviewId);
         List<ReviewCommentsResponseDTO> responseList = reviewCommentsService.responseList(reviewCommentList);
         return ResponseEntity.status(200).body(responseList);

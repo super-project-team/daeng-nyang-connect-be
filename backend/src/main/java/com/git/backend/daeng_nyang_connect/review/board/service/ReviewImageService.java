@@ -30,7 +30,6 @@ import java.util.List;
 public class ReviewImageService {
 
     private final AmazonS3Client amazonS3Client;
-    private final ReviewImageRepository reviewImageRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -50,14 +49,14 @@ public class ReviewImageService {
         return fileName;
     }
 
-    public List<String> uploadReviewImages(Review review, String adoptedAnimalName, List<MultipartFile> multipartFileList){
+    public List<String> uploadImageList(String adoptedAnimalName, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
 
         for (int i = 0; i < multipartFileList.size(); i++) {
             MultipartFile file = multipartFileList.get(i);
             try {
                 String fileName = buildFileName(adoptedAnimalName, file.getOriginalFilename(), i + 1);
-                String uploadedUrl = uploadReviewImg(review, file, fileName);
+                String uploadedUrl = uploadImage(file, fileName);
                 filenameList.add(uploadedUrl);
             } catch (FileUploadFailedException e) {
                 e.printStackTrace();
@@ -67,10 +66,7 @@ public class ReviewImageService {
         return filenameList;
     }
 
-    public String uploadReviewImg(Review review, MultipartFile multipartFile, String fileName) throws FileUploadFailedException{
-
-      //  String fileName = buildFileName(title,Objects.requireNonNull(multipartFile.getOriginalFilename()));
-
+    public String uploadImage(MultipartFile multipartFile, String fileName) throws FileUploadFailedException{
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getSize());
@@ -83,12 +79,6 @@ public class ReviewImageService {
             log.error("Amazon S3 파일 업로드 실패: {}", e.getMessage(), e);
             throw new FileUploadFailedException("파일 업로드에 실패했습니다");
         }
-        ReviewImage reviewImage = ReviewImage.builder()
-                                            .review(review)
-                                            .url(amazonS3Client.getUrl(bucketName, fileName).toString())
-                                            .build();
-        reviewImageRepository.save(reviewImage);
-
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
 

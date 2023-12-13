@@ -47,14 +47,14 @@ public class AnimalImageService {
         return fileName;
     }
 
-    public List<String> uploadAnimalImgs(Animal animal, String name, List<MultipartFile> multipartFileList){
+    public List<String> uploadImages(String name, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
 
         for (int i = 0; i < multipartFileList.size(); i++) {
             MultipartFile file = multipartFileList.get(i);
             try {
                 String fileName = buildFileName(name, file.getOriginalFilename(), i + 1);
-                String uploadedUrl = uploadTipsImg(animal, file, fileName);
+                String uploadedUrl = uploadImage(file, fileName);
                 filenameList.add(uploadedUrl);
             } catch (FileUploadFailedException e) {
                 e.printStackTrace();
@@ -64,10 +64,7 @@ public class AnimalImageService {
         return filenameList;
     }
 
-    public String uploadTipsImg(Animal animal, MultipartFile multipartFile,String fileName) throws FileUploadFailedException{
-
-      //  String fileName = buildFileName(title,Objects.requireNonNull(multipartFile.getOriginalFilename()));
-
+    public String uploadImage(MultipartFile multipartFile,String fileName) throws FileUploadFailedException{
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getSize());
@@ -80,12 +77,6 @@ public class AnimalImageService {
             log.error("Amazon S3 파일 업로드 실패: {}", e.getMessage(), e);
             throw new FileUploadFailedException("파일 업로드에 실패했습니다");
         }
-        AnimalImage animalImage = AnimalImage.builder()
-                                            .animal(animal)
-                                            .url(amazonS3Client.getUrl(bucketName, fileName).toString())
-                                            .build();
-        animalImageRepository.save(animalImage);
-
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
 

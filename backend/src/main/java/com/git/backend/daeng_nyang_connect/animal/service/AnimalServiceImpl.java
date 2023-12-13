@@ -12,6 +12,7 @@ import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@EnableCaching
 public class AnimalServiceImpl  implements AnimalService{
     private final AnimalRepository animalRepository;
     private final AnimalImageRepository animalImageRepository;
@@ -222,7 +224,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
     @Override
     public void uploadImage(Animal animal, List<MultipartFile> multipartFileList) {
-        List<String> imageUrlList = animalImageService.uploadAnimalImgs(animal, animal.getAnimalName(), multipartFileList);
+        List<String> imageUrlList = animalImageService.uploadImages(animal.getAnimalName(), multipartFileList);
         if(animal.getImages() != null && !animal.getImages().isEmpty()) {
             animalImageRepository.deleteByAnimal(animal);
         }
