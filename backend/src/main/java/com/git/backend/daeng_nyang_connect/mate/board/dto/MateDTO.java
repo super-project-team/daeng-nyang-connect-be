@@ -16,6 +16,7 @@ public class MateDTO {
     private Long mateBoardId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private String category;
     private String place;
     private String text;
@@ -29,6 +30,7 @@ public class MateDTO {
                 .category(mate.getCategory())
                 .userId(mate.getUser().getUserId())
                 .nickname(nickname)
+                .userThumbnail(mate.getUser().getMyPage().getImg())
                 .place(mate.getPlace())
                 .text(mate.getText())
                 .createdAt(mate.getCreatedAt())

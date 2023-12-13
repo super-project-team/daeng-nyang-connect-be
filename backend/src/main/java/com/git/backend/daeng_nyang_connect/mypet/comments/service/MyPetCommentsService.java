@@ -38,7 +38,7 @@ public class MyPetCommentsService {
     private static final String MSG_OWNER_ACCESS_DENIED = "댓글의 소유자가 아닙니다.";
 
     @Transactional
-    public Map<String, String> uploadComment(String token,Long myPet, MyPetCommentsDTO myPetCommentsDTO ) {
+    public Map<String, String> postComment(String token,Long myPet, MyPetCommentsDTO myPetCommentsDTO ) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
@@ -46,13 +46,13 @@ public class MyPetCommentsService {
             MyPet byId = myPetRepository.findById(myPet).orElseThrow();
 
             MyPetComments myPetComments = MyPetComments.builder()
-                .myPetCommentsId(myPetCommentsDTO.getMyPetCommentsId())
-                .comment(myPetCommentsDTO.getComment())
-                .myPet(byId)
-                .createdAt(myPetCommentsDTO.getCreatedAt())
-                .user(user)
-                .myPetCommentsLike(0)
-                .build();
+                    .myPetCommentsId(myPetCommentsDTO.getMyPetCommentsId())
+                    .comment(myPetCommentsDTO.getComment())
+                    .myPet(byId)
+                    .createdAt(myPetCommentsDTO.getCreatedAt())
+                    .user(user)
+                    .myPetCommentsLike(0)
+                    .build();
 
             myPetCommentsRepository.save(myPetComments);
 
@@ -64,7 +64,7 @@ public class MyPetCommentsService {
         }
     }
 
-    public Map<String, String> updateComment(String token, Long myPetCommentsId, MyPetCommentsDTO myPetCommentsDTO) {
+    public Map<String, String> modifyComment(String token, Long myPetCommentsId, MyPetCommentsDTO myPetCommentsDTO) {
 
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
@@ -124,8 +124,12 @@ public class MyPetCommentsService {
                         .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 댓글에 없습니다."));
                 myPetComments.getMyPetCommentsLikes().remove(userLike);
                 myPetCommentsLikeRepository.delete(userLike);
-                myPetComments.setMyPetCommentsLike(myPetComments.getMyPetCommentsLike() - 1);
-                myPetCommentsRepository.save(myPetComments);
+                // 음수가 되지 않도록 확인
+                int likeCount = myPetComments.getMyPetCommentsLike();
+                if (likeCount > 0) {
+                    myPetComments.setMyPetCommentsLike(likeCount - 1);
+                    myPetCommentsRepository.save(myPetComments);
+                }
             }
         }
     }

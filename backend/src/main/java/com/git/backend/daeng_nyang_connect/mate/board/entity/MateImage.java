@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class MateImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mate_img_idx")
-    private Long mateImageId;
+    private Long mateImgId;
 
     @ManyToOne
     @JoinColumn(name = "mate_board_idx")

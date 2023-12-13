@@ -17,14 +17,15 @@ public class MateResponseDTO {
     private Long mateBoardId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private String category;
     private String place;
     private String text;
     private List<String> img;
+    private List<Long> mateImgId;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
     private List<MateCommentsResponseDTO> comments;
-//    private Integer mateLike;
     private List<MateBoardLikeDTO> mateLikes;
 
 }
