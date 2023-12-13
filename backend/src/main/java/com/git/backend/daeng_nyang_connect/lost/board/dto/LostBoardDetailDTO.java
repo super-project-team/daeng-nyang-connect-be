@@ -44,6 +44,7 @@ public class LostBoardDetailDTO {
              List<LostCommentsDTO> lostComments){
         return LostBoardDetailDTO.builder()
                 .lostBoardId(lost.getLostBoardId())
+                .userId(lost.getUser().getUserId())
                 .category(lost.getCategory())
                 .place(lost.getPlace())
                 .reward(lost.getReward())
