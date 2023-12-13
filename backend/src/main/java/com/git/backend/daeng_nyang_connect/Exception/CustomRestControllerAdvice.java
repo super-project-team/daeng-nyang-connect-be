@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.Exception;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,7 +29,7 @@ public class CustomRestControllerAdvice {
     // 이미 존재할 때 사용하는 exception
     @ExceptionHandler(DuplicateKeyException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleCustomException(DuplicateKeyException  de) {
+    public ResponseEntity<String> handleCustomException(DuplicateKeyException de) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST + " : " +  de.getMessage());
     }
 
