@@ -18,6 +18,7 @@ public class ReviewCommentsResponseDTO {
     private String textReview;
     private String comment;
     private String createdAt;
+    private String userThumbnail;
 
     public ReviewCommentsResponseDTO(ReviewComments reviewComments) {
         this.reviewId = reviewComments.getReview().getReviewId();
@@ -26,6 +27,7 @@ public class ReviewCommentsResponseDTO {
         this.textReview = reviewComments.getReview().getTextReview();
         this.comment = reviewComments.getComment();
         this.createdAt = TimestampToFormattedString(reviewComments.getCreatedAt());
+        this.userThumbnail = reviewComments.getUser().getMyPage().getImg();
     }
 
     public String TimestampToFormattedString(Timestamp time) {
