@@ -33,6 +33,7 @@ public class AnimalResponseDTO {
     private String city;
     private AdoptionStatus adoptionStatus; // 입양 완료 여부
     private String createdAt;
+    private String userThumbnail;
     private List<String> images = new ArrayList<>();
 
     public AnimalResponseDTO(Animal animal, List<AnimalImage> animalImages) {
@@ -51,6 +52,7 @@ public class AnimalResponseDTO {
         this.city = animal.getCity();
         this.adoptionStatus = animal.getAdoptionStatus();
         this.createdAt = TimestampToFormattedString(animal.getCreatedAt());
+        this.userThumbnail = animal.getUser().getMyPage().getImg();
 
         for (AnimalImage animalImage : animalImages) {
             this.images.add(animalImage.getUrl());
