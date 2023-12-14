@@ -34,14 +34,14 @@ public class LostController {
     //lost 삭제
     @DeleteMapping("/delete")
     public Map<String,String> deleteLost(@RequestHeader("access_token")String token,
-                                         @RequestParam("lostId")Long lostBoardId){
+                                         @RequestParam("id")Long lostBoardId){
         return lostService.deleteLost(token,lostBoardId);
     }
 
     //lost 수정
     @PutMapping("/modify")
     public Map<String, String> modify(@RequestHeader("access_token") String token,
-                                      @RequestParam("lostId")Long lostBoardId,
+                                      @RequestParam("id")Long lostBoardId,
                                       @RequestParam("lostImgId")Long lostImgId,
                                       LostBoardDetailDTO lostBoardDetailDTO,
                                       MultipartFile multipartFile)
@@ -57,7 +57,7 @@ public class LostController {
 
     //하나의 lost
     @GetMapping("/getBoard")
-    public LostBoardDetailDTO getOne(@RequestParam("lostId")Long lostBoardId){
+    public LostBoardDetailDTO getOne(@RequestParam("id")Long lostBoardId){
         return lostService.getThis(lostBoardId);
     }
 

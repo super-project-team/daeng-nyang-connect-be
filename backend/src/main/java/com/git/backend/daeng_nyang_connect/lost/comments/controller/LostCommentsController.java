@@ -20,7 +20,7 @@ public class LostCommentsController {
     //댓글 등록
     @PostMapping("/post")
     public Map<?,?>addComments(@RequestHeader("access_token") String token,
-                               @RequestParam("lostId")Long lostBoardId,
+                               @RequestParam("id")Long lostBoardId,
                                @RequestBody LostCommentsDTO lostCommentsDTO){
         return lostCommentsService.lostCommentAdd(token, lostBoardId, lostCommentsDTO);
     }
@@ -28,7 +28,7 @@ public class LostCommentsController {
     //댓글 수정
     @PutMapping("/modify")
     public Map<?,?> modifyComments(@RequestHeader("access_token") String token,
-                                   @RequestParam("commentId")Long lostCommentsId,
+                                   @RequestParam("id")Long lostCommentsId,
                                    @RequestBody LostCommentsDTO lostCommentsDTO){
         return lostCommentsService.lostCommentModify(token, lostCommentsId, lostCommentsDTO);
     }
@@ -36,7 +36,7 @@ public class LostCommentsController {
     //댓글 삭제
     @DeleteMapping("/delete")
     public Map<?,?> deleteComments(@RequestHeader("access_token")String token,
-                                   @RequestParam("commentId")Long lostCommentsId){
+                                   @RequestParam("id")Long lostCommentsId){
         return lostCommentsService.lostCommentDelete(token, lostCommentsId);
     }
 }
