@@ -45,7 +45,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll",
                                         "api/animal/all/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
-                                        "api/review/all", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one").permitAll()
+                                        "api/review/all", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one","api/my_pet/getAll").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
                                 .requestMatchers( "/api/mate/my_board", "/api/my_pet/my_board").authenticated()
                                 .requestMatchers("/api/mate/**", "/api/my_pet/**","/api/mate/all", "/api/my_pet/all").permitAll()
