@@ -61,10 +61,6 @@ public class MyPetService {
 
     private MyPetResponseDTO convertToMyPetResponseDTO(MyPet myPet) {
 
-        List<Long> images = myPet.getImg().stream()
-                .map(MyPetImage::getMyPetImgId)
-                .collect(Collectors.toList());
-
         List<String> imgUrls = myPet.getImg().stream()
                 .map(MyPetImage::getUrl)
                 .collect(Collectors.toList());
@@ -80,27 +76,36 @@ public class MyPetService {
                         .build())
                 .collect(Collectors.toList());
 
+        String userThumbnail = null;
+        if (myPet.getUser() != null && myPet.getUser().getMyPage() != null) {
+            userThumbnail = myPet.getUser().getMyPage().getImg();
+        }
+
         return MyPetResponseDTO.builder()
                 .myPetBoardId(myPet.getMyPetBoardId())
                 .userId(myPet.getUser().getUserId())
                 .nickname(myPet.getUser().getNickname())
-                .userThumbnail(myPet.getUser().getMyPage().getImg())
+                .userThumbnail(userThumbnail)
                 .kind(myPet.getKind())
                 //     .breed(myPet.getBreed())
                 .text(myPet.getText())
                 .img(imgUrls)
-                .myPetImgId(images)
                 .createdAt(myPet.getCreatedAt())
                 .comments(comments)
                 .myPetLikes(likes)
                 .build();
     }
     private MyPetCommentsResponseDTO convertToMyPetCommentsResponseDTO(MyPetComments comments) {
+        String userThumbnail = null;
+        if (comments.getUser() != null && comments.getUser().getMyPage() != null) {
+            userThumbnail = comments.getUser().getMyPage().getImg();
+        }
+
         return MyPetCommentsResponseDTO.builder()
                 .myPetCommentsId(comments.getMyPetCommentsId())
                 .userId(comments.getUser().getUserId())
                 .nickname(comments.getUser().getNickname())
-                .userThumbnail(comments.getUser().getMyPage().getImg())
+                .userThumbnail(userThumbnail)
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
                 .myPetCommentsLikes(convertToMyPetCommentsLikeDTOList(comments.getMyPetCommentsLikes()))
@@ -148,7 +153,10 @@ public class MyPetService {
                     .build();
 
             myPetRepository.save(myPet);
-            myPetImgUpload.uploadMyPetImgs(myPet, myPetDTO.getText(), img);
+
+            if (img != null && !img.isEmpty()) {
+                myPetImgUpload.uploadMyPetImgs(myPet, myPetDTO.getText(), img);
+            }
 
             return createSuccessResponse("게시물이 등록되었습니다.", HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
@@ -159,7 +167,7 @@ public class MyPetService {
     }
 
     @Transactional
-    public Map<String, String> modifyMyPet(Long myPetId, Long myPetImgId, MyPetDTO myPetDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
+    public Map<String, String> modifyMyPet(Long myPetId, MyPetDTO myPetDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
@@ -171,12 +179,10 @@ public class MyPetService {
             modifyMyPetFields(myPet, myPetDTO);
             myPetRepository.save(myPet);
 
-            deleteMyPetImageIfRequested(myPetImgId);
-
-            if (myPetImgId != null) {
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                // 이미지를 수정하는 경우
+                deleteMyPetImageIfRequested(myPet.getMyPetBoardId());
                 myPetImgUpload.uploadModifyMyPetImg(myPet, myPetDTO.getText(), multipartFile);
-            } else if (multipartFile != null && !multipartFile.isEmpty()) {
-                myPetImgUpload.uploadMyPetImgs(myPet, myPetDTO.getText(), Collections.singletonList(multipartFile));
             }
 
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);
@@ -282,7 +288,6 @@ public class MyPetService {
 
     private void modifyMyPetFields(MyPet myPet, MyPetDTO myPetDTO) {
         myPet.setKind(myPetDTO.getKind());
-        // myPet.setBreed(myPetDTO.getBreed());
         myPet.setText(myPetDTO.getText());
     }
 

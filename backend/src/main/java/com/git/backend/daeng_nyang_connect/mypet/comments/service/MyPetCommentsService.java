@@ -74,7 +74,7 @@ public class MyPetCommentsService {
                     .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
 
             checkOwnership(myPetComments, user);
-            updateMyPetCommentsFields(myPetComments, myPetCommentsDTO);
+            modifyMyPetCommentsFields(myPetComments, myPetCommentsDTO);
             myPetCommentsRepository.save(myPetComments);
 
             return createSuccessResponse("댓글이 수정되었습니다.", HttpStatus.OK);
@@ -176,7 +176,7 @@ public class MyPetCommentsService {
         }
     }
 
-    private void updateMyPetCommentsFields(MyPetComments myPetComments, MyPetCommentsDTO myPetCommentsDTO) {
+    private void modifyMyPetCommentsFields(MyPetComments myPetComments, MyPetCommentsDTO myPetCommentsDTO) {
         myPetComments.setComment(myPetCommentsDTO.getComment());
     }
 }

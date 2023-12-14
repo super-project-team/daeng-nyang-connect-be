@@ -60,10 +60,6 @@ public class MateService {
 
     private MateResponseDTO convertToMateResponseDTO(Mate mate) {
 
-        List<Long> images = mate.getImg().stream()
-                .map(MateImage::getMateImgId)
-                .collect(Collectors.toList());
-
         // 이미지 URL 리스트 생성
         List<String> imgUrls = mate.getImg().stream()
                 .map(MateImage::getUrl)
@@ -82,17 +78,21 @@ public class MateService {
                         .build())
                 .collect(Collectors.toList());
 
+        String userThumbnail = null;
+        if (mate.getUser() != null && mate.getUser().getMyPage() != null) {
+            userThumbnail = mate.getUser().getMyPage().getImg();
+        }
+
         // MateResponseDTO 생성 및 반환
         return MateResponseDTO.builder()
                 .mateBoardId(mate.getMateBoardId())
                 .userId(mate.getUser().getUserId())
                 .nickname(mate.getUser().getNickname())
-                .userThumbnail(mate.getUser().getMyPage().getImg())
+                .userThumbnail(userThumbnail)
                 .category(mate.getCategory())
                 .place(mate.getPlace())
                 .text(mate.getText())
                 .img(imgUrls)
-                .mateImgId(images)
                 .createdAt(mate.getCreatedAt())
                 .comments(comments)
                 .mateLikes(likes)
@@ -100,11 +100,16 @@ public class MateService {
     }
 
     private MateCommentsResponseDTO convertToMateCommentsResponseDTO(MateComments comments) {
+        String userThumbnail = null;
+        if (comments.getUser() != null && comments.getUser().getMyPage() != null) {
+            userThumbnail = comments.getUser().getMyPage().getImg();
+        }
+
         return MateCommentsResponseDTO.builder()
                 .mateCommentsId(comments.getMateCommentsId())
                 .userId(comments.getUser().getUserId())
                 .nickname(comments.getUser().getNickname())
-                .userThumbnail(comments.getUser().getMyPage().getImg())
+                .userThumbnail(userThumbnail)
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
                 .mateCommentsLikes(convertToMateCommentsLikeDTOList(comments.getMateCommentsLikes()))
@@ -153,7 +158,10 @@ public class MateService {
                     .build();
 
             mateRepository.save(mate);
-            mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), img);
+
+            if (img != null && !img.isEmpty()) {
+                mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), img);
+            }
 
             return createSuccessResponse("게시물이 등록되었습니다.", HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
@@ -164,7 +172,7 @@ public class MateService {
     }
 
     @Transactional
-    public Map<String, String> modifyMate(Long mateId, Long mateImgId, MateDTO mateDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
+    public Map<String, String> modifyMate(Long mateId, MateDTO mateDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
@@ -176,12 +184,10 @@ public class MateService {
             modifyMateFields(mate, mateDTO);
             mateRepository.save(mate);
 
-            deleteMateImageIfRequested(mateImgId);
-
-            if (mateImgId != null) {
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                // 이미지를 수정하는 경우
+                deleteMateImageIfRequested(mate.getMateBoardId());
                 mateImgUpload.uploadModifyMateImg(mate, mateDTO.getText(), multipartFile);
-            } else if (multipartFile != null && !multipartFile.isEmpty()) {
-                mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), Collections.singletonList(multipartFile));
             }
 
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);

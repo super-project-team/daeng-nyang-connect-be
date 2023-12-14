@@ -74,7 +74,7 @@ public class MateCommentsService {
                     .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
 
             checkOwnership(mateComments, user);
-            updateMateCommentsFields(mateComments, mateCommentsDTO);
+            modifyMateCommentsFields(mateComments, mateCommentsDTO);
             mateCommentsRepository.save(mateComments);
 
             return createSuccessResponse("댓글이 수정되었습니다.", HttpStatus.OK);
@@ -173,7 +173,7 @@ public class MateCommentsService {
         }
     }
 
-    private void updateMateCommentsFields(MateComments mateComments, MateCommentsDTO mateCommentsDTO) {
+    private void modifyMateCommentsFields(MateComments mateComments, MateCommentsDTO mateCommentsDTO) {
         mateComments.setComment(mateCommentsDTO.getComment());
     }
 

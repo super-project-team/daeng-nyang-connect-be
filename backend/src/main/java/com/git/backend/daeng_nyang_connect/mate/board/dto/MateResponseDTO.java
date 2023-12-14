@@ -22,7 +22,6 @@ public class MateResponseDTO {
     private String place;
     private String text;
     private List<String> img;
-    private List<Long> mateImgId;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
     private List<MateCommentsResponseDTO> comments;
