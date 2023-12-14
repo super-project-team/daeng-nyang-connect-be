@@ -1,10 +1,10 @@
 package com.git.backend.daeng_nyang_connect.mate.board.service;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateBoardLikeDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateResponseDTO;
-import com.git.backend.daeng_nyang_connect.mate.board.dto.UpdateMateDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.entity.Mate;
 import com.git.backend.daeng_nyang_connect.mate.board.entity.MateBoardLike;
 import com.git.backend.daeng_nyang_connect.mate.board.entity.MateImage;
@@ -50,21 +50,16 @@ public class MateService {
         return matePage.map(this::convertToMateResponseDTO);
     }
 
-    public List<MateResponseDTO> findUserMates(String token) {
-        String userEmail = tokenProvider.getEmailBytoken(token);
+    public MateResponseDTO getThisBoard(Long mate) {
 
-        if (userEmail == null) {
-            return Collections.emptyList();
-        }
+        Mate thisBoard = mateRepository.findById(mate)
+                .orElseThrow(() -> new NoSuchElementException(MSG_BOARD_NOT_FOUND));
 
-        List<Mate> userMates = mateRepository.findByUserEmail(userEmail);
-
-        return userMates.stream()
-                .map(this::convertToMateResponseDTO)
-                .collect(Collectors.toList());
+        return convertToMateResponseDTO(thisBoard);
     }
 
     private MateResponseDTO convertToMateResponseDTO(Mate mate) {
+
         // 이미지 URL 리스트 생성
         List<String> imgUrls = mate.getImg().stream()
                 .map(MateImage::getUrl)
@@ -83,11 +78,17 @@ public class MateService {
                         .build())
                 .collect(Collectors.toList());
 
+        String userThumbnail = null;
+        if (mate.getUser() != null && mate.getUser().getMyPage() != null) {
+            userThumbnail = mate.getUser().getMyPage().getImg();
+        }
+
         // MateResponseDTO 생성 및 반환
         return MateResponseDTO.builder()
                 .mateBoardId(mate.getMateBoardId())
                 .userId(mate.getUser().getUserId())
                 .nickname(mate.getUser().getNickname())
+                .userThumbnail(userThumbnail)
                 .category(mate.getCategory())
                 .place(mate.getPlace())
                 .text(mate.getText())
@@ -99,13 +100,18 @@ public class MateService {
     }
 
     private MateCommentsResponseDTO convertToMateCommentsResponseDTO(MateComments comments) {
+        String userThumbnail = null;
+        if (comments.getUser() != null && comments.getUser().getMyPage() != null) {
+            userThumbnail = comments.getUser().getMyPage().getImg();
+        }
+
         return MateCommentsResponseDTO.builder()
                 .mateCommentsId(comments.getMateCommentsId())
                 .userId(comments.getUser().getUserId())
                 .nickname(comments.getUser().getNickname())
+                .userThumbnail(userThumbnail)
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
-                //.mateCommentsLike(comments.getMateCommentsLike())
                 .mateCommentsLikes(convertToMateCommentsLikeDTOList(comments.getMateCommentsLikes()))
                 .build();
     }
@@ -136,7 +142,7 @@ public class MateService {
     }
 
     @Transactional
-    public Map<String, String> uploadMate(MateDTO mateDTO, String token, List<MultipartFile> img) {
+    public Map<String, String> postMate(MateDTO mateDTO, String token, List<MultipartFile> img) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
@@ -152,7 +158,10 @@ public class MateService {
                     .build();
 
             mateRepository.save(mate);
-            mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), img);
+
+            if (img != null && !img.isEmpty()) {
+                mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), img);
+            }
 
             return createSuccessResponse("게시물이 등록되었습니다.", HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
@@ -163,20 +172,22 @@ public class MateService {
     }
 
     @Transactional
-    public Map<String, String> updateMate(UpdateMateDTO updateMateDTO, String token, List<MultipartFile> img) {
+    public Map<String, String> modifyMate(Long mateId, MateDTO mateDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-            Mate mate = mateRepository.findById(updateMateDTO.getMateBoardId())
+            Mate mate = mateRepository.findById(mateId)
                     .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
             checkOwnership(mate, user);
-            updateMateFields(mate, updateMateDTO);
+            modifyMateFields(mate, mateDTO);
             mateRepository.save(mate);
 
-            if (img != null && !img.isEmpty()) {
-                mateImgUpload.uploadMateImgs(mate, updateMateDTO.getText(), img);
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                // 이미지를 수정하는 경우
+                deleteMateImageIfRequested(mate.getMateBoardId());
+                mateImgUpload.uploadModifyMateImg(mate, mateDTO.getText(), multipartFile);
             }
 
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);
@@ -187,13 +198,19 @@ public class MateService {
         }
     }
 
+    private void deleteMateImageIfRequested(Long mateImgId) {
+        if (mateImgId != null) {
+            mateImgUpload.deleteMateImg(mateImgId);
+        }
+    }
+
     @Transactional
-    public Map<String, String> deleteMate(Long mateBoardId, String token) {
+    public Map<String, String> deleteMate(Long mateId, String token) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
 
-            Mate mate = mateRepository.findById(mateBoardId)
+            Mate mate = mateRepository.findById(mateId)
                     .orElseThrow(() -> new EntityNotFoundException(MSG_BOARD_NOT_FOUND));
 
             checkOwnership(mate, user);
@@ -275,10 +292,10 @@ public class MateService {
         }
     }
 
-    private void updateMateFields(Mate mate, UpdateMateDTO updateMateDTO) {
-        mate.setCategory(updateMateDTO.getCategory());
-        mate.setPlace(updateMateDTO.getPlace());
-        mate.setText(updateMateDTO.getText());
+    private void modifyMateFields(Mate mate, MateDTO mateDTO) {
+        mate.setCategory(mateDTO.getCategory());
+        mate.setPlace(mateDTO.getPlace());
+        mate.setText(mateDTO.getText());
     }
 
 }

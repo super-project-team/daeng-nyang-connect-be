@@ -38,7 +38,7 @@ public class MateCommentsService {
     private static final String MSG_OWNER_ACCESS_DENIED = "댓글의 소유자가 아닙니다.";
 
     @Transactional
-    public Map<String, String> uploadComment(String token,Long mate, MateCommentsDTO mateCommentsDTO ) {
+    public Map<String, String> postComment(String token,Long mate, MateCommentsDTO mateCommentsDTO ) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
@@ -52,7 +52,7 @@ public class MateCommentsService {
                     .createdAt(mateCommentsDTO.getCreatedAt())
                     .user(user)
                     .mateCommentsLike(0)
-                   .build();
+                    .build();
 
             mateCommentsRepository.save(mateComments);
 
@@ -64,7 +64,7 @@ public class MateCommentsService {
         }
     }
 
-    public Map<String, String> updateComment(String token, Long mateCommentsId, MateCommentsDTO mateCommentsDTO) {
+    public Map<String, String> modifyComment(String token, Long mateCommentsId, MateCommentsDTO mateCommentsDTO) {
 
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
@@ -74,7 +74,7 @@ public class MateCommentsService {
                     .orElseThrow(() -> new EntityNotFoundException(MSG_COMMENT_NOT_FOUND));
 
             checkOwnership(mateComments, user);
-            updateMateCommentsFields(mateComments, mateCommentsDTO);
+            modifyMateCommentsFields(mateComments, mateCommentsDTO);
             mateCommentsRepository.save(mateComments);
 
             return createSuccessResponse("댓글이 수정되었습니다.", HttpStatus.OK);
@@ -173,7 +173,7 @@ public class MateCommentsService {
         }
     }
 
-    private void updateMateCommentsFields(MateComments mateComments, MateCommentsDTO mateCommentsDTO) {
+    private void modifyMateCommentsFields(MateComments mateComments, MateCommentsDTO mateCommentsDTO) {
         mateComments.setComment(mateCommentsDTO.getComment());
     }
 

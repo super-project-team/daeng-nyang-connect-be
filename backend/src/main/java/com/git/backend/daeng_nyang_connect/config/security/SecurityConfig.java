@@ -72,6 +72,8 @@ public class SecurityConfig {
                                         "api/animal/all/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
                                         "api/review/all", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
+                                .requestMatchers( "/api/mate/my_board", "/api/my_pet/my_board").authenticated()
+                                .requestMatchers("/api/mate/**", "/api/my_pet/**","/api/mate/all", "/api/my_pet/all").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 

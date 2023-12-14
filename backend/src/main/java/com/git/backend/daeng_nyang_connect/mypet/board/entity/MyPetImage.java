@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class MyPetImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_idx")
-    private Long myPetImageId;
+    private Long myPetImgId;
 
     @ManyToOne
     @JoinColumn(name = "my_pet_board_idx")

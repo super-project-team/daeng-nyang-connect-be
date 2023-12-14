@@ -16,6 +16,7 @@ public class MateCommentsDTO {
     private Long mateCommentsId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private Mate mate;
     private String comment;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

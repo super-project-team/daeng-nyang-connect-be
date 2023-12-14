@@ -1,8 +1,8 @@
 package com.git.backend.daeng_nyang_connect.mate.board.controller;
 
+import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateResponseDTO;
-import com.git.backend.daeng_nyang_connect.mate.board.dto.UpdateMateDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.service.MateService;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +25,14 @@ public class MateController {
 
     private final MateService mateService;
 
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public Page<MateResponseDTO> findAllMates(Pageable pageable) {
         return mateService.findAllMates(pageable);
     }
 
-    @GetMapping("/my_board")
-    public List<MateResponseDTO> findUserMates(@RequestHeader("access_token") String token) {
-        return mateService.findUserMates(token);
+    @GetMapping("/getBoard")
+    public MateResponseDTO getThisBoard(@RequestParam("id") Long mate) {
+        return mateService.getThisBoard(mate);
     }
 
     @GetMapping("/search")
@@ -40,31 +40,31 @@ public class MateController {
         return mateService.searchBoard(keyword, pageable);
     }
 
-    @PostMapping("/upload")
-    public Map<?,?> uploadMate(@RequestHeader("access_token") String token,
-                            @RequestPart("data") MateDTO mateDTO,
-                            @RequestPart("files") List<MultipartFile> fileList){
-        return mateService.uploadMate(mateDTO, token, fileList);
+    @PostMapping("/post")
+    public Map<?,?> postMate(@RequestHeader("access_token") String token,
+                             @RequestPart("data") MateDTO mateDTO,
+                             @RequestPart("files") List<MultipartFile> fileList){
+        return mateService.postMate(mateDTO, token, fileList);
     }
 
-    @PutMapping("/update")
-    public Map<?,?> updateMate(@RequestHeader("access_token") String token,
-                                @RequestPart("data") UpdateMateDTO updateMateDTO,
-                                @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
-        return mateService.updateMate(updateMateDTO, token, fileList);
+    @PutMapping("/modify")
+    public Map<?,?> modifyMate(@RequestHeader("access_token") String token,
+                               @RequestParam("mateId") Long mateId,
+                               @RequestPart("data") MateDTO mateDTO,
+                               @RequestPart(value = "files", required = false) MultipartFile multipartFile) throws FileUploadFailedException {
+        return mateService.modifyMate(mateId, mateDTO, token, multipartFile);
     }
 
     @DeleteMapping("/delete")
     public Map<?, ?> deleteMate(@RequestHeader("access_token") String token,
-                                @RequestBody Map<String, Long> request){
-        Long mateBoardId = request.get("mateBoardId");
-        return mateService.deleteMate(mateBoardId, token);
+                                @RequestParam("mateId") Long mateId){
+        return mateService.deleteMate(mateId, token);
     }
 
     @Transactional
     @PostMapping("/like")
     public Map<String, String> addLike(@RequestHeader("access_token") String token,
-                                                       @RequestParam("mateBoardId") Long mateBoardId) {
+                                       @RequestParam("mateBoardId") Long mateBoardId) {
         return mateService.clickLike(mateBoardId, token);
     }
 
