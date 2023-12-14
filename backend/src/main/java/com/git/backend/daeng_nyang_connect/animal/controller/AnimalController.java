@@ -92,6 +92,7 @@ public class AnimalController {
         return ResponseEntity.status(200).body(responseList);
     }
 
+    @Transactional
     @PostMapping("/scrap")
     public ResponseEntity<?> scrapAnimal(@RequestParam("animalId") Long animalId,
                                         @RequestHeader("access_token") String token){

@@ -183,7 +183,7 @@ public class AnimalServiceImpl  implements AnimalService{
         // 3. 해당 유저가 해당 댕냥이를 이미 스크랩 했는지 확인
         Map<String,String> message = new HashMap<>();
 
-        if(animalScrapRepository.findByUser(user).isPresent()){
+        if(animalScrapRepository.findMyScrapList(user, animalBoard).isPresent()){
             // 3-1. 만약 해당 유저가 해당 댕냥이를 이미 스크랩 했다면 (제거)
             animalScrapRepository.deleteByUser(user);
             message.put("message", animalBoard.getAnimalName() + "이 스크랩 목록에서 삭제되었습니다.");
