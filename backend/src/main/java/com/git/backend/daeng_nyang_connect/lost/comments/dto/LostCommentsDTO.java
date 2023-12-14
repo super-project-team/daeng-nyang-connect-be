@@ -16,4 +16,5 @@ public class LostCommentsDTO {
     private String comment;
     private Timestamp createdAt;
     private String nickname;
+    private String userThumbnail;
 }

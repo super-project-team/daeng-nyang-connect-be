@@ -40,7 +40,8 @@ public class AnimalController {
                                             @RequestParam("adoptedUserId") Long adoptedUserId,
                                             @RequestHeader("access_token") String token){
         AdoptedAnimal adoptedAnimal = animalService.completeAnimal(animalId, adoptedUserId, token);
-        return ResponseEntity.status(200).body(adoptedAnimal.getAnimal().getAnimalName() + " 이 " + adoptedAnimal.getUser().getNickname() +" 님에게 입양되었습니다.");
+        AnimalResponseDTO response = animalService.response(adoptedAnimal.getAnimal());
+        return ResponseEntity.status(200).body(response);
     }
 
     @Transactional
@@ -91,6 +92,7 @@ public class AnimalController {
         return ResponseEntity.status(200).body(responseList);
     }
 
+    @Transactional
     @PostMapping("/scrap")
     public ResponseEntity<?> scrapAnimal(@RequestParam("animalId") Long animalId,
                                         @RequestHeader("access_token") String token){

@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MyPetRepository extends JpaRepository<MyPet, Long> {
-
+    List<MyPet> findByUserEmail(String userEmail);
     Page<MyPet> findByTextContaining(String keyword, Pageable pageable);
 }

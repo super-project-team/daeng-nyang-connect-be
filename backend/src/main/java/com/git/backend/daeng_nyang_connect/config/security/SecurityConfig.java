@@ -31,31 +31,6 @@ public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//
-//        httpS.headers().frameOptions().sameOrigin()
-//                .and()
-//                .formLogin().disable()
-//                .csrf().disable()
-//                .cors().configurationSource(corsConfigurationSource()).and()
-//                .httpBasic().disable()
-//                .rememberMe().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/resources/static/**", "/api/register", "/api/login").permitAll()
-//                //나중에 글 작성 api에 Role_user
-//                .and()
-//                .exceptionHandling()
-////                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-//                //             .accessDeniedHandler(new CustomerAccessDeniedHandler())
-//                .and()
-//                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -70,7 +45,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll",
                                         "api/animal/all/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
-                                        "api/review/all", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one").permitAll()
+                                        "api/review/all", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one","api/my_pet/getAll").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
                                 .requestMatchers( "/api/mate/my_board", "/api/my_pet/my_board").authenticated()
                                 .requestMatchers("/api/mate/**", "/api/my_pet/**","/api/mate/all", "/api/my_pet/all").permitAll()

@@ -19,6 +19,7 @@ public class ReviewResponseDTO {
     private String adoptedAnimalName;
     private String textReview;
     private String createdAt;
+    private String userThumbnail;
     private List<String> images = new ArrayList<>();
 
     public ReviewResponseDTO(Review review, List<ReviewImage> reviewImages) {
@@ -26,6 +27,8 @@ public class ReviewResponseDTO {
         this.adoptedAnimalName = review.getAdoptedAnimal().getAnimal().getAnimalName();
         this.textReview = review.getTextReview();
         this.createdAt = TimestampToFormattedString(review.getCreatedAt());
+
+        this.userThumbnail = review.getUser().getMyPage().getImg();
 
         for(ReviewImage reviewImage : reviewImages){
             this.images.add(reviewImage.getUrl());

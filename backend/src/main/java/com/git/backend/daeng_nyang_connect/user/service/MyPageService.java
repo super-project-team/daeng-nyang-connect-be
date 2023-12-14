@@ -1,9 +1,17 @@
 package com.git.backend.daeng_nyang_connect.user.service;
 
+import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.entity.AnimalImage;
+import com.git.backend.daeng_nyang_connect.animal.entity.AnimalScrap;
+import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
+import com.git.backend.daeng_nyang_connect.animal.repository.AnimalImageRepository;
+import com.git.backend.daeng_nyang_connect.animal.repository.AnimalScrapRepository;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.user.dto.ModifyUserDto;
+import com.git.backend.daeng_nyang_connect.user.dto.MyBoardDto;
 import com.git.backend.daeng_nyang_connect.user.dto.MyPageDto;
+import com.git.backend.daeng_nyang_connect.user.dto.MyScrapAnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.MyPageRepository;
@@ -15,7 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -28,6 +38,9 @@ public class MyPageService {
     private final UserService userService;
     private final ProfileImgService profileImgService;
     private final PasswordEncoder passwordEncoder;
+    private final AnimalScrapRepository animalScrapRepository;
+    private final AnimalImageRepository animalImageRepository;
+
 
 
     public MyPageDto getMyInfo(String token){
@@ -96,7 +109,17 @@ public class MyPageService {
     }
 
 
+    public List<AnimalScrap> getMyScrapAnimals(String token) {
+        User user = userService.checkUserByToken(token);
+        return animalScrapRepository.findByUser(user);
+    }
 
-    
-
+    public List<MyScrapAnimalResponseDTO> myScrapAnimalResponse(List<AnimalScrap> getMyScrapAnimals){
+        List<MyScrapAnimalResponseDTO> responseList = new ArrayList<>();
+        for (AnimalScrap myScrapAnimal:getMyScrapAnimals){
+            List<AnimalImage> animalImageList = animalImageRepository.findByAnimal(myScrapAnimal.getAnimal());
+            responseList.add(new MyScrapAnimalResponseDTO(myScrapAnimal, animalImageList));
+        }
+        return responseList;
+    }
 }
