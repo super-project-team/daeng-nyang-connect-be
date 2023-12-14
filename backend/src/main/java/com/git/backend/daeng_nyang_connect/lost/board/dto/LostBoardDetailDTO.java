@@ -37,6 +37,10 @@ public class LostBoardDetailDTO {
     private String nickname;
     private String userThumbnail;
 
+//    private List<LostComments> lostCommentsId;
+//    private List<LostComments> lostCommentsUserId;
+//    private List<LostComments> lostCommentsNickname;
+//    private List<LostComments> lostCommentsCreatedAt;
     private List<LostCommentsDTO> lostComments;
 
     public static LostBoardDetailDTO fromEntity
@@ -57,7 +61,6 @@ public class LostBoardDetailDTO {
                 .createdAt(lost.getCreatedAt())
                 .text(lost.getText())
                 .nickname(lost.getUser().getNickname())
-                .userThumbnail(lost.getUser().getMyPage().getImg())
                 .images(lostImages)
                 .lostComments(lostComments)
                 .build();
