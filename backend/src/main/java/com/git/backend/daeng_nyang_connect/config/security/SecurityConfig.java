@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/resources/static/**").permitAll()
+                                .requestMatchers("/", "/css/**", "/images/**", "/js/**","/index", "/backend/src/main/resources/static/**").permitAll()
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll",
                                         "api/animal/all/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",

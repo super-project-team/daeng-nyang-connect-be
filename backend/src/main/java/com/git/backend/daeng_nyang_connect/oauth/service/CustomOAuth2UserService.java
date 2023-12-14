@@ -2,6 +2,7 @@ package com.git.backend.daeng_nyang_connect.oauth.service;
 
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
+import com.git.backend.daeng_nyang_connect.user.role.Role;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if(findUser.isEmpty()) {
             //회원이 존재하지 않을 경우 exist 값을 false 로 넣어줌
             userAttribute.put("exits", false);
+            User oauthUser = new User();
+            oauthUser.setEmail(email);
+            oauthUser.setRole(Role.USER);
+            userRepository.save(oauthUser);
             return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("USER")),
                     userAttribute, "email");
 
