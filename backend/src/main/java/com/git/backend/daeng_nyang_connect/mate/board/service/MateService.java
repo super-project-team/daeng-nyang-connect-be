@@ -142,7 +142,7 @@ public class MateService {
     }
 
     @Transactional
-    public Map<String, String> postMate(MateDTO mateDTO, String token, List<MultipartFile> img) {
+    public Map<String, String> postMate(MateDTO mateDTO, String token, List<MultipartFile> files) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
@@ -159,8 +159,8 @@ public class MateService {
 
             mateRepository.save(mate);
 
-            if (img != null && !img.isEmpty()) {
-                mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), img);
+            if (files != null && !files.isEmpty()) {
+                mateImgUpload.uploadMateImgs(mate, mateDTO.getText(), files);
             }
 
             return createSuccessResponse("게시물이 등록되었습니다.", HttpStatus.CREATED);
@@ -172,7 +172,7 @@ public class MateService {
     }
 
     @Transactional
-    public Map<String, String> modifyMate(Long mateId, MateDTO mateDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
+    public Map<String, String> modifyMate(Long mateId, MateDTO mateDTO, String token, MultipartFile files)throws FileUploadFailedException {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
@@ -184,10 +184,10 @@ public class MateService {
             modifyMateFields(mate, mateDTO);
             mateRepository.save(mate);
 
-            if (multipartFile != null && !multipartFile.isEmpty()) {
+            if (files != null && !files.isEmpty()) {
                 // 이미지를 수정하는 경우
                 deleteMateImageIfRequested(mate.getMateBoardId());
-                mateImgUpload.uploadModifyMateImg(mate, mateDTO.getText(), multipartFile);
+                mateImgUpload.uploadModifyMateImg(mate, mateDTO.getText(), files);
             }
 
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);

@@ -138,7 +138,7 @@ public class MyPetService {
     }
 
     @Transactional
-    public Map<String, String> postMyPet(MyPetDTO myPetDTO, String token, List<MultipartFile> img) {
+    public Map<String, String> postMyPet(MyPetDTO myPetDTO, String token, List<MultipartFile> files) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
@@ -154,8 +154,8 @@ public class MyPetService {
 
             myPetRepository.save(myPet);
 
-            if (img != null && !img.isEmpty()) {
-                myPetImgUpload.uploadMyPetImgs(myPet, myPetDTO.getText(), img);
+            if (files != null && !files.isEmpty()) {
+                myPetImgUpload.uploadMyPetImgs(myPet, myPetDTO.getText(), files);
             }
 
             return createSuccessResponse("게시물이 등록되었습니다.", HttpStatus.CREATED);
@@ -167,7 +167,7 @@ public class MyPetService {
     }
 
     @Transactional
-    public Map<String, String> modifyMyPet(Long myPetId, MyPetDTO myPetDTO, String token, MultipartFile multipartFile)throws FileUploadFailedException {
+    public Map<String, String> modifyMyPet(Long myPetId, MyPetDTO myPetDTO, String token, MultipartFile files)throws FileUploadFailedException {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
@@ -179,10 +179,10 @@ public class MyPetService {
             modifyMyPetFields(myPet, myPetDTO);
             myPetRepository.save(myPet);
 
-            if (multipartFile != null && !multipartFile.isEmpty()) {
+            if (files != null && !files.isEmpty()) {
                 // 이미지를 수정하는 경우
                 deleteMyPetImageIfRequested(myPet.getMyPetBoardId());
-                myPetImgUpload.uploadModifyMyPetImg(myPet, myPetDTO.getText(), multipartFile);
+                myPetImgUpload.uploadModifyMyPetImg(myPet, myPetDTO.getText(), files);
             }
 
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);

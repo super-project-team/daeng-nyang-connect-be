@@ -42,17 +42,17 @@ public class MyPetController {
 
     @PostMapping("/post")
     public Map<?,?> postMyPet(@RequestHeader("access_token") String token,
-                              @RequestPart("data") MyPetDTO myPetDTO,
-                              @RequestPart("files") List<MultipartFile> fileList){
-        return myPetService.postMyPet(myPetDTO, token, fileList);
+                              MyPetDTO myPetDTO,
+                              List<MultipartFile> files){
+        return myPetService.postMyPet(myPetDTO, token, files);
     }
 
     @PutMapping("/modify")
     public Map<?,?> modifyMyPet(@RequestHeader("access_token") String token,
                                 @RequestParam("myPetId") Long myPetId,
-                                @RequestPart("data") MyPetDTO myPetDTO,
-                                @RequestPart(value = "files", required = false) MultipartFile multipartFile) throws FileUploadFailedException {
-        return myPetService.modifyMyPet(myPetId, myPetDTO, token, multipartFile);
+                                MyPetDTO myPetDTO,
+                                MultipartFile files) throws FileUploadFailedException {
+        return myPetService.modifyMyPet(myPetId, myPetDTO, token, files);
     }
 
     @DeleteMapping("/delete")

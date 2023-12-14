@@ -42,17 +42,17 @@ public class MateController {
 
     @PostMapping("/post")
     public Map<?,?> postMate(@RequestHeader("access_token") String token,
-                             @RequestPart("data") MateDTO mateDTO,
-                             @RequestPart("files") List<MultipartFile> fileList){
-        return mateService.postMate(mateDTO, token, fileList);
+                             MateDTO mateDTO,
+                             List<MultipartFile> files){
+        return mateService.postMate(mateDTO, token, files);
     }
 
     @PutMapping("/modify")
     public Map<?,?> modifyMate(@RequestHeader("access_token") String token,
                                @RequestParam("mateId") Long mateId,
-                               @RequestPart("data") MateDTO mateDTO,
-                               @RequestPart(value = "files", required = false) MultipartFile multipartFile) throws FileUploadFailedException {
-        return mateService.modifyMate(mateId, mateDTO, token, multipartFile);
+                               MateDTO mateDTO,
+                               MultipartFile files) throws FileUploadFailedException {
+        return mateService.modifyMate(mateId, mateDTO, token, files);
     }
 
     @DeleteMapping("/delete")
