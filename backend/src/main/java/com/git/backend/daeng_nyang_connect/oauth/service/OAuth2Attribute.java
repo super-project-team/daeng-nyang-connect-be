@@ -63,11 +63,11 @@ public class OAuth2Attribute {
     private static OAuth2Attribute ofKakao(String provider, String attributeKey,
                                            Map<String ,Object> attributes){
         Map<String ,Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_acount");
-        Map<String ,Object> kakaoProfile = (Map<String, Object>) attributes.get("profile");
+        Map<String ,Object> kakaoProfile = (Map<String, Object>) attributes.get("profile_nickname");
 
         return OAuth2Attribute.builder()
-//                .email((String) kakaoAccount.get("email"))
-                .nickname((String) kakaoProfile.get("profile_nickname"))
+                .email((String) kakaoProfile.get("profile_nickname"))
+     //           .nickname((String) kakaoProfile.get("profile_nickname"))
                 .provider(provider)
                 .attributes(kakaoProfile)
                 .attributeKey(attributeKey)
