@@ -7,7 +7,6 @@ import com.git.backend.daeng_nyang_connect.mate.board.service.MateService;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class MateController {
     private final MateService mateService;
 
     @GetMapping("/getAll")
-    public Page<MateResponseDTO> findAllMates(Pageable pageable) {
+    public List<MateResponseDTO> findAllMates(Pageable pageable) {
         return mateService.findAllMates(pageable);
     }
 
@@ -36,7 +35,7 @@ public class MateController {
     }
 
     @GetMapping("/search")
-    public Page<MateDTO> searchBoard(@RequestParam String keyword, Pageable pageable) {
+    public List<MateDTO> searchBoard(@RequestParam String keyword, Pageable pageable) {
         return mateService.searchBoard(keyword, pageable);
     }
 

@@ -7,7 +7,6 @@ import com.git.backend.daeng_nyang_connect.mypet.board.service.MyPetService;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class MyPetController {
     private final MyPetService myPetService;
 
     @GetMapping("/getAll")
-    public Page<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
+    public List<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
         return myPetService.findAllMyPet(pageable);
     }
 
@@ -36,7 +35,7 @@ public class MyPetController {
     }
 
     @GetMapping("/search")
-    public Page<MyPetDTO> searchBoard(@RequestParam String keyword, Pageable pageable){
+    public List<MyPetDTO> searchBoard(@RequestParam String keyword, Pageable pageable){
         return myPetService.searchBoard(keyword, pageable);
     }
 

@@ -55,11 +55,10 @@ public class SecurityConfig {
                                 .requestMatchers("/resources/static/**").permitAll()
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll",
-                                        "api/animal/all/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
-                                        "api/review/all", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one",
-                                        "api/my_pet/getAll","/api/mate/**", "/api/my_pet/**","/api/mate/all", "/api/my_pet/all").permitAll()
+                                        "api/animal/getAll/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
+                                        "api/review/getAll", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one",
+                                        "/api/mate/getAll","api/my_pet/getAll","/api/mate/**", "/api/my_pet/**").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
-                                .requestMatchers( "/api/mate/my_board", "/api/my_pet/my_board").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);

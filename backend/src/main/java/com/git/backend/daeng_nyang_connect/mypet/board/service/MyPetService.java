@@ -45,10 +45,11 @@ public class MyPetService {
     private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
     private static final String MSG_OWNER_ACCESS_DENIED = "게시물의 소유자가 아닙니다.";
 
-    public Page<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
+    public List<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 12, pageable.getSort());
         Page<MyPet> myPetPage = myPetRepository.findAll(customPageable);
-        return myPetPage.map(this::convertToMyPetResponseDTO);
+        List<MyPet> content = myPetPage.getContent();
+        return content.stream().map(this::convertToMyPetResponseDTO).collect(Collectors.toList());
     }
 
     public MyPetResponseDTO getThisBoard(Long myPet) {
@@ -120,12 +121,13 @@ public class MyPetService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public Page<MyPetDTO> searchBoard(String keyword, Pageable pageable){
+    public List<MyPetDTO> searchBoard(String keyword, Pageable pageable) {
         Page<MyPet> myPetPage = myPetRepository.findByTextContaining(keyword, pageable);
-        return myPetPage.map(myPet -> {
+        List<MyPet> content = myPetPage.getContent();
+        return content.stream().map(myPet -> {
             String author = findUserNickNameByMyPet(myPet.getMyPetBoardId());
             return MyPetDTO.fromMyPetEntity(myPet, author);
-        });
+        }).collect(Collectors.toList());
     }
 
     private String findUserNickNameByMyPet(Long myPetBoardId) {

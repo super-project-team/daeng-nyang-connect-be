@@ -44,10 +44,11 @@ public class MateService {
     private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
     private static final String MSG_OWNER_ACCESS_DENIED = "게시물의 소유자가 아닙니다.";
 
-    public Page<MateResponseDTO> findAllMates(Pageable pageable) {
+    public List<MateResponseDTO> findAllMates(Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 12, pageable.getSort());
         Page<Mate> matePage = mateRepository.findAll(customPageable);
-        return matePage.map(this::convertToMateResponseDTO);
+        List<Mate> content = matePage.getContent();
+        return content.stream().map(this::convertToMateResponseDTO).collect(Collectors.toList());
     }
 
     public MateResponseDTO getThisBoard(Long mate) {
@@ -124,12 +125,13 @@ public class MateService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public Page<MateDTO> searchBoard(String keyword, Pageable pageable) {
+    public List<MateDTO> searchBoard(String keyword, Pageable pageable) {
         Page<Mate> matePage = mateRepository.findByTextContaining(keyword, pageable);
-        return matePage.map(mate -> {
+        List<Mate> content = matePage.getContent();
+        return content.stream().map(mate -> {
             String author = findUserNickNameByMate(mate.getMateBoardId());
             return MateDTO.fromMateEntity(mate, author);
-        });
+        }).collect(Collectors.toList());
     }
 
     private String findUserNickNameByMate(Long mateBoardId) {

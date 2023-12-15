@@ -54,7 +54,7 @@ public class ReviewController {
     }
 
     // 입양간 동물에 대한 리뷰 전체 출력
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public ResponseEntity<?> findAllReview(){
         List<Review> reviewList = reviewService.findAllReview();
         List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);

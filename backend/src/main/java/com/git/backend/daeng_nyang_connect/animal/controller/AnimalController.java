@@ -64,7 +64,7 @@ public class AnimalController {
     }
 
     // 조회 - 전체 * kind(동물 종류) * city(지역별) * 입양 완료 상태별
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public ResponseEntity<?> findAllAnimal(){
         List<Animal> animalList = animalService.findAllAnimal();
         List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
