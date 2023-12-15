@@ -1,4 +1,4 @@
-package com.git.backend.daeng_nyang_connect.Exception;
+package com.git.backend.daeng_nyang_connect.exception;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
