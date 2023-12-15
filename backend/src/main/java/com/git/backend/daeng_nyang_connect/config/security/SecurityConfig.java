@@ -3,6 +3,8 @@ package com.git.backend.daeng_nyang_connect.config.security;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.filter.JwtAuthenticationFilter;
+import com.git.backend.daeng_nyang_connect.oauth.handler.MyAuthenticationSuccessHandler;
+import com.git.backend.daeng_nyang_connect.oauth.service.CustomOAuth2UserService;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -35,6 +37,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
 
     @Bean
@@ -57,10 +61,15 @@ public class SecurityConfig {
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll",
                                         "api/animal/getAll/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
                                         "api/review/getAll", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one",
-                                        "/api/mate/getAll","api/my_pet/getAll","/api/mate/**", "/api/my_pet/**").permitAll()
+                                        "/api/mate/getAll","api/my_pet/getAll","/api/mate/**","/api/my_pet/**","/login/oauth2/**").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
+                .oauth2Login(oauth2 -> {
+                    oauth2
+                            .successHandler(myAuthenticationSuccessHandler)
+                            .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService));
+                })
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
