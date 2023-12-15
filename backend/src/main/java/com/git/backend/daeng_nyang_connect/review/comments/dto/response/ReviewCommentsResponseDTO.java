@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewCommentsResponseDTO {
+    private Long reviewCommentsId;
     private Long reviewId;
     private String userNickname;
     private String adoptedAnimalName;
@@ -21,6 +22,7 @@ public class ReviewCommentsResponseDTO {
     private String userThumbnail;
 
     public ReviewCommentsResponseDTO(ReviewComments reviewComments) {
+        this.reviewCommentsId = reviewComments.getReviewCommentsId();
         this.reviewId = reviewComments.getReview().getReviewId();
         this.userNickname = reviewComments.getUser().getNickname();
         this.adoptedAnimalName = reviewComments.getReview().getAdoptedAnimal().getAnimal().getAnimalName();

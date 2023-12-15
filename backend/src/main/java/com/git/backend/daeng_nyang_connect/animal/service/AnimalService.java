@@ -58,6 +58,9 @@ public interface AnimalService {
     // 원하는 response 값 저장 후 반환
     AnimalResponseDTO response(Animal animal);
 
+    // 원하는 response 값 저장 후 반환
+    AnimalResponseDTO response(AdoptedAnimal animal);
+
     // 원하는 response 값 List에 저장 후 반환
     List<AnimalResponseDTO> responseList(List<Animal> animalList);
 }
