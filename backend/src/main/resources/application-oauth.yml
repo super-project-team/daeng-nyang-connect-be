@@ -6,13 +6,13 @@ spring:
           google:
             client-id: ${google-id}
             client-secret: ${google-secret}
-            redirect-uri: "http://localhost:8080/login/oauth2/code/google"
+            redirect-uri: "http://3.35.16.126:8080//login/oauth2/code/google"
             authorization-grant-type: authorization_code
             scope: profile,email
 
           kakao:
             client-id: ${kakao-id}
-            redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
+            redirect-uri: "http://3.35.16.126:8080/login/oauth2/code/kakao"
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image
@@ -20,7 +20,7 @@ spring:
           naver:
             client-id: ${naver-id}
             client-secret: ${naver-secret}
-            redirect-uri: "http://localhost:8080/login/oauth2/code/naver"
+            redirect-uri: "http://3.35.16.126:8080/login/oauth2/code/naver"
             authorization-grant-type: authorization_code
             scope: name, email, profile_image,nickname,gender,mobile
             client-name: Naver
