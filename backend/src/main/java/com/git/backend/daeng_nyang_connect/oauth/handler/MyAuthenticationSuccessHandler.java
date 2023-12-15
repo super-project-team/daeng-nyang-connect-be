@@ -56,6 +56,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             rs.put("access_token", accessToken);
             rs.put("refresh_token", refreshToken);
             rs.put("http_status", HttpStatus.OK.toString());
+            log.info("access_token : " + accessToken);
 
             // 이 부분에서 토큰을 반환하도록 처리
             response.setContentType("application/json;charset=UTF-8");
