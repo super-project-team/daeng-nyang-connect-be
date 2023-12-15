@@ -40,7 +40,7 @@ public class AnimalController {
                                             @RequestParam("adoptedUserId") Long adoptedUserId,
                                             @RequestHeader("access_token") String token){
         AdoptedAnimal adoptedAnimal = animalService.completeAnimal(animalId, adoptedUserId, token);
-        AnimalResponseDTO response = animalService.response(adoptedAnimal.getAnimal());
+        AnimalResponseDTO response = animalService.response(adoptedAnimal);
         return ResponseEntity.status(200).body(response);
     }
 
@@ -55,8 +55,8 @@ public class AnimalController {
     @Transactional
     @PutMapping("/modify")
     public ResponseEntity<?> updateAnimal(@RequestParam("animalId") Long animalId,
-                                          @RequestPart("dto") AnimalRequestDTO animalRequestDTO,
-                                          @RequestPart("files") List<MultipartFile> files,
+                                          AnimalRequestDTO animalRequestDTO,
+                                          List<MultipartFile> files,
                                           @RequestHeader("access_token") String token){
         Animal updateAnimal = animalService.updateAnimal(animalId, animalRequestDTO, files, token);
         AnimalResponseDTO response = animalService.response(updateAnimal);

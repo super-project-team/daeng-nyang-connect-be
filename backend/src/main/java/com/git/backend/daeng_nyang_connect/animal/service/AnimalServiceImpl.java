@@ -257,9 +257,13 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     public AnimalResponseDTO response(Animal animal) {
         List<AnimalImage> animalImages = animalImageRepository.findByAnimal(animal);
-
-
         return new AnimalResponseDTO(animal, animalImages);
+    }
+
+    @Override
+    public AnimalResponseDTO response(AdoptedAnimal adoptedAnimal) {
+        List<AnimalImage> animalImages = animalImageRepository.findByAnimal(adoptedAnimal.getAnimal());
+        return new AnimalResponseDTO(adoptedAnimal, animalImages);
     }
 
     @Override
