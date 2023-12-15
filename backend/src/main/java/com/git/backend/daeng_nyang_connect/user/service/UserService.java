@@ -120,7 +120,7 @@ public class UserService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 회원이 없을 경우 예외 처리
-            userRepository.findByEmail(email)
+            User isUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("회원이 없습니다"));
 
             // 로그아웃 토큰이 있는 경우 삭제
@@ -142,6 +142,7 @@ public class UserService {
             response.put("access_token", accessToken);
             response.put("refresh_token", refreshToken);
             response.put("http_status", HttpStatus.OK.toString());
+            response.put("nickname", isUser.getNickname());
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {

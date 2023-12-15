@@ -61,8 +61,14 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(object.writeValueAsString(rs));
 
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/")
                     .queryParam("access_token", accessToken)
+                    .build()
+                    .encode(StandardCharsets.UTF_8)
+                    .toUriString();
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        }else{
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();
