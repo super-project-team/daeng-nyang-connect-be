@@ -52,24 +52,25 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             String accessToken = tokenProvider.createAccessToken(email);
             String refreshToken = tokenProvider.createRefreshToken(email);
             Map<String, String> rs = new HashMap<>();
-            rs.put("message", "로그인 되었습니다");
-            rs.put("access_token", accessToken);
-            rs.put("refresh_token", refreshToken);
-            rs.put("http_status", HttpStatus.OK.toString());
-            log.info("access_token : " + accessToken);
+//            rs.put("message", "로그인 되었습니다");
+//            rs.put("access_token", accessToken);
+//            rs.put("refresh_token", refreshToken);
+//            rs.put("http_status", HttpStatus.OK.toString());
+//            log.info("access_token : " + accessToken);
 
             // 이 부분에서 토큰을 반환하도록 처리
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(object.writeValueAsString(rs));
+//            response.setContentType("application/json;charset=UTF-8");
+//            response.getWriter().write(object.writeValueAsString(rs));
 
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/")
+            response.addHeader("access_token", accessToken);
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/")
                     .queryParam("access_token", accessToken)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }else{
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/register")
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();

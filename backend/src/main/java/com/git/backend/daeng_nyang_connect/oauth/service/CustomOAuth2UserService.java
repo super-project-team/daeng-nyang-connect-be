@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.oauth.service;
 
+import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
 
 
     @Override
@@ -65,6 +68,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         }
         userAttribute.put("exists", true);
+        String accessToken = tokenProvider.createAccessToken(email);
+        log.info(accessToken);
+
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(findUser.get().getRole().toString())),
                 userAttribute, "email");
