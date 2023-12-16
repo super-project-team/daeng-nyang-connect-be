@@ -176,7 +176,7 @@ public class TipsBoardService {
     //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
     @Transactional
     public List<TipsBoardDto> getAll(Pageable pageable){
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 20, pageable.getSort());
         Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
         List<Tips> tipsList = tipsPage.getContent();
 
