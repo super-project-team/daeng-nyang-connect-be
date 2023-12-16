@@ -34,7 +34,7 @@ public class MateComments {
 
     private String comment;
     @Column(name = "mate_comments_like")
-    private Integer mateCommentsLike;
+    private Integer like;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -42,9 +42,9 @@ public class MateComments {
 
     @Getter
     @OneToMany(mappedBy = "mateComments", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MateCommentsLike> mateCommentsLikes;
-    public void setMateCommentsLike(Integer mateCommentsLike) {
-        this.mateCommentsLike = mateCommentsLike;
+    private List<MateCommentsLike> likes;
+    public void setLike(Integer like) {
+        this.like = like;
     }
 
     public void setComment(String comment) {

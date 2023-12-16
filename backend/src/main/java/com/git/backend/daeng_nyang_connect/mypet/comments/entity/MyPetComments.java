@@ -34,7 +34,7 @@ public class MyPetComments {
 
     private String comment;
     @Column(name = "my_pet_comments_like")
-    private Integer myPetCommentsLike;
+    private Integer like;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -42,9 +42,9 @@ public class MyPetComments {
 
     @Getter
     @OneToMany(mappedBy = "myPetComments", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MyPetCommentsLike> myPetCommentsLikes;
-    public void setMyPetCommentsLike(Integer myPetCommentsLike) {
-        this.myPetCommentsLike = myPetCommentsLike;
+    private List<MyPetCommentsLike> likes;
+    public void setLike(Integer Like) {
+        this.like = like;
     }
 
     public void setComment(String comment) {

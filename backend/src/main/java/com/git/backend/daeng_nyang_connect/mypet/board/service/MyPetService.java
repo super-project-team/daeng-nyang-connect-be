@@ -70,7 +70,7 @@ public class MyPetService {
                 .map(this::convertToMyPetCommentsResponseDTO)
                 .collect(Collectors.toList());
 
-        List<MyPetBoardLikeDTO> likes = myPet.getMyPetLikes().stream()
+        List<MyPetBoardLikeDTO> likes = myPet.getLikes().stream()
                 .map(like -> MyPetBoardLikeDTO.builder()
                         .myPetBoardLikeId(like.getMyPetBoardLikeId())
                         .userId(like.getUser().getUserId())
@@ -93,7 +93,7 @@ public class MyPetService {
                 .img(imgUrls)
                 .createdAt(myPet.getCreatedAt())
                 .comments(comments)
-                .myPetLikes(likes)
+                .likes(likes)
                 .build();
     }
     private MyPetCommentsResponseDTO convertToMyPetCommentsResponseDTO(MyPetComments comments) {
@@ -109,7 +109,7 @@ public class MyPetService {
                 .userThumbnail(userThumbnail)
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
-                .myPetCommentsLikes(convertToMyPetCommentsLikeDTOList(comments.getMyPetCommentsLikes()))
+                .likes(convertToMyPetCommentsLikeDTOList(comments.getLikes()))
                 .build();
     }
 
@@ -151,7 +151,7 @@ public class MyPetService {
                     .kind(myPetDTO.getKind())
                     .text(myPetDTO.getText())
                     .createdAt(myPetDTO.getCreatedAt())
-                    .myPetLike(0)
+                    .like(0)
                     .build();
 
             myPetRepository.save(myPet);
@@ -229,8 +229,8 @@ public class MyPetService {
             // 좋아요 추가
             if (!hasUserLiked) {
                 MyPetBoardLike myPetBoardLike = new MyPetBoardLike(myPet, user);
-                myPet.getMyPetLikes().add(myPetBoardLike);
-                myPet.setMyPetLike(myPet.getMyPetLike() + 1);
+                myPet.getLikes().add(myPetBoardLike);
+                myPet.setLike(myPet.getLike() + 1);
                 myPetRepository.save(myPet);
             }
         } else {
@@ -238,9 +238,9 @@ public class MyPetService {
             if (hasUserLiked) {
                 MyPetBoardLike userLike = myPetBoardLikeRepository.findByMyPetAndUser(myPet, user)
                         .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 게시글에 없습니다."));
-                myPet.getMyPetLikes().remove(userLike);
+                myPet.getLikes().remove(userLike);
                 myPetBoardLikeRepository.delete(userLike);
-                myPet.setMyPetLike(myPet.getMyPetLike() - 1);
+                myPet.setLike(myPet.getLike() - 1);
                 myPetRepository.save(myPet);
             }
         }

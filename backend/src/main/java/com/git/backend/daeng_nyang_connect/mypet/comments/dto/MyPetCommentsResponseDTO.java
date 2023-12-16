@@ -19,5 +19,5 @@ public class MyPetCommentsResponseDTO {
     private String comment;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-    private List<MyPetCommentsLikeDTO> myPetCommentsLikes;
+    private List<MyPetCommentsLikeDTO> likes;
 }
