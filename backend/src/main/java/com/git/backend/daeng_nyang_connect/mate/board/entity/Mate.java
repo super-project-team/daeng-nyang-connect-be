@@ -52,7 +52,8 @@ public class Mate {
     private List<MateBoardLike> mateLikes;
 
     public void setLike(Integer mateLike){
-        this.like = mateLike;
+        this.mateLike = mateLike;
+    }
     public void setMateLike(Integer mateLike){
         this.mateLike = mateLike;
     }
