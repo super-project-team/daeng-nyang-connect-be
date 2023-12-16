@@ -46,7 +46,7 @@ public class LostService {
         User user = userService.checkUserByToken(token);
 
         Lost lost = Lost.builder()
-                .lostBoardId(lostBoardDetailDTO.getLostBoardId())
+                .lostBoardId(lostBoardDetailDTO.getBoardId())
                 .user(user)
                 .category(lostBoardDetailDTO.getCategory())
                 .place(lostBoardDetailDTO.getPlace())
@@ -148,8 +148,8 @@ public class LostService {
 
         List<LostCommentsDTO> lostCommentsDTOList = thisLostComments.stream()
                 .map(lostComments -> LostCommentsDTO.builder()
-                        .lostCommentsId(lostComments.getLostCommentsId())
-                        .lostBoardId(lostComments.getLost().getLostBoardId())
+                        .commentsId(lostComments.getLostCommentsId())
+                        .boardId(lostComments.getLost().getLostBoardId())
                         .userId(lostComments.getUser().getUserId())
                         .nickname(lostComments.getUser().getNickname())
                         .userThumbnail(lostComments.getUser().getMyPage().getImg())

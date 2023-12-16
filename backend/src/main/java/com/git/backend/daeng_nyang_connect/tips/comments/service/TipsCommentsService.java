@@ -41,7 +41,7 @@ public class TipsCommentsService {
         Tips byId = tipsBoardRepository.findById(tipsId).orElseThrow();
 
        TipsComments tipsComments = TipsComments.builder()
-               .tipsCommentsId(tipsCommentsDto.getTipsCommentsId())
+               .tipsCommentsId(tipsCommentsDto.getCommentsId())
                .comment(tipsCommentsDto.getComment())
                .tips(byId)
                .createdAt(timestamp)

@@ -14,7 +14,7 @@ public class SignUpDto {
     private String password;
     private String name;
     private String mobile;
-    private String nickName;
+    private String nickname;
     private String city;
     private String town;
     private boolean experience;

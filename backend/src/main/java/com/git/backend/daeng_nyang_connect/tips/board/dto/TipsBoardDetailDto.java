@@ -19,16 +19,16 @@ import java.util.stream.Collectors;
 @Builder
 public class TipsBoardDetailDto {
 
-    private Long tipsBoardId;
+    private Long boardId;
     private String category;
     private String title;
     private String text;
     private List<TipsImage> img;
-    private Integer tipsLike;
-    private Timestamp boardCreatedAt;
+    private Integer like;
+    private Timestamp createdAt;
 
     //게시글 작성 유저 닉네임 필요
-    private String userNickname;
+    private String nickname;
     private String userThumbnail;
 
     private List<TipsCommentsDto> comments;
@@ -39,14 +39,14 @@ public class TipsBoardDetailDto {
     public static TipsBoardDetailDto fromEntity(Tips tips, List<TipsImage> tipsImage, List<TipsCommentsDto> comments,
                                                  List<TipsBoardLikeDto> likes) {
         return TipsBoardDetailDto.builder()
-                .tipsBoardId(tips.getTipsBoardId())
+                .boardId(tips.getTipsBoardId())
                 .category(tips.getCategory())
                 .title(tips.getTitle())
                 .text(tips.getText())
                 .img(tipsImage)
-                .tipsLike(tips.getTipsLike())
-                .boardCreatedAt(tips.getCreatedAt())
-                .userNickname(tips.getUser().getNickname())
+                .like(tips.getTipsLike())
+                .createdAt(tips.getCreatedAt())
+                .nickname(tips.getUser().getNickname())
                 .userThumbnail(tips.getUser().getMyPage().getImg())
                 .comments(comments)
                 .likes(likes)

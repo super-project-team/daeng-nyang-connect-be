@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class MyPetResponseDTO {
-    private Long myPetBoardId;
+    private Long boardId;
     private Long userId;
     private String nickname;
     private String userThumbnail;

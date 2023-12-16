@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class FindReviewDto {
 
-    private Long reviewId;
+    private Long boardId;
     private String text;
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

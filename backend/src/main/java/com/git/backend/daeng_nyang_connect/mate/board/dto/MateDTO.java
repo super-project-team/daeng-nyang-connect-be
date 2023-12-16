@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Builder
 public class MateDTO {
 
-    private Long mateBoardId;
+    private Long boardId;
     private Long userId;
     private String nickname;
     private String userThumbnail;
@@ -26,7 +26,7 @@ public class MateDTO {
 
     public static MateDTO fromMateEntity(Mate mate, String nickname) {
         return MateDTO.builder()
-                .mateBoardId(mate.getMateBoardId())
+                .boardId(mate.getMateBoardId())
                 .category(mate.getCategory())
                 .userId(mate.getUser().getUserId())
                 .nickname(nickname)
@@ -34,7 +34,7 @@ public class MateDTO {
                 .place(mate.getPlace())
                 .text(mate.getText())
                 .createdAt(mate.getCreatedAt())
-                .like(mate.getLike())
+                .like(mate.getMateLike())
                 .build();
     }
 }

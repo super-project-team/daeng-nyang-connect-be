@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class MateCommentsResponseDTO {
-    private Long mateCommentsId;
+    private Long commentsId;
     private Long userId;
     private String nickname;
     private String userThumbnail;

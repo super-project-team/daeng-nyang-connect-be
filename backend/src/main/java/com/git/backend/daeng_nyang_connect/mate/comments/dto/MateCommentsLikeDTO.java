@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class MateCommentsLikeDTO {
-    private Long mateCommentsLikeId;
+    private Long likeId;
     private Long userId;
 }

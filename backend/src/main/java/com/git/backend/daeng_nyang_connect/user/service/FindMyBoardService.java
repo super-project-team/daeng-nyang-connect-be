@@ -77,35 +77,35 @@ public class FindMyBoardService {
 
         List<TipsBoardDto> tipsBoardDtoList = tips.stream().
                 map(tipsDto -> TipsBoardDto.builder()
-                        .tipsBoardId(tipsDto.getTipsBoardId())
+                        .boardId(tipsDto.getTipsBoardId())
                         .title(tipsDto.getTitle())
                         .createdAt(tipsDto.getCreatedAt())
                         .build()).toList();
 
         List<FindReviewDto> reviewRequestDTOS = review.stream().
                 map(reviewDto -> FindReviewDto.builder()
-                        .reviewId(reviewDto.getReviewId())
+                        .boardId(reviewDto.getReviewId())
                         .text(reviewDto.getTextReview())
                         .createdAt(reviewDto.getCreatedAt())
                         .build()).toList();
 
         List<MyPetDTO> myPetDTOList = myPets.stream().
                 map(myPet -> MyPetDTO.builder()
-                        .myPetBoardId(myPet.getMyPetBoardId())
+                        .boardId(myPet.getMyPetBoardId())
                         .text(myPet.getText())
                         .createdAt(myPet.getCreatedAt())
                         .build()).toList();
 
         List<MateDTO> mateDTOList = mates.stream()
                 .map(mate -> MateDTO.builder()
-                        .mateBoardId(mate.getMateBoardId())
+                        .boardId(mate.getMateBoardId())
                         .text(mate.getText())
                         .createdAt(mate.getCreatedAt())
                         .build()).toList();
 
         List<LostBoardDTO> lostDto = lost.stream()
                 .map(lostList -> LostBoardDTO.builder()
-                        .lostBoardId(lostList.getLostBoardId())
+                        .boardId(lostList.getLostBoardId())
                         .text(lostList.getText())
                         .createdAt(lostList.getCreatedAt())
                         .build()).toList();
@@ -132,7 +132,7 @@ public class FindMyBoardService {
         for (TipsBoardLike tipsLike : tipsLikes) {
             Tips byId = tipsBoardRepository.findById(tipsLike.getTips().getTipsBoardId()).orElseThrow();
             TipsBoardDto dto = TipsBoardDto.builder()
-                    .tipsBoardId(byId.getTipsBoardId())
+                    .boardId(byId.getTipsBoardId())
                     .title(byId.getTitle())
                     .build();
             tipsBoardDtoList.add(dto);
@@ -141,7 +141,7 @@ public class FindMyBoardService {
         for (MateBoardLike mateLike : mateBoardLikes) {
             Mate byId = mateRepository.findById(mateLike.getMate().getMateBoardId()).orElseThrow();
             MateDTO dto = MateDTO.builder()
-                    .mateBoardId(byId.getMateBoardId())
+                    .boardId(byId.getMateBoardId())
                     .text(byId.getText())
                     .build();
             mateDTOList.add(dto);
@@ -150,7 +150,7 @@ public class FindMyBoardService {
         for (MyPetBoardLike myPetLike : myPetBoardLikes) {
             MyPet byId = myPetRepository.findById(myPetLike.getMyPet().getMyPetBoardId()).orElseThrow();
             MyPetDTO dto = MyPetDTO.builder()
-                    .myPetBoardId(byId.getMyPetBoardId())
+                    .boardId(byId.getMyPetBoardId())
                     .text(byId.getText())  // 여기서 text로 변경
                     .build();
             myPetDTOList.add(dto);

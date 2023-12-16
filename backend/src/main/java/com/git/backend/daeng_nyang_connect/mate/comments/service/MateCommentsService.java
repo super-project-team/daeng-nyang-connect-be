@@ -46,12 +46,12 @@ public class MateCommentsService {
             Mate byId = mateRepository.findById(mate).orElseThrow();
 
             MateComments mateComments = MateComments.builder()
-                    .mateCommentsId(mateCommentsDTO.getMateCommentsId())
+                    .mateCommentsId(mateCommentsDTO.getCommentsId())
                     .comment(mateCommentsDTO.getComment())
                     .mate(byId)
                     .createdAt(mateCommentsDTO.getCreatedAt())
                     .user(user)
-                    .like(0)
+                    .mateCommentsLike(0)
                     .build();
 
             mateCommentsRepository.save(mateComments);
@@ -113,8 +113,8 @@ public class MateCommentsService {
             // 좋아요 추가
             if (!hasUserLiked) {
                 MateCommentsLike mateCommentsLike = new MateCommentsLike(mateComments, user);
-                mateComments.getLikes().add(mateCommentsLike);
-                mateComments.setLike(mateComments.getLike() + 1);
+                mateComments.getMateCommentsLikes().add(mateCommentsLike);
+                mateComments.setMateCommentsLike(mateComments.getMateCommentsLike() + 1);
                 mateCommentsRepository.save(mateComments);
             }
         } else {
@@ -122,9 +122,9 @@ public class MateCommentsService {
             if (hasUserLiked) {
                 MateCommentsLike userLike = mateCommentsLikeRepository.findByMateCommentsAndUser(mateComments, user)
                         .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 댓글에 없습니다."));
-                mateComments.getLikes().remove(userLike);
+                mateComments.getMateCommentsLikes().remove(userLike);
                 mateCommentsLikeRepository.delete(userLike);
-                mateComments.setLike(mateComments.getLike() - 1);
+                mateComments.setMateCommentsLike(mateComments.getMateCommentsLike() - 1);
                 mateCommentsRepository.save(mateComments);
             }
         }

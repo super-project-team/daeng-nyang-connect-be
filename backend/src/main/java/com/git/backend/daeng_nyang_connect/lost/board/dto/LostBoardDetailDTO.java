@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class LostBoardDetailDTO {
-    private Long lostBoardId;
+    private Long boardId;
     private String category;
     private String place;
     private String reward;
@@ -41,13 +41,13 @@ public class LostBoardDetailDTO {
 //    private List<LostComments> lostCommentsUserId;
 //    private List<LostComments> lostCommentsNickname;
 //    private List<LostComments> lostCommentsCreatedAt;
-    private List<LostCommentsDTO> lostComments;
+    private List<LostCommentsDTO> comments;
 
     public static LostBoardDetailDTO fromEntity
             (Lost lost, List<LostImage> lostImages,
              List<LostCommentsDTO> lostComments){
         return LostBoardDetailDTO.builder()
-                .lostBoardId(lost.getLostBoardId())
+                .boardId(lost.getLostBoardId())
                 .category(lost.getCategory())
                 .place(lost.getPlace())
                 .reward(lost.getReward())
@@ -62,7 +62,7 @@ public class LostBoardDetailDTO {
                 .text(lost.getText())
                 .nickname(lost.getUser().getNickname())
                 .images(lostImages)
-                .lostComments(lostComments)
+                .comments(lostComments)
                 .build();
     }
 }

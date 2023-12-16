@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Builder
 public class MyPetDTO {
 
-    private Long myPetBoardId;
+    private Long boardId;
     private Long userId;
     private String nickname;
     private String userThumbnail;
@@ -25,14 +25,14 @@ public class MyPetDTO {
 
     public static MyPetDTO fromMyPetEntity(MyPet myPet, String nickname) {
         return MyPetDTO.builder()
-                .myPetBoardId(myPet.getMyPetBoardId())
+                .boardId(myPet.getMyPetBoardId())
                 .userId(myPet.getUser().getUserId())
                 .nickname(nickname)
                 .userThumbnail(myPet.getUser().getMyPage().getImg())
                 .kind(myPet.getKind())
                 .text(myPet.getText())
                 .createdAt(myPet.getCreatedAt())
-                .like(myPet.getLike())
+                .like(myPet.getMyPetLike())
                 .build();
     }
 

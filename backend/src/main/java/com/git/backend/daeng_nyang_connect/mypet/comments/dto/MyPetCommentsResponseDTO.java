@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class MyPetCommentsResponseDTO {
-    private Long myPetCommentsId;
+    private Long commentsId;
     private Long userId;
     private String nickname;
     private String userThumbnail;

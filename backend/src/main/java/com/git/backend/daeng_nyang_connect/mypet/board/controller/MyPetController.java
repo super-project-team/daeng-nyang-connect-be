@@ -63,7 +63,7 @@ public class MyPetController {
     @Transactional
     @PostMapping("/like")
     public Map<String, String> addLike(@RequestHeader("access_token") String token,
-                                       @RequestParam("myPetBoardId") Long myPetBoardId) {
+                                       @RequestParam("myPetId") Long myPetBoardId) {
         return myPetService.clickLike(myPetBoardId, token);
     }
 

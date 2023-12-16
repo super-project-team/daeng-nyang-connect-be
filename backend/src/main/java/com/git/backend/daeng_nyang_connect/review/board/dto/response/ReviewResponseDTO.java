@@ -15,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewResponseDTO {
-    private Long reviewId;
-    private String userNickname;
+    private Long boardId;
+    private String nickname;
     private String adoptedAnimalName;
     private String textReview;
     private String createdAt;
@@ -25,8 +25,8 @@ public class ReviewResponseDTO {
     private List<String> images = new ArrayList<>();
 
     public ReviewResponseDTO(Review review, List<ReviewImage> reviewImages) {
-        this.reviewId = review.getReviewId();
-        this.userNickname = review.getUser().getNickname();
+        this.boardId = review.getReviewId();
+        this.nickname = review.getUser().getNickname();
         this.adoptedAnimalName = review.getAdoptedAnimal().getAnimal().getAnimalName();
         this.textReview = review.getTextReview();
         this.createdAt = TimestampToFormattedString(review.getCreatedAt());

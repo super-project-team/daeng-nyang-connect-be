@@ -72,9 +72,9 @@ public class MateService {
                 .collect(Collectors.toList());
 
         // 좋아요 정보 생성
-        List<MateBoardLikeDTO> likes = mate.getLikes().stream()
+        List<MateBoardLikeDTO> likes = mate.getMateLikes().stream()
                 .map(like -> MateBoardLikeDTO.builder()
-                        .mateBoardLikeId(like.getMateBoardLikeId())
+                        .likeId(like.getMateBoardLikeId())
                         .userId(like.getUser().getUserId())
                         .build())
                 .collect(Collectors.toList());
@@ -86,7 +86,7 @@ public class MateService {
 
         // MateResponseDTO 생성 및 반환
         return MateResponseDTO.builder()
-                .mateBoardId(mate.getMateBoardId())
+                .boardId(mate.getMateBoardId())
                 .userId(mate.getUser().getUserId())
                 .nickname(mate.getUser().getNickname())
                 .userThumbnail(userThumbnail)
@@ -107,20 +107,20 @@ public class MateService {
         }
 
         return MateCommentsResponseDTO.builder()
-                .mateCommentsId(comments.getMateCommentsId())
+                .commentsId(comments.getMateCommentsId())
                 .userId(comments.getUser().getUserId())
                 .nickname(comments.getUser().getNickname())
                 .userThumbnail(userThumbnail)
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
-                .likes(convertToMateCommentsLikeDTOList(comments.getLikes()))
+                .likes(convertToMateCommentsLikeDTOList(comments.getMateCommentsLikes()))
                 .build();
     }
 
     private List<MateCommentsLikeDTO> convertToMateCommentsLikeDTOList(List<MateCommentsLike> mateCommentsLikes) {
         return mateCommentsLikes.stream()
                 .map(like -> MateCommentsLikeDTO.builder()
-                        .mateCommentsLikeId(like.getMateCommentsLikeId())
+                        .likeId(like.getMateCommentsLikeId())
                         .userId(like.getUser().getUserId())
                         .build())
                 .collect(Collectors.toList());
@@ -129,12 +129,12 @@ public class MateService {
         Page<Mate> matePage = mateRepository.findByTextContaining(keyword, pageable);
         List<Mate> content = matePage.getContent();
         return content.stream().map(mate -> {
-            String author = findUserNickNameByMate(mate.getMateBoardId());
+            String author = findUserNicknameByMate(mate.getMateBoardId());
             return MateDTO.fromMateEntity(mate, author);
         }).collect(Collectors.toList());
     }
 
-    private String findUserNickNameByMate(Long mateBoardId) {
+    private String findUserNicknameByMate(Long mateBoardId) {
         Mate mate = mateRepository.findById(mateBoardId).orElse(null);
         if (mate != null && mate.getUser() != null) {
             return mate.getUser().getNickname();
@@ -150,13 +150,13 @@ public class MateService {
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
 
             Mate mate = Mate.builder()
-                    .mateBoardId(mateDTO.getMateBoardId())
+                    .mateBoardId(mateDTO.getBoardId())
                     .user(user)
                     .category(mateDTO.getCategory())
                     .place(mateDTO.getPlace())
                     .text(mateDTO.getText())
                     .createdAt(mateDTO.getCreatedAt())
-                    .like(0)
+                    .mateLike(0)
                     .build();
 
             mateRepository.save(mate);
@@ -234,8 +234,8 @@ public class MateService {
             // 좋아요 추가
             if (!hasUserLiked) {
                 MateBoardLike mateBoardLike = new MateBoardLike(mate, user);
-                mate.getLikes().add(mateBoardLike);
-                mate.setLike(mate.getLike() + 1);
+                mate.getMateLikes().add(mateBoardLike);
+                mate.setMateLike(mate.getMateLike() + 1);
                 mateRepository.save(mate);
             }
         } else {
@@ -243,9 +243,9 @@ public class MateService {
             if (hasUserLiked) {
                 MateBoardLike userLike = mateBoardLikeRepository.findByMateAndUser(mate, user)
                         .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 게시글에 없습니다."));
-                mate.getLikes().remove(userLike);
+                mate.getMateLikes().remove(userLike);
                 mateBoardLikeRepository.delete(userLike);
-                mate.setLike(mate.getLike() - 1);
+                mate.setMateLike(mate.getMateLike() - 1);
                 mateRepository.save(mate);
             }
         }

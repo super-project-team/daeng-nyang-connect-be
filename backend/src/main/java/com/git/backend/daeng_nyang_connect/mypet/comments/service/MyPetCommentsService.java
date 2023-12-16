@@ -46,12 +46,12 @@ public class MyPetCommentsService {
             MyPet byId = myPetRepository.findById(myPet).orElseThrow();
 
             MyPetComments myPetComments = MyPetComments.builder()
-                    .myPetCommentsId(myPetCommentsDTO.getMyPetCommentsId())
+                    .myPetCommentsId(myPetCommentsDTO.getCommentsId())
                     .comment(myPetCommentsDTO.getComment())
                     .myPet(byId)
                     .createdAt(myPetCommentsDTO.getCreatedAt())
                     .user(user)
-                    .like(0)
+                    .myPetCommentsLike(0)
                     .build();
 
             myPetCommentsRepository.save(myPetComments);
@@ -113,8 +113,8 @@ public class MyPetCommentsService {
             // 좋아요 추가
             if (!hasUserLiked) {
                 MyPetCommentsLike myPetCommentsLike = new MyPetCommentsLike(myPetComments, user);
-                myPetComments.getLikes().add(myPetCommentsLike);
-                myPetComments.setLike(myPetComments.getLike() + 1);
+                myPetComments.getMyPetCommentsLikes().add(myPetCommentsLike);
+                myPetComments.setMyPetCommentsLike(myPetComments.getMyPetCommentsLike() + 1);
                 myPetCommentsRepository.save(myPetComments);
             }
         } else {
@@ -122,12 +122,12 @@ public class MyPetCommentsService {
             if (hasUserLiked) {
                 MyPetCommentsLike userLike = myPetCommentsLikeRepository.findByMyPetCommentsAndUser(myPetComments, user)
                         .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 댓글에 없습니다."));
-                myPetComments.getLikes().remove(userLike);
+                myPetComments.getMyPetCommentsLikes().remove(userLike);
                 myPetCommentsLikeRepository.delete(userLike);
                 // 음수가 되지 않도록 확인
-                int likeCount = myPetComments.getLike();
+                int likeCount = myPetComments.getMyPetCommentsLike();
                 if (likeCount > 0) {
-                    myPetComments.setLike(likeCount - 1);
+                    myPetComments.setMyPetCommentsLike(likeCount - 1);
                     myPetCommentsRepository.save(myPetComments);
                 }
             }

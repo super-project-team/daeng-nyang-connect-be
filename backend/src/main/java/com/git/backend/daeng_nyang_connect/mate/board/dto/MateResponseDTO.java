@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class MateResponseDTO {
 
-    private Long mateBoardId;
+    private Long boardId;
     private Long userId;
     private String nickname;
     private String userThumbnail;

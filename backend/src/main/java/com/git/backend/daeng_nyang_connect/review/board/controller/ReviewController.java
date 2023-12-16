@@ -36,7 +36,7 @@ public class ReviewController {
 
     @Transactional
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteReview(@RequestParam("commentsId") Long reviewId,
+    public ResponseEntity<?> deleteReview(@RequestParam("reviewId") Long reviewId,
                                             @RequestHeader("access_token") String token){
         reviewService.deleteReview(reviewId, token);
         return ResponseEntity.status(200).body("게시글이 삭제되었습니다.");

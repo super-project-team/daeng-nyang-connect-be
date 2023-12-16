@@ -12,9 +12,9 @@ import java.text.SimpleDateFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewCommentsResponseDTO {
-    private Long reviewCommentsId;
-    private Long reviewId;
-    private String userNickname;
+    private Long commentsId;
+    private Long boardId;
+    private String nickname;
     private String adoptedAnimalName;
     private String textReview;
     private String comment;
@@ -22,9 +22,9 @@ public class ReviewCommentsResponseDTO {
     private String userThumbnail;
 
     public ReviewCommentsResponseDTO(ReviewComments reviewComments) {
-        this.reviewCommentsId = reviewComments.getReviewCommentsId();
-        this.reviewId = reviewComments.getReview().getReviewId();
-        this.userNickname = reviewComments.getUser().getNickname();
+        this.commentsId = reviewComments.getReviewCommentsId();
+        this.boardId = reviewComments.getReview().getReviewId();
+        this.nickname = reviewComments.getUser().getNickname();
         this.adoptedAnimalName = reviewComments.getReview().getAdoptedAnimal().getAnimal().getAnimalName();
         this.textReview = reviewComments.getReview().getTextReview();
         this.comment = reviewComments.getComment();

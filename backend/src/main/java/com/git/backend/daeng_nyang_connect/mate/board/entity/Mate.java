@@ -37,7 +37,7 @@ public class Mate {
     private Timestamp createdAt;
 
     @Column(name = "mate_like")
-    private Integer like;
+    private Integer mateLike;
 
     @Getter
     @OneToMany(mappedBy = "mate", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -49,10 +49,12 @@ public class Mate {
 
     @Getter
     @OneToMany(mappedBy = "mate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MateBoardLike> likes;
+    private List<MateBoardLike> mateLikes;
 
     public void setLike(Integer mateLike){
         this.like = mateLike;
+    public void setMateLike(Integer mateLike){
+        this.mateLike = mateLike;
     }
 
     public void setCategory(String category) {

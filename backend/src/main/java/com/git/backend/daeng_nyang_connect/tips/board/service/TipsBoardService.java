@@ -60,7 +60,7 @@ public class TipsBoardService {
         User user = userService.checkUserByToken(token);
 
         Tips tips = Tips.builder()
-                .tipsBoardId(tipsBoardDto.getTipsBoardId())
+                .tipsBoardId(tipsBoardDto.getBoardId())
                 .user(user)
                 .category(tipsBoardDto.getCategory())
                 .title(tipsBoardDto.getTitle())
@@ -77,7 +77,7 @@ public class TipsBoardService {
         }
 
     //게시물 ID에 해당하는 user 닉네임 가져오기
-    public String  findUserNickNameByTipsId(Long tipsId) {
+    public String  findUserNicknameByTipsId(Long tipsId) {
         Tips tips = tipsBoardRepository.findById(tipsId).orElse(null);
         if (tips != null && tips.getUser() != null) {
             return tips.getUser().getNickname();
@@ -182,7 +182,7 @@ public class TipsBoardService {
 
         return tipsList.stream()
                 .map(tips -> {
-                    String author = findUserNickNameByTipsId(tips.getTipsBoardId());
+                    String author = findUserNicknameByTipsId(tips.getTipsBoardId());
                     return TipsBoardDto.fromEntity(tips, author);
                 })
                 .collect(Collectors.toList());
@@ -193,7 +193,7 @@ public class TipsBoardService {
 
         List<Tips> byTitleContaining = tipsBoardRepository.findByTitleContaining(keyword);
         return byTitleContaining.stream().map(tips -> {
-           String author = findUserNickNameByTipsId(tips.getTipsBoardId());
+           String author = findUserNicknameByTipsId(tips.getTipsBoardId());
            return TipsBoardDto.fromEntity(tips, author);
         }).collect(Collectors.toList());
 
@@ -209,21 +209,21 @@ public class TipsBoardService {
         // 필요한 정보만을 DTO로 변환
         List<TipsCommentsDto> tipsCommentsDtoList = thisBoardComments.stream()
                 .map(comment -> TipsCommentsDto.builder()
-                        .tipsCommentsId(comment.getTipsCommentsId())
-                        .tipsId(comment.getTips().getTipsBoardId())
+                        .commentsId(comment.getTipsCommentsId())
+                        .boardId(comment.getTips().getTipsBoardId())
                         .userId(comment.getUser().getUserId())
                         .userThumbnail(comment.getUser().getMyPage().getImg())
-                        .nickName(comment.getUser().getNickname())
+                        .nickname(comment.getUser().getNickname())
                         .comment(comment.getComment())
-                        .tipsCommentLike(comment.getTipsCommentsLike())
+                        .like(comment.getTipsCommentsLike())
                         .createdAt(comment.getCreatedAt())
-                        .commentsLikes(comment.getLikeList())
+                        .likes(comment.getLikeList())
                         .build())
                 .collect(Collectors.toList());
 
         List<TipsBoardLikeDto> tipsBoardLikeDtos = tipsBoardLikes.stream()
                 .map(like -> TipsBoardLikeDto.builder()
-                        .TipsBoardLikeId(like.getTipsBoardLikeId())
+                        .likeId(like.getTipsBoardLikeId())
                         .userId(like.getUser().getUserId())
                         .build())
                 .toList();

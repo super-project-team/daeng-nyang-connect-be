@@ -14,21 +14,21 @@ import java.util.List;
 @Builder
 public class TipsCommentsDto {
 
-    private Long tipsCommentsId;
+    private Long commentsId;
 
     @JsonBackReference("tipsCommentsReference")
-    private Long tipsId;
+    private Long boardId;
 
     @JsonBackReference("userReference")
     private Long userId;
 
     private String comment;
     private Timestamp createdAt;
-    private Integer tipsCommentLike;
-    private String nickName;
+    private Integer like;
+    private String nickname;
     private String userThumbnail;
 
 
-    private List<TipsCommentsLike> commentsLikes;
+    private List<TipsCommentsLike> likes;
 
 }

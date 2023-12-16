@@ -51,7 +51,7 @@ public class MyPageService {
                 .email(user.getEmail())
                 .name(user.getName())
                 .mobile(user.getMobile())
-                .nickName(user.getNickname())
+                .nickname(user.getNickname())
                 .city(user.getCity())
                 .town(user.getTown())
                 .experience(user.getExperience())
@@ -98,7 +98,7 @@ public class MyPageService {
     public Map<String ,String> modifyNickname(String token, ModifyUserDto modifyUserDto){
         User user = userService.checkUserByToken(token);
 
-        user.setNickname(modifyUserDto.getNickName());
+        user.setNickname(modifyUserDto.getNickname());
 
         userRepository.save(user);
 

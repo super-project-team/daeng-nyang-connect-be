@@ -16,9 +16,9 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnimalResponseDTO {
-    private Long animalId;
+    private Long boardId;
     private Long userId;
-    private String userNickname;
+    private String nickname;
     private String animalName;
     private Integer age;
     private String gender;
@@ -39,8 +39,8 @@ public class AnimalResponseDTO {
     private Date adoptedDate = null;
 
     public AnimalResponseDTO(Animal animal, List<AnimalImage> animalImages) {
-        this.animalId = animal.getAnimalId();
-        this.userNickname = animal.getUser().getNickname();
+        this.boardId = animal.getAnimalId();
+        this.nickname = animal.getUser().getNickname();
         this.animalName = animal.getAnimalName();
         this.age = animal.getAge();
         this.gender = animal.getGender();
@@ -65,8 +65,8 @@ public class AnimalResponseDTO {
 
     public AnimalResponseDTO(AdoptedAnimal adoptedAnimal, List<AnimalImage> animalImages) {
         Animal animal = adoptedAnimal.getAnimal();
-        this.animalId = animal.getAnimalId();
-        this.userNickname = animal.getUser().getNickname();
+        this.boardId = animal.getAnimalId();
+        this.nickname = animal.getUser().getNickname();
         this.animalName = animal.getAnimalName();
         this.age = animal.getAge();
         this.gender = animal.getGender();

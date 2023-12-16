@@ -70,9 +70,9 @@ public class MyPetService {
                 .map(this::convertToMyPetCommentsResponseDTO)
                 .collect(Collectors.toList());
 
-        List<MyPetBoardLikeDTO> likes = myPet.getLikes().stream()
+        List<MyPetBoardLikeDTO> likes = myPet.getMyPetLikes().stream()
                 .map(like -> MyPetBoardLikeDTO.builder()
-                        .myPetBoardLikeId(like.getMyPetBoardLikeId())
+                        .likeId(like.getMyPetBoardLikeId())
                         .userId(like.getUser().getUserId())
                         .build())
                 .collect(Collectors.toList());
@@ -83,12 +83,11 @@ public class MyPetService {
         }
 
         return MyPetResponseDTO.builder()
-                .myPetBoardId(myPet.getMyPetBoardId())
+                .boardId(myPet.getMyPetBoardId())
                 .userId(myPet.getUser().getUserId())
                 .nickname(myPet.getUser().getNickname())
                 .userThumbnail(userThumbnail)
                 .kind(myPet.getKind())
-                //     .breed(myPet.getBreed())
                 .text(myPet.getText())
                 .img(imgUrls)
                 .createdAt(myPet.getCreatedAt())
@@ -103,20 +102,20 @@ public class MyPetService {
         }
 
         return MyPetCommentsResponseDTO.builder()
-                .myPetCommentsId(comments.getMyPetCommentsId())
+                .commentsId(comments.getMyPetCommentsId())
                 .userId(comments.getUser().getUserId())
                 .nickname(comments.getUser().getNickname())
                 .userThumbnail(userThumbnail)
                 .comment(comments.getComment())
                 .createdAt(comments.getCreatedAt())
-                .likes(convertToMyPetCommentsLikeDTOList(comments.getLikes()))
+                .likes(convertToMyPetCommentsLikeDTOList(comments.getMyPetCommentsLikes()))
                 .build();
     }
 
     private List<MyPetCommentsLikeDTO> convertToMyPetCommentsLikeDTOList(List<MyPetCommentsLike> myPetCommentsLikes) {
         return myPetCommentsLikes.stream()
                 .map(like -> MyPetCommentsLikeDTO.builder()
-                        .myPetCommentsLikeId(like.getMyPetCommentsLikeId())
+                        .likeId(like.getMyPetCommentsLikeId())
                         .userId(like.getUser().getUserId())
                         .build())
                 .collect(Collectors.toList());
@@ -146,12 +145,12 @@ public class MyPetService {
                     .orElseThrow(() -> new NoSuchElementException(MSG_USER_NOT_FOUND));
 
             MyPet myPet = MyPet.builder()
-                    .myPetBoardId(myPetDTO.getMyPetBoardId())
+                    .myPetBoardId(myPetDTO.getBoardId())
                     .user(user)
                     .kind(myPetDTO.getKind())
                     .text(myPetDTO.getText())
                     .createdAt(myPetDTO.getCreatedAt())
-                    .like(0)
+                    .myPetLike(0)
                     .build();
 
             myPetRepository.save(myPet);
@@ -229,8 +228,8 @@ public class MyPetService {
             // 좋아요 추가
             if (!hasUserLiked) {
                 MyPetBoardLike myPetBoardLike = new MyPetBoardLike(myPet, user);
-                myPet.getLikes().add(myPetBoardLike);
-                myPet.setLike(myPet.getLike() + 1);
+                myPet.getMyPetLikes().add(myPetBoardLike);
+                myPet.setMyPetLike(myPet.getMyPetLike() + 1);
                 myPetRepository.save(myPet);
             }
         } else {
@@ -238,9 +237,9 @@ public class MyPetService {
             if (hasUserLiked) {
                 MyPetBoardLike userLike = myPetBoardLikeRepository.findByMyPetAndUser(myPet, user)
                         .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 게시글에 없습니다."));
-                myPet.getLikes().remove(userLike);
+                myPet.getMyPetLikes().remove(userLike);
                 myPetBoardLikeRepository.delete(userLike);
-                myPet.setLike(myPet.getLike() - 1);
+                myPet.setMyPetLike(myPet.getMyPetLike() - 1);
                 myPetRepository.save(myPet);
             }
         }
