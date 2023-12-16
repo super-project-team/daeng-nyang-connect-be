@@ -37,7 +37,7 @@ public class MyPet {
     private Timestamp createdAt;
 
     @Column(name = "my_pet_like")
-    private Integer myPetLike;
+    private Integer like;
 
     @Getter
     @OneToMany(mappedBy = "myPet", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -49,9 +49,9 @@ public class MyPet {
 
     @Getter
     @OneToMany(mappedBy = "myPet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MyPetBoardLike> myPetLikes;
-    public void setMyPetLike(Integer myPetLike) {
-        this.myPetLike = myPetLike;
+    private List<MyPetBoardLike> likes;
+    public void setLike(Integer like) {
+        this.like = like;
     }
     public void setKind(String kind){
         this.kind = kind;

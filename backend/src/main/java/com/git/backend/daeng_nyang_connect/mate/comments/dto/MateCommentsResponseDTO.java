@@ -19,6 +19,6 @@ public class MateCommentsResponseDTO {
     private String comment;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-    private List<MateCommentsLikeDTO> mateCommentsLikes;
+    private List<MateCommentsLikeDTO> likes;
 }
 

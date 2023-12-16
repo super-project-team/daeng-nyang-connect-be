@@ -22,7 +22,7 @@ public class MateDTO {
     private String text;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-    private Integer mateLike;
+    private Integer like;
 
     public static MateDTO fromMateEntity(Mate mate, String nickname) {
         return MateDTO.builder()
@@ -34,7 +34,7 @@ public class MateDTO {
                 .place(mate.getPlace())
                 .text(mate.getText())
                 .createdAt(mate.getCreatedAt())
-                .mateLike(mate.getMateLike())
+                .like(mate.getLike())
                 .build();
     }
 }

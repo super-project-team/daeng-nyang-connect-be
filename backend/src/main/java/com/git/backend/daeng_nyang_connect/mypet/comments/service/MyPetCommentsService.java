@@ -51,7 +51,7 @@ public class MyPetCommentsService {
                     .myPet(byId)
                     .createdAt(myPetCommentsDTO.getCreatedAt())
                     .user(user)
-                    .myPetCommentsLike(0)
+                    .like(0)
                     .build();
 
             myPetCommentsRepository.save(myPetComments);
@@ -113,8 +113,8 @@ public class MyPetCommentsService {
             // 좋아요 추가
             if (!hasUserLiked) {
                 MyPetCommentsLike myPetCommentsLike = new MyPetCommentsLike(myPetComments, user);
-                myPetComments.getMyPetCommentsLikes().add(myPetCommentsLike);
-                myPetComments.setMyPetCommentsLike(myPetComments.getMyPetCommentsLike() + 1);
+                myPetComments.getLikes().add(myPetCommentsLike);
+                myPetComments.setLike(myPetComments.getLike() + 1);
                 myPetCommentsRepository.save(myPetComments);
             }
         } else {
@@ -122,12 +122,12 @@ public class MyPetCommentsService {
             if (hasUserLiked) {
                 MyPetCommentsLike userLike = myPetCommentsLikeRepository.findByMyPetCommentsAndUser(myPetComments, user)
                         .orElseThrow(() -> new RuntimeException("사용자의 좋아요가 해당 댓글에 없습니다."));
-                myPetComments.getMyPetCommentsLikes().remove(userLike);
+                myPetComments.getLikes().remove(userLike);
                 myPetCommentsLikeRepository.delete(userLike);
                 // 음수가 되지 않도록 확인
-                int likeCount = myPetComments.getMyPetCommentsLike();
+                int likeCount = myPetComments.getLike();
                 if (likeCount > 0) {
-                    myPetComments.setMyPetCommentsLike(likeCount - 1);
+                    myPetComments.setLike(likeCount - 1);
                     myPetCommentsRepository.save(myPetComments);
                 }
             }

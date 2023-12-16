@@ -21,7 +21,7 @@ public class MyPetDTO {
     private String text;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-    private Integer myPetLike;
+    private Integer like;
 
     public static MyPetDTO fromMyPetEntity(MyPet myPet, String nickname) {
         return MyPetDTO.builder()
@@ -32,7 +32,7 @@ public class MyPetDTO {
                 .kind(myPet.getKind())
                 .text(myPet.getText())
                 .createdAt(myPet.getCreatedAt())
-                .myPetLike(myPet.getMyPetLike())
+                .like(myPet.getLike())
                 .build();
     }
 
