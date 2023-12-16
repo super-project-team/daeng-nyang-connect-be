@@ -50,17 +50,21 @@ public class AnimalImageService {
 
     public List<String> uploadImages(String name, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
+        if(multipartFileList !=null){
+            for (int i = 0; i < multipartFileList.size(); i++) {
+                MultipartFile file = multipartFileList.get(i);
+                try {
+                    String fileName = buildFileName(name, file.getOriginalFilename(), i + 1);
+                    String uploadedUrl = uploadImage(file, fileName);
+                    filenameList.add(uploadedUrl);
+                } catch (FileUploadFailedException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
 
-        for (int i = 0; i < multipartFileList.size(); i++) {
-            MultipartFile file = multipartFileList.get(i);
-            try {
-                String fileName = buildFileName(name, file.getOriginalFilename(), i + 1);
-                String uploadedUrl = uploadImage(file, fileName);
-                filenameList.add(uploadedUrl);
-            } catch (FileUploadFailedException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
             }
+        }else{
+            return null;
         }
         return filenameList;
     }

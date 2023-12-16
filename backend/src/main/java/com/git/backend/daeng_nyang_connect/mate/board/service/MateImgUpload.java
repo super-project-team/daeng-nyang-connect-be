@@ -44,14 +44,18 @@ public class MateImgUpload {
     public List<String> uploadMateImgs(Mate mate, String title, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
 
-        multipartFileList.forEach(file -> {
-            try{
-                String fileName = uploadMateImg(mate, title, file);
-                filenameList.add(fileName);
-            } catch (FileUploadFailedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        if(multipartFileList!=null){
+            multipartFileList.forEach(file -> {
+                try{
+                    String fileName = uploadMateImg(mate, title, file);
+                    filenameList.add(fileName);
+                } catch (FileUploadFailedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }else{
+            return null;
+        }
         return filenameList;
     }
 
@@ -75,6 +79,9 @@ public class MateImgUpload {
                 .mate(mate)
                 .url(amazonS3Client.getUrl(bucketName, fileName).toString())
                 .build();
+        if(multipartFile.isEmpty()){
+            return null;
+        }
         mateImageRepository.save(mateImage);
 
         return amazonS3Client.getUrl(bucketName, fileName).toString();

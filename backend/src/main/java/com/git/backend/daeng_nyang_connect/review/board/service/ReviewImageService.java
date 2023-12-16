@@ -51,18 +51,22 @@ public class ReviewImageService {
 
     public List<String> uploadImageList(String adoptedAnimalName, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
-
-        for (int i = 0; i < multipartFileList.size(); i++) {
-            MultipartFile file = multipartFileList.get(i);
-            try {
-                String fileName = buildFileName(adoptedAnimalName, file.getOriginalFilename(), i + 1);
-                String uploadedUrl = uploadImage(file, fileName);
-                filenameList.add(uploadedUrl);
-            } catch (FileUploadFailedException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+        if(multipartFileList!=null){
+            for (int i = 0; i < multipartFileList.size(); i++) {
+                MultipartFile file = multipartFileList.get(i);
+                try {
+                    String fileName = buildFileName(adoptedAnimalName, file.getOriginalFilename(), i + 1);
+                    String uploadedUrl = uploadImage(file, fileName);
+                    filenameList.add(uploadedUrl);
+                } catch (FileUploadFailedException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
             }
+        }else{
+            return null;
         }
+        
         return filenameList;
     }
 

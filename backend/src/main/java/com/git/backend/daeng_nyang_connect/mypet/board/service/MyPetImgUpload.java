@@ -40,15 +40,18 @@ public class MyPetImgUpload {
 
     public List<String> uploadMyPetImgs(MyPet myPet, String title, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
-
-        multipartFileList.forEach(file -> {
-            try{
-                String fileName = uploadMyPetImg(myPet, title, file);
-                filenameList.add(fileName);
-            } catch (FileUploadFailedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        if(multipartFileList!=null){
+            multipartFileList.forEach(file -> {
+                try{
+                    String fileName = uploadMyPetImg(myPet, title, file);
+                    filenameList.add(fileName);
+                } catch (FileUploadFailedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }else{
+            return null;
+        }
         return filenameList;
     }
 
@@ -72,6 +75,10 @@ public class MyPetImgUpload {
                 .myPet(myPet)
                 .url(amazonS3Client.getUrl(bucketName, fileName).toString())
                 .build();
+
+        if(multipartFile.isEmpty()){
+            return null;
+        }
         myPetImageRepository.save(myPetImage);
 
         return amazonS3Client.getUrl(bucketName, fileName).toString();
