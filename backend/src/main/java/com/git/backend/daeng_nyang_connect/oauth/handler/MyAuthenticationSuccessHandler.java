@@ -2,6 +2,7 @@ package com.git.backend.daeng_nyang_connect.oauth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,19 +50,17 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
         // 회원이 있는 경우
         if (isExist) {
             // 회원이 존재하면 jwt 토큰 발행
+
             String accessToken = tokenProvider.createAccessToken(email);
             String refreshToken = tokenProvider.createRefreshToken(email);
-            Map<String, String> rs = new HashMap<>();
-            rs.put("message", "로그인 되었습니다");
-            rs.put("access_token", accessToken);
-            rs.put("refresh_token", refreshToken);
-            rs.put("http_status", HttpStatus.OK.toString());
+
 
             // 이 부분에서 토큰을 반환하도록 처리
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(object.writeValueAsString(rs));
+            response.setHeader("access_token", accessToken);
+            response.setHeader("refresh_token", refreshToken);
 
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
                     .queryParam("access_token", accessToken)
                     .build()
                     .encode(StandardCharsets.UTF_8)

@@ -69,6 +69,9 @@ public class SecurityConfig {
                     oauth2
                             .successHandler(myAuthenticationSuccessHandler)
                             .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService));
+//                            .redirectionEndpoint(redirectionEndpointConfig -> redirectionEndpointConfig.baseUri("http://localhost:8080/api/tips/getAll"))
+//                            .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig.baseUri("http://localhost:8080/login/oauth2/code"));
+
                 })
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
