@@ -107,7 +107,7 @@ public class FindMyBoardService {
                 .map(lostList -> LostBoardDTO.builder()
                         .boardId(lostList.getLostBoardId())
                         .text(lostList.getText())
-                        .createdAt(lostList.getCreatedAt())
+                       // .(lostList.getCreatedAt())
                         .build()).toList();
 
         return MyBoardDto.fromEntity(tipsBoardDtoList,mateDTOList,lostDto,reviewRequestDTOS,myPetDTOList);
