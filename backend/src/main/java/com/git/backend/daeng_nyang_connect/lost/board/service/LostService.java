@@ -46,7 +46,7 @@ public class LostService {
         User user = userService.checkUserByToken(token);
 
         Lost lost = Lost.builder()
-                .lostBoardId(lostBoardDetailDTO.getLostBoardId())
+                .lostBoardId(lostBoardDetailDTO.getBoardId())
                 .user(user)
                 .category(lostBoardDetailDTO.getCategory())
                 .place(lostBoardDetailDTO.getPlace())
