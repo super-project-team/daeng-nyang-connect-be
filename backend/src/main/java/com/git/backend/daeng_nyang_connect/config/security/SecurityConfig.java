@@ -60,8 +60,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll",
                                         "api/animal/getAll/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
-                                        "api/review/getAll", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/one",
-                                        "/api/mate/getAll", "api/my_pet/getAll","/api/mate/**","/api/my_pet/**","/login/oauth2/**").permitAll()
+                                        "api/review/getAll", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/getBoard", "api/lost/search",
+                                        "/api/mate/getAll", "api/my_pet/getAll","/api/mate/**","/api/my_pet/**","/login/oauth2/**","/api/findId").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
