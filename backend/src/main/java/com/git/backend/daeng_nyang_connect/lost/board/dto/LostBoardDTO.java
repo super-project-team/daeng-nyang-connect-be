@@ -25,7 +25,7 @@ public class LostBoardDTO {
     private List<LostImage> images;
     private Timestamp createdAt;
 
-    private Timestamp createdAt;
+
 
     public static LostBoardDTO fromEntity(Lost lost){
         return LostBoardDTO.builder()
