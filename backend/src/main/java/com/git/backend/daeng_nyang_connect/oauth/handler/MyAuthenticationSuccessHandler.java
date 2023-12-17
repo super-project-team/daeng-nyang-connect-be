@@ -68,7 +68,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
                     .toUriString();
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }else{
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/register")
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();
