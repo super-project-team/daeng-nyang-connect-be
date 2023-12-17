@@ -24,7 +24,7 @@ public class LostController {
     private final LostService lostService;
 
     //lost 등록
-    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/post")
     public Map<?,?> addLost(@RequestHeader("access_token") String token,
                              LostBoardDetailDTO lostBoardDetailDTO,
                              List<MultipartFile> files){
@@ -44,9 +44,9 @@ public class LostController {
                                       @RequestParam("id")Long lostBoardId,
                                       @RequestParam("lostImgId")Long lostImgId,
                                       LostBoardDetailDTO lostBoardDetailDTO,
-                                      MultipartFile multipartFile)
+                                      MultipartFile files)
         throws FileUploadFailedException {
-        return lostService.modifyLost(token, lostBoardId, lostBoardDetailDTO, lostImgId, multipartFile);
+        return lostService.modifyLost(token, lostBoardId, lostBoardDetailDTO, lostImgId, files);
     }
 
     //모든 lost
