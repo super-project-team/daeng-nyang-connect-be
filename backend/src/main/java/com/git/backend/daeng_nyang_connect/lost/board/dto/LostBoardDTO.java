@@ -24,6 +24,8 @@ public class LostBoardDTO {
     private String text;
     private List<LostImage> images;
 
+    private Timestamp createdAt;
+
     public static LostBoardDTO fromEntity(Lost lost){
         return LostBoardDTO.builder()
                 .boardId(lost.getLostBoardId())
