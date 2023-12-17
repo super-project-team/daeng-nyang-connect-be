@@ -17,7 +17,7 @@ import java.util.List;
 public class MyScrapAnimalResponseDTO {
     private Long animalId;
     private String animalName;
-    private Integer age;
+    private String age;
     private String gender;
     private String disease;
     private String training;
