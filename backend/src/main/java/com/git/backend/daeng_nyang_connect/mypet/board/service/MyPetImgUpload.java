@@ -40,6 +40,7 @@ public class MyPetImgUpload {
 
     public List<String> uploadMyPetImgs(MyPet myPet, String title, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
+
         if(multipartFileList!=null){
             multipartFileList.forEach(file -> {
                 try{
@@ -134,7 +135,6 @@ public class MyPetImgUpload {
             amazonS3Client.deleteObject(bucketName, fileName);
         } catch (Exception e) {
             log.error("Amazon S3 파일 삭제 실패: {}", e.getMessage(), e);
-            // 예외 처리: 파일 삭제 실패 시 로그를 남기거나 다른 방식으로 처리할 수 있습니다.
         }
     }
 

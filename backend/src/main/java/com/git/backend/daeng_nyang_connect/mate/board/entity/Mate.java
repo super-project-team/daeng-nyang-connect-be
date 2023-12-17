@@ -51,9 +51,6 @@ public class Mate {
     @OneToMany(mappedBy = "mate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MateBoardLike> mateLikes;
 
-    public void setLike(Integer mateLike){
-        this.mateLike = mateLike;
-    }
     public void setMateLike(Integer mateLike){
         this.mateLike = mateLike;
     }
