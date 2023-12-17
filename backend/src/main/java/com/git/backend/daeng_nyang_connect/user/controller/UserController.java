@@ -33,12 +33,12 @@ public class UserController {
     public ResponseEntity<?> signUp(@RequestBody SignUpDto signUpDto){return userService.signUp(signUpDto);}
 
     @GetMapping("/IdCheck")
-    public ResponseEntity<?> IdCheck(@RequestBody SignUpDto signUpDto){
+    public ResponseEntity<?> IdCheck(@RequestParam SignUpDto signUpDto){
         return userService.checkUserId(signUpDto.getEmail());
     }
 
     @GetMapping("/NicknameCheck")
-    public ResponseEntity<?> NicknameCheck(@RequestBody SignUpDto signUpDto){
+    public ResponseEntity<?> NicknameCheck(@RequestParam SignUpDto signUpDto){
         return userService.checkUserNickname(signUpDto.getNickname());
     }
 
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/findId")
-    public ResponseEntity<?> findUserId(@RequestBody FindDto findDto){
+    public ResponseEntity<?> findUserId(@RequestParam FindDto findDto){
         return userService.findUserId(findDto);
     }
 
