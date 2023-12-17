@@ -143,6 +143,7 @@ public class UserService {
             response.put("refresh_token", refreshToken);
             response.put("http_status", HttpStatus.OK.toString());
             response.put("nickname", isUser.getNickname());
+            response.put("email",email);
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
