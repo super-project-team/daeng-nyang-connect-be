@@ -26,8 +26,8 @@ public class ReviewController {
     private final ReviewService reviewService;
     @PostMapping("/post")
     public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
-                                       @RequestPart("dto") ReviewRequestDTO reviewRequestDTO,
-                                       @RequestPart("files") List<MultipartFile> files,
+                                       ReviewRequestDTO reviewRequestDTO,
+                                       List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
         Review newReview = reviewService.addReview(animalId, reviewRequestDTO, files, token);
         ReviewResponseDTO response = reviewService.response(newReview);
@@ -36,7 +36,7 @@ public class ReviewController {
 
     @Transactional
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteReview(@RequestParam("commentsId") Long reviewId,
+    public ResponseEntity<?> deleteReview(@RequestParam("reviewId") Long reviewId,
                                             @RequestHeader("access_token") String token){
         reviewService.deleteReview(reviewId, token);
         return ResponseEntity.status(200).body("게시글이 삭제되었습니다.");
@@ -45,8 +45,8 @@ public class ReviewController {
     @Transactional
     @PutMapping("/modify")
     public ResponseEntity<?> updateReview(@RequestParam("reviewId") Long reviewId,
-                                          @RequestPart("dto") ReviewRequestDTO reviewRequestDTO,
-                                          @RequestPart("files") List<MultipartFile> files,
+                                          ReviewRequestDTO reviewRequestDTO,
+                                          List<MultipartFile> files,
                                           @RequestHeader("access_token") String token){
         Review updateReview = reviewService.updateReview(reviewId, reviewRequestDTO, files, token);
         ReviewResponseDTO response = reviewService.response(updateReview);
@@ -54,7 +54,7 @@ public class ReviewController {
     }
 
     // 입양간 동물에 대한 리뷰 전체 출력
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public ResponseEntity<?> findAllReview(){
         List<Review> reviewList = reviewService.findAllReview();
         List<ReviewResponseDTO> responseList = reviewService.responseList(reviewList);

@@ -10,8 +10,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 public class LostCommentsDTO {
-    private Long lostCommentsId;
-    private Long lostBoardId;
+    private Long commentsId;
+    private Long boardId;
     private Long userId;
     private String comment;
     private Timestamp createdAt;

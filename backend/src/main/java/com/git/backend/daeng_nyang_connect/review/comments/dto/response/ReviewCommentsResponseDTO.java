@@ -12,20 +12,24 @@ import java.text.SimpleDateFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewCommentsResponseDTO {
-    private Long reviewId;
-    private String userNickname;
+    private Long commentsId;
+    private Long boardId;
+    private String nickname;
     private String adoptedAnimalName;
     private String textReview;
     private String comment;
     private String createdAt;
+    private String userThumbnail;
 
     public ReviewCommentsResponseDTO(ReviewComments reviewComments) {
-        this.reviewId = reviewComments.getReview().getReviewId();
-        this.userNickname = reviewComments.getUser().getNickname();
+        this.commentsId = reviewComments.getReviewCommentsId();
+        this.boardId = reviewComments.getReview().getReviewId();
+        this.nickname = reviewComments.getUser().getNickname();
         this.adoptedAnimalName = reviewComments.getReview().getAdoptedAnimal().getAnimal().getAnimalName();
         this.textReview = reviewComments.getReview().getTextReview();
         this.comment = reviewComments.getComment();
         this.createdAt = TimestampToFormattedString(reviewComments.getCreatedAt());
+        this.userThumbnail = reviewComments.getUser().getMyPage().getImg();
     }
 
     public String TimestampToFormattedString(Timestamp time) {

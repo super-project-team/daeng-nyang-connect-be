@@ -11,6 +11,5 @@ import java.util.List;
 @Repository
 public interface MyPetRepository extends JpaRepository<MyPet, Long> {
     List<MyPet> findByUserEmail(String userEmail);
-
     Page<MyPet> findByTextContaining(String keyword, Pageable pageable);
 }

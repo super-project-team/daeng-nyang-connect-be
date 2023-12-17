@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("/NicknameCheck")
     public ResponseEntity<?> NicknameCheck(@RequestBody SignUpDto signUpDto){
-        return userService.checkUserNickName(signUpDto.getNickname());
+        return userService.checkUserNickname(signUpDto.getNickname());
     }
 
     @PostMapping("/login")

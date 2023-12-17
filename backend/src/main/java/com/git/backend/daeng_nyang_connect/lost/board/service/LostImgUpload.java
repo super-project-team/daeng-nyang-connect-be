@@ -42,15 +42,18 @@ public class LostImgUpload {
 
     public List<String> uploadLostImgs(Lost lost, String text, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
-
-        multipartFileList.forEach(file -> {
-            try{
-                String fileName = uploadLostImg(lost, text, file);
-                filenameList.add(fileName);
-            } catch (FileUploadFailedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        if(multipartFileList!=null){
+            multipartFileList.forEach(file -> {
+                try{
+                    String fileName = uploadLostImg(lost, text, file);
+                    filenameList.add(fileName);
+                } catch (FileUploadFailedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }else{
+            return null;
+        }
         return filenameList;
     }
 
@@ -74,6 +77,9 @@ public class LostImgUpload {
                 .lost(lostId)
                 .url(amazonS3Client.getUrl(bucketName, fileName).toString())
                 .build();
+        if(multipartFile.isEmpty()){
+            return null;
+        }
         lostImgRepository.save(lostImage);
 
         return amazonS3Client.getUrl(bucketName, fileName).toString();

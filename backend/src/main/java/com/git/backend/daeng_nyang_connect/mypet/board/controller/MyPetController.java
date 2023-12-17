@@ -1,13 +1,12 @@
 package com.git.backend.daeng_nyang_connect.mypet.board.controller;
 
+import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetResponseDTO;
-import com.git.backend.daeng_nyang_connect.mypet.board.dto.UpdateMyPetDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.service.MyPetService;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -25,46 +24,46 @@ public class MyPetController {
 
     private final MyPetService myPetService;
 
-    @GetMapping("/all")
-    public Page<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
+    @GetMapping("/getAll")
+    public List<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
         return myPetService.findAllMyPet(pageable);
     }
 
-    @GetMapping("/my_board")
-    public List<MyPetResponseDTO> findUserMyPet(@RequestHeader("access_token") String token) {
-        return myPetService.findUserMyPet(token);
+    @GetMapping("/getBoard")
+    public MyPetResponseDTO getThisBoard(@RequestParam("id") Long myPet) {
+        return myPetService.getThisBoard(myPet);
     }
 
     @GetMapping("/search")
-    public Page<MyPetDTO> searchBoard(@RequestParam String keyword, Pageable pageable){
+    public List<MyPetDTO> searchBoard(@RequestParam String keyword, Pageable pageable){
         return myPetService.searchBoard(keyword, pageable);
     }
 
-    @PostMapping("/upload")
-    public Map<?,?> uploadMyPet(@RequestHeader("access_token") String token,
-                               @RequestPart("data") MyPetDTO myPetDTO,
-                               @RequestPart("files") List<MultipartFile> fileList){
-        return myPetService.uploadMyPet(myPetDTO, token, fileList);
+    @PostMapping("/post")
+    public Map<?,?> postMyPet(@RequestHeader("access_token") String token,
+                              MyPetDTO myPetDTO,
+                              List<MultipartFile> files){
+        return myPetService.postMyPet(myPetDTO, token, files);
     }
 
-    @PutMapping("/update")
-    public Map<?,?> updateMyPet(@RequestHeader("access_token") String token,
-                               @RequestPart("data") UpdateMyPetDTO updateMyPetDTO,
-                               @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
-        return myPetService.updateMyPet(updateMyPetDTO, token, fileList);
+    @PutMapping("/modify")
+    public Map<?,?> modifyMyPet(@RequestHeader("access_token") String token,
+                                @RequestParam("myPetId") Long myPetId,
+                                MyPetDTO myPetDTO,
+                                MultipartFile files) throws FileUploadFailedException {
+        return myPetService.modifyMyPet(myPetId, myPetDTO, token, files);
     }
 
     @DeleteMapping("/delete")
     public Map<?, ?> deleteMyPet(@RequestHeader("access_token") String token,
-                                @RequestBody Map<String, Long> request){
-        Long myPetBoardId = request.get("myPetBoardId");
-        return myPetService.deleteMyPet(myPetBoardId, token);
+                                 @RequestParam("myPetId") Long myPetId){
+        return myPetService.deleteMyPet(myPetId, token);
     }
 
     @Transactional
     @PostMapping("/like")
     public Map<String, String> addLike(@RequestHeader("access_token") String token,
-                                                       @RequestParam("myPetBoardId") Long myPetBoardId) {
+                                       @RequestParam("myPetId") Long myPetBoardId) {
         return myPetService.clickLike(myPetBoardId, token);
     }
 

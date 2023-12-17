@@ -41,7 +41,7 @@ public class TipsCommentsService {
         Tips byId = tipsBoardRepository.findById(tipsId).orElseThrow();
 
        TipsComments tipsComments = TipsComments.builder()
-               .tipsCommentsId(tipsCommentsDto.getTipsCommentsId())
+               .tipsCommentsId(tipsCommentsDto.getCommentsId())
                .comment(tipsCommentsDto.getComment())
                .tips(byId)
                .createdAt(timestamp)
@@ -108,7 +108,7 @@ public class TipsCommentsService {
             tipsCommentsLikeRepository.save(tipsCommentsLike);
             tipsCommentsRepository.save(tipsComments);
         }else{
-            tipsCommentsLikeRepository.deleteByUser(user);
+            tipsCommentsLikeRepository.deleteByUserAndTipsComments(user, tipsComments);
             likeCount--;
             tipsComments.setTipsCommentsLike(likeCount);
             tipsCommentsRepository.save(tipsComments);
@@ -123,7 +123,7 @@ public class TipsCommentsService {
         TipsComments isTipsComment = tipsCommentsRepository.findById(tipsCommentId)
                 .orElseThrow();
 
-        if(tipsCommentsLikeRepository.findByUser(user).isEmpty()){
+        if(tipsCommentsLikeRepository.findByTipsCommentsAndUser(isTipsComment,user)==null){
             setHeart(isTipsComment, user, isTipsComment.getTipsCommentsLike(), true);
             Map<String, String> response = new HashMap<>();
             response.put("msg", "좋아요 완료 되었습니다");

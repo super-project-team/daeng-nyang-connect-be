@@ -1,7 +1,9 @@
 package com.git.backend.daeng_nyang_connect.review.board.service;
 
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
+import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
@@ -35,6 +37,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final AdoptedAnimalRepository adoptedAnimalRepository;
     private final ReviewImageService reviewImageService;
     private final TokenProvider tokenProvider;
+    private final AnimalRepository animalRepository;
 
     @Override
     public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
@@ -175,8 +178,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public AdoptedAnimal checkMyAdoptedAnimal(Long animalId, User user) {
         // 1. 입양한 댕냥이 존재 유무 확인
+        if(animalRepository.findById(animalId).isEmpty()){
+            throw new NoSuchElementException("없는 댕냥이입니다.");
+        }
+
         AdoptedAnimal adoptedAnimal = adoptedAnimalRepository.findByAnimalId(animalId).orElseThrow(
-                () -> new NoSuchElementException("없는 댕냥이입니다.")
+                () -> new NoSuchElementException("아직 입양되지 않은 댕냥이입니다.")
         );
 
         // 2. 내가 입양한 댕냥이가 맞는지 확인

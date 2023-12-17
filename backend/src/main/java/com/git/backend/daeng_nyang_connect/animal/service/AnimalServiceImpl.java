@@ -46,12 +46,12 @@ public class AnimalServiceImpl  implements AnimalService{
                                 .gender(animalRequestDTO.getGender())
                                 .disease(animalRequestDTO.getDisease())
                                 .training(animalRequestDTO.getTraining())
-                                .neutering(animalRequestDTO.getNeutering())
+                                .neutering(animalRequestDTO.getParseNeutering())
                                 .textReason(animalRequestDTO.getTextReason())
                                 .healthCheck(animalRequestDTO.getHealthCheck())
                                 .breed(animalRequestDTO.getBreed())
                                 .kind(animalRequestDTO.getKind())
-                                .nurturePeriod(animalRequestDTO.getNurturePeriod())
+                                .nurturePeriod(animalRequestDTO.getParseNurturePeriod())
                                 .city(animalRequestDTO.getCity())
                                 .adoptionStatus(AdoptionStatus.PROGRESS)
                                 .createdAt(nowDate())
@@ -128,12 +128,12 @@ public class AnimalServiceImpl  implements AnimalService{
                                     .gender(animalRequestDTO.getGender())
                                     .disease(animalRequestDTO.getDisease())
                                     .training(animalRequestDTO.getTraining())
-                                    .neutering(animalRequestDTO.getNeutering())
+                                    .neutering(animalRequestDTO.getParseNeutering())
                                     .textReason(animalRequestDTO.getTextReason())
                                     .healthCheck(animalRequestDTO.getHealthCheck())
                                     .breed(animalRequestDTO.getBreed())
                                     .kind(animalRequestDTO.getKind())
-                                    .nurturePeriod(animalRequestDTO.getNurturePeriod())
+                                    .nurturePeriod(animalRequestDTO.getParseNurturePeriod())
                                     .city(animalRequestDTO.getCity())
                                     .adoptionStatus(myAnimal.getAdoptionStatus())
                                     .createdAt(myAnimal.getCreatedAt())
@@ -183,7 +183,7 @@ public class AnimalServiceImpl  implements AnimalService{
         // 3. 해당 유저가 해당 댕냥이를 이미 스크랩 했는지 확인
         Map<String,String> message = new HashMap<>();
 
-        if(animalScrapRepository.findByUser(user).isPresent()){
+        if(animalScrapRepository.findMyScrapList(user, animalBoard).isPresent()){
             // 3-1. 만약 해당 유저가 해당 댕냥이를 이미 스크랩 했다면 (제거)
             animalScrapRepository.deleteByUser(user);
             message.put("message", animalBoard.getAnimalName() + "이 스크랩 목록에서 삭제되었습니다.");
@@ -258,6 +258,12 @@ public class AnimalServiceImpl  implements AnimalService{
     public AnimalResponseDTO response(Animal animal) {
         List<AnimalImage> animalImages = animalImageRepository.findByAnimal(animal);
         return new AnimalResponseDTO(animal, animalImages);
+    }
+
+    @Override
+    public AnimalResponseDTO response(AdoptedAnimal adoptedAnimal) {
+        List<AnimalImage> animalImages = animalImageRepository.findByAnimal(adoptedAnimal.getAnimal());
+        return new AnimalResponseDTO(adoptedAnimal, animalImages);
     }
 
     @Override

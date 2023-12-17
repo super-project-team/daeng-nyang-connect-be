@@ -13,26 +13,26 @@ import java.sql.Timestamp;
 @Builder
 public class MyPetDTO {
 
-    private Long myPetBoardId;
+    private Long boardId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private String kind;
-    private String breed;
     private String text;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-    private Integer myPetLike;
+    private Integer like;
 
     public static MyPetDTO fromMyPetEntity(MyPet myPet, String nickname) {
         return MyPetDTO.builder()
-                .myPetBoardId(myPet.getMyPetBoardId())
+                .boardId(myPet.getMyPetBoardId())
                 .userId(myPet.getUser().getUserId())
                 .nickname(nickname)
+                .userThumbnail(myPet.getUser().getMyPage().getImg())
                 .kind(myPet.getKind())
-                .breed(myPet.getBreed())
                 .text(myPet.getText())
                 .createdAt(myPet.getCreatedAt())
-                .myPetLike(myPet.getMyPetLike())
+                .like(myPet.getMyPetLike())
                 .build();
     }
 

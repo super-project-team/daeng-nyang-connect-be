@@ -8,8 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class TipsBoardLikeDto {
-    private Long TipsBoardLikeId;
+    private Long likeId;
     private Long userId;
+    private Long boardId;
 
 
 }

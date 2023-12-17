@@ -32,7 +32,7 @@ public class LostCommentsService {
         Lost byId = lostRepository.findById(lostBoardId).orElseThrow();
 
         LostComments lostComments = LostComments.builder()
-                .lostCommentsId(lostCommentsDTO.getLostCommentsId())
+                .lostCommentsId(lostCommentsDTO.getCommentsId())
                 .comment(lostCommentsDTO.getComment())
                 .lost(byId)
                 .createdAt(timestamp)

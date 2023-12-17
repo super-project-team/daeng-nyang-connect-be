@@ -9,6 +9,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -20,17 +21,30 @@ import java.util.Objects;
 @NoArgsConstructor
 public class AnimalRequestDTO {
     private String animalName;
-    private Integer age;
+    private String age;
     private String gender;
     private String disease;
     private String training;
-    private Boolean neutering;
+
+    private String neutering;
+    private Boolean parseNeutering;
+
     private String textReason;
     private String healthCheck;
     private Kind kind;
     private String breed;
-    private Date nurturePeriod;
+
+    private String nurturePeriod;
+    private Date parseNurturePeriod;
+
     private String city;
+
+    public AnimalRequestDTO parseData(){
+        parseNeutering = Boolean.parseBoolean(neutering);
+        parseNurturePeriod = Date.from(Instant.parse(nurturePeriod));
+
+        return this;
+    }
 
     public void checkUpdateList(AnimalRequestDTO animalRequestDTO, Animal animal) {
         if (Objects.isNull(animalRequestDTO.getAnimalName())) {
@@ -50,7 +64,7 @@ public class AnimalRequestDTO {
         }
 
         if (Objects.isNull(animalRequestDTO.getNurturePeriod())) {
-            this.nurturePeriod = animal.getNurturePeriod();
+            this.parseNurturePeriod = animal.getNurturePeriod();
         }
 
         if (Objects.isNull(animalRequestDTO.getTraining())) {
@@ -58,7 +72,7 @@ public class AnimalRequestDTO {
         }
 
         if (Objects.isNull(animalRequestDTO.getNeutering())) {
-            this.neutering = animal.getNeutering();
+            this.parseNeutering = animal.getNeutering();
         }
 
         if (Objects.isNull(animalRequestDTO.getTextReason())) {

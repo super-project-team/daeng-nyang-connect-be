@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LostBoardDTO {
-    private Long lostBoardId;
+    private Long boardId;
     private String category;
     private String place;
     private String breed;
@@ -26,7 +26,7 @@ public class LostBoardDTO {
 
     public static LostBoardDTO fromEntity(Lost lost){
         return LostBoardDTO.builder()
-                .lostBoardId(lost.getLostBoardId())
+                .boardId(lost.getLostBoardId())
                 .category(lost.getCategory())
                 .place(lost.getPlace())
                 .lostDate(lost.getLostDate())

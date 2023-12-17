@@ -26,25 +26,25 @@ public class LostController {
     //lost 등록
     @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<?,?> addLost(@RequestHeader("access_token") String token,
-                            @RequestPart("data") LostBoardDetailDTO lostBoardDetailDTO,
-                            @RequestPart("files") List<MultipartFile> fileList){
-        return lostService.addLost(lostBoardDetailDTO, token, fileList);
+                             LostBoardDetailDTO lostBoardDetailDTO,
+                             List<MultipartFile> files){
+        return lostService.addLost(lostBoardDetailDTO, token, files);
     }
 
     //lost 삭제
     @DeleteMapping("/delete")
     public Map<String,String> deleteLost(@RequestHeader("access_token")String token,
-                                         @RequestParam("lostId")Long lostBoardId){
+                                         @RequestParam("id")Long lostBoardId){
         return lostService.deleteLost(token,lostBoardId);
     }
 
     //lost 수정
     @PutMapping("/modify")
     public Map<String, String> modify(@RequestHeader("access_token") String token,
-                                      @RequestParam("lostId")Long lostBoardId,
+                                      @RequestParam("id")Long lostBoardId,
                                       @RequestParam("lostImgId")Long lostImgId,
-                                      @RequestPart("data") LostBoardDetailDTO lostBoardDetailDTO,
-                                      @RequestPart("img")MultipartFile multipartFile)
+                                      LostBoardDetailDTO lostBoardDetailDTO,
+                                      MultipartFile multipartFile)
         throws FileUploadFailedException {
         return lostService.modifyLost(token, lostBoardId, lostBoardDetailDTO, lostImgId, multipartFile);
     }
@@ -57,7 +57,7 @@ public class LostController {
 
     //하나의 lost
     @GetMapping("/getBoard")
-    public LostBoardDetailDTO getOne(@RequestParam("lostId")Long lostBoardId){
+    public LostBoardDetailDTO getOne(@RequestParam("id")Long lostBoardId){
         return lostService.getThis(lostBoardId);
     }
 

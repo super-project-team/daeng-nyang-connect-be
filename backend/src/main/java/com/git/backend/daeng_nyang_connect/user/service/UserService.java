@@ -70,7 +70,7 @@ public class UserService {
         String email = signUpDto.getEmail();
         String password = signUpDto.getPassword();
         String name = signUpDto.getName();
-        String nickName = signUpDto.getNickname();
+        String nickname = signUpDto.getNickname();
         String mobile = signUpDto.getMobile();
         String city = signUpDto.getCity();
         String town = signUpDto.getTown();
@@ -81,7 +81,7 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("이미 사용 중인 아이디 입니다");
         }
 
-        if(userRepository.existsByNickname(nickName)){
+        if(userRepository.existsByNickname(nickname)){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("이미 사용 중인 닉네임 입니다");
         }
 
@@ -89,7 +89,7 @@ public class UserService {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .name(name)
-                .nickname(nickName)
+                .nickname(nickname)
                 .mobile(mobile)
                 .city(city)
                 .town(town)
@@ -120,7 +120,7 @@ public class UserService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 회원이 없을 경우 예외 처리
-            userRepository.findByEmail(email)
+            User isUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("회원이 없습니다"));
 
             // 로그아웃 토큰이 있는 경우 삭제
@@ -142,6 +142,8 @@ public class UserService {
             response.put("access_token", accessToken);
             response.put("refresh_token", refreshToken);
             response.put("http_status", HttpStatus.OK.toString());
+            response.put("nickname", isUser.getNickname());
+            response.put("email",email);
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
@@ -204,9 +206,9 @@ public class UserService {
         }
     }
     //닉네임 중복 체크
-    public ResponseEntity<?> checkUserNickName(String nickName) {
+    public ResponseEntity<?> checkUserNickname(String nickname) {
         try {
-            if (userRepository.findByNickname(nickName) == null) {
+            if (userRepository.findByNickname(nickname) == null) {
                 Map<String, String> response = new HashMap<>();
                 response.put("msg", "사용가능한 닉네임 입니다.");
                 return ResponseEntity.ok(response);

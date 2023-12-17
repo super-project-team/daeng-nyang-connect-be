@@ -31,13 +31,16 @@ public class Animal {
     @Column(name = "animal_name")
     private String animalName;
 
-    private Integer age;
+    private String age;
     private String gender;
     private String disease;
     private String breed; // 종
 
     @Column(name = "text_reason")
     private String textReason; // 파양 이유
+
+    @Column(name = "text_etc")
+    private String textEtc;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "nurture_period")

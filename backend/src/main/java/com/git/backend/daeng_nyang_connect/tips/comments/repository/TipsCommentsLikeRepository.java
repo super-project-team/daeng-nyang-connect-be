@@ -17,4 +17,8 @@ public interface TipsCommentsLikeRepository extends JpaRepository<TipsCommentsLi
    Optional<TipsCommentsLike> findByUser(User user);
 
    List<TipsCommentsLike> findByTipsComments(TipsComments tipsComments);
+
+    void deleteByUserAndTipsComments(User user, TipsComments comments);
+
+    TipsCommentsLike findByTipsCommentsAndUser(TipsComments tipsComments,User user);
 }
