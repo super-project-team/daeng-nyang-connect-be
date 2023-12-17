@@ -29,8 +29,8 @@ public class TokenProvider {
 
     @Value("${security.jwt.secret}")
     private String secretKey;
-    private long accesstokenValidSecond = 500L * 60 * 60; //30분
-    private long refreshtokenValidSecond = 1000L * 60 * 60; //1시간
+    private long accesstokenValidSecond = 2500L * 60 * 60; //30분
+    private long refreshtokenValidSecond = 3000L * 60 * 60; //1시간
 
     private final CustomerUserDetails customerUserDetails;
     private final UserRepository userRepository;
