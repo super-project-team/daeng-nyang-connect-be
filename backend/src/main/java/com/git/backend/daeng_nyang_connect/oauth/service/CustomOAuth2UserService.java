@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.oauth.service;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.config.security.SecurityConfig;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
@@ -8,6 +9,7 @@ import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -28,6 +30,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
+
+
 
 
     @Override
@@ -61,6 +65,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             userAttribute.put("exits", false);
             User oauthUser = new User();
             oauthUser.setEmail(email);
+            oauthUser.setPassword("fptmql12");
             oauthUser.setRole(Role.USER);
             userRepository.save(oauthUser);
             return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("USER")),

@@ -62,8 +62,9 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 //            response.setContentType("application/json;charset=UTF-8");
 //            response.getWriter().write(object.writeValueAsString(rs));
 
-            response.addHeader("access_token", accessToken);
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/")
+            response.setHeader("access_token", accessToken);
+            log.info("response" + response.getHeader(accessToken));
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
                     .queryParam("access_token", accessToken)
                     .build()
                     .encode(StandardCharsets.UTF_8)
@@ -71,6 +72,8 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }else{
             String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/register")
+                    .queryParam("email", (String) oAuth2User.getAttribute("email"))
+                    .queryParam("provider", provider)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();
