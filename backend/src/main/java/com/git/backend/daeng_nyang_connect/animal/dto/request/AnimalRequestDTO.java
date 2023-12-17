@@ -25,6 +25,7 @@ public class AnimalRequestDTO {
     private String disease;
     private String training;
     private Boolean neutering;
+    private String textEtc;
     private String textReason;
     private String healthCheck;
     private Kind kind;
@@ -59,6 +60,10 @@ public class AnimalRequestDTO {
 
         if (Objects.isNull(animalRequestDTO.getNeutering())) {
             this.neutering = animal.getNeutering();
+        }
+
+        if (Objects.isNull(animalRequestDTO.getTextEtc())) {
+            this.textEtc = animal.getTextEtc();
         }
 
         if (Objects.isNull(animalRequestDTO.getTextReason())) {
