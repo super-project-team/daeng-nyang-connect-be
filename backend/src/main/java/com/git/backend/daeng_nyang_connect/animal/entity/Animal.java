@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.animal.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
@@ -42,9 +43,8 @@ public class Animal {
     @Column(name = "text_etc")
     private String textEtc;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "nurture_period")
-    private Date nurturePeriod; // 입양 시기
+    private Integer nurturePeriod; // 입양 시기
 
     private String training;
     private Boolean neutering; // 중성화 여부
@@ -60,6 +60,7 @@ public class Animal {
     private String healthCheck;
 
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
 
     private String city;

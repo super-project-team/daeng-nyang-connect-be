@@ -26,7 +26,7 @@ public class MyScrapAnimalResponseDTO {
     private String healthCheck;
     private Kind kind;
     private String breed;
-    private Date nurturePeriod;
+    private Integer nurturePeriod;
     private String city;
     private AdoptionStatus adoptionStatus; // 입양 완료 여부
     private Timestamp createdAt;
