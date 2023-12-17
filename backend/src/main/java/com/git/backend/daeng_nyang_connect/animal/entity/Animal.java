@@ -31,7 +31,7 @@ public class Animal {
     @Column(name = "animal_name")
     private String animalName;
 
-    private Integer age;
+    private String age;
     private String gender;
     private String disease;
     private String breed; // 종

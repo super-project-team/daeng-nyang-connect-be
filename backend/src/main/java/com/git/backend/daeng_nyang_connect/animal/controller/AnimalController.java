@@ -29,7 +29,7 @@ public class AnimalController {
     public ResponseEntity<?> addAnimal(AnimalRequestDTO animalRequestDTO,
                                        List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
-        Animal newAnimal = animalService.addAnimal(animalRequestDTO, files, token);
+        Animal newAnimal = animalService.addAnimal(animalRequestDTO.parseData(), files, token);
         AnimalResponseDTO response = animalService.response(newAnimal);
         return ResponseEntity.status(200).body(response);
     }

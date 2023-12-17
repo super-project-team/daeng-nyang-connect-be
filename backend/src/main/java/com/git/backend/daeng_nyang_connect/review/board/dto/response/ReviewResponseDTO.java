@@ -20,7 +20,7 @@ public class ReviewResponseDTO {
     private String adoptedAnimalName;
     private String textReview;
     private String createdAt;
-    private Integer age;
+    private String age;
     private String userThumbnail;
     private List<String> images = new ArrayList<>();
 

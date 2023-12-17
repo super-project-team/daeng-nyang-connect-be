@@ -20,7 +20,7 @@ public class AnimalResponseDTO {
     private Long userId;
     private String nickname;
     private String animalName;
-    private Integer age;
+    private String age;
     private String gender;
     private String disease;
     private String training;
