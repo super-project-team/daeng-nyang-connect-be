@@ -23,6 +23,7 @@ public class LostBoardDTO {
     private Date lostDate;
     private String text;
     private List<LostImage> images;
+    private Timestamp createdAt;
 
     private Timestamp createdAt;
 
@@ -35,6 +36,7 @@ public class LostBoardDTO {
                 .breed(lost.getBreed())
                 .text(lost.getText())
                 .images(lost.getImages())
+                .createdAt(lost.getCreatedAt())
                 .build();
     }
 }
