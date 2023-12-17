@@ -225,8 +225,8 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<?> findUserId(FindDto findDto) {
-        List<User> user = userRepository.findEmailByNameAndMobile(findDto.getName(), findDto.getMobile());
+    public ResponseEntity<?> findUserId(String  name, String  mobile) {
+        List<User> user = userRepository.findEmailByNameAndMobile(name, mobile);
 
         List<String> email = user.stream().map(User::getEmail).toList();
 

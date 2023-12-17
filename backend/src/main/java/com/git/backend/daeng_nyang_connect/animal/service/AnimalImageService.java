@@ -51,6 +51,7 @@ public class AnimalImageService {
     public List<String> uploadImages(String name, List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
         if(multipartFileList !=null){
+
             for (int i = 0; i < multipartFileList.size(); i++) {
                 MultipartFile file = multipartFileList.get(i);
                 try {

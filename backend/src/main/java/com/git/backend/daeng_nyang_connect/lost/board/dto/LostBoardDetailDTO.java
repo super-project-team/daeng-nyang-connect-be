@@ -4,16 +4,15 @@ import com.git.backend.daeng_nyang_connect.lost.board.entity.Lost;
 import com.git.backend.daeng_nyang_connect.lost.board.entity.LostImage;
 import com.git.backend.daeng_nyang_connect.lost.comments.dto.LostCommentsDTO;
 import com.git.backend.daeng_nyang_connect.lost.comments.entity.LostComments;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -27,6 +26,7 @@ public class LostBoardDetailDTO {
     private String breed;
     private String gender;
     private String color;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date lostDate;
     private String lostTime;
     private String text;
