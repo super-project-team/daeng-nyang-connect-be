@@ -63,8 +63,8 @@ public class MateController {
     @Transactional
     @PostMapping("/like")
     public Map<String, String> addLike(@RequestHeader("access_token") String token,
-                                       @RequestParam("mateId") Long mateBoardId) {
-        return mateService.clickLike(mateBoardId, token);
+                                       @RequestParam("mateId") Long mateId) {
+        return mateService.clickLike(mateId, token);
     }
 
 }
