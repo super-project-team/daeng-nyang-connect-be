@@ -34,7 +34,7 @@ public class AnimalServiceImpl  implements AnimalService{
     private final UserRepository userRepository;
 
     @Override
-    public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
+    public Animal addAnimal(AnimalRequestDTO animalRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -59,8 +59,8 @@ public class AnimalServiceImpl  implements AnimalService{
         animalRepository.save(newAnimal);
 
         // 3. 이미지를 DB에 저장
-        if(!files.isEmpty()){
-            uploadImage(newAnimal, files);
+        if(animalRequestDTO.getFiles()!=null){
+            uploadImage(newAnimal, animalRequestDTO.getFiles());
         }
 
         // 4. return 새로운 댕냥이
@@ -111,7 +111,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
     @Transactional
     @Override
-    public Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
+    public Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -141,8 +141,8 @@ public class AnimalServiceImpl  implements AnimalService{
         animalRepository.save(updateAnimal);
 
         // 4. 이미지를 DB에 저장
-        if(!files.isEmpty()){
-            uploadImage(myAnimal, files);
+        if(animalRequestDTO.getFiles()!=null){
+            uploadImage(myAnimal, animalRequestDTO.getFiles());
         }
         // 5. 수정된 댕냥이 게시글을 반환
         return updateAnimal;

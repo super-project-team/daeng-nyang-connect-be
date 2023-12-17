@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -35,13 +36,19 @@ public class AnimalRequestDTO {
     private String breed;
 
     private String nurturePeriod;
-    private Date parseNurturePeriod;
+    private Integer parseNurturePeriod;
 
     private String city;
 
+    List<MultipartFile> files = new ArrayList<>();
+
     public AnimalRequestDTO parseData(){
-        parseNeutering = Boolean.parseBoolean(neutering);
-        parseNurturePeriod = Date.from(Instant.parse(nurturePeriod));
+        if(neutering!=null) {
+            parseNeutering = Boolean.parseBoolean(neutering);
+        }
+        if(nurturePeriod!=null) {
+            parseNurturePeriod = Integer.parseInt(nurturePeriod);
+        }
 
         return this;
     }

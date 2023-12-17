@@ -27,9 +27,8 @@ public class AnimalController {
     private final AnimalService animalService;
     @PostMapping("/post")
     public ResponseEntity<?> addAnimal(AnimalRequestDTO animalRequestDTO,
-                                       List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
-        Animal newAnimal = animalService.addAnimal(animalRequestDTO.parseData(), files, token);
+        Animal newAnimal = animalService.addAnimal(animalRequestDTO.parseData(), token);
         AnimalResponseDTO response = animalService.response(newAnimal);
         return ResponseEntity.status(200).body(response);
     }
@@ -56,9 +55,8 @@ public class AnimalController {
     @PutMapping("/modify")
     public ResponseEntity<?> updateAnimal(@RequestParam("animalId") Long animalId,
                                           AnimalRequestDTO animalRequestDTO,
-                                          List<MultipartFile> files,
                                           @RequestHeader("access_token") String token){
-        Animal updateAnimal = animalService.updateAnimal(animalId, animalRequestDTO, files, token);
+        Animal updateAnimal = animalService.updateAnimal(animalId, animalRequestDTO, token);
         AnimalResponseDTO response = animalService.response(updateAnimal);
         return ResponseEntity.status(200).body(response);
     }

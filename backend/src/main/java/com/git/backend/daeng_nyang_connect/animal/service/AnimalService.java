@@ -15,7 +15,7 @@ import java.util.Map;
 
 public interface AnimalService {
     // 댕냥 게시판에 내 파양동물 등록
-    Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token);
+    Animal addAnimal(AnimalRequestDTO animalRequestDTO, String token);
 
     AdoptedAnimal completeAnimal(Long animalId, Long adoptedUserId, String token);
 
@@ -23,7 +23,7 @@ public interface AnimalService {
     void deleteAnimal(Long animalId, String token);
 
     // 댕냥 게시판에 등록한 내 파양동물 수정
-    Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token);
+    Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, String token);
 
     // 댕냥 게시판에 등록된 파양동물 전체 출력
     List<Animal> findAllAnimal();

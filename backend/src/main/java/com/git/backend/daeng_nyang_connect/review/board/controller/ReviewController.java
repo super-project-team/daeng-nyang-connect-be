@@ -27,9 +27,8 @@ public class ReviewController {
     @PostMapping("/post")
     public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
                                        ReviewRequestDTO reviewRequestDTO,
-                                       List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
-        Review newReview = reviewService.addReview(animalId, reviewRequestDTO, files, token);
+        Review newReview = reviewService.addReview(animalId, reviewRequestDTO, token);
         ReviewResponseDTO response = reviewService.response(newReview);
         return ResponseEntity.status(200).body(response);
     }
@@ -46,9 +45,8 @@ public class ReviewController {
     @PutMapping("/modify")
     public ResponseEntity<?> updateReview(@RequestParam("reviewId") Long reviewId,
                                           ReviewRequestDTO reviewRequestDTO,
-                                          List<MultipartFile> files,
                                           @RequestHeader("access_token") String token){
-        Review updateReview = reviewService.updateReview(reviewId, reviewRequestDTO, files, token);
+        Review updateReview = reviewService.updateReview(reviewId, reviewRequestDTO, token);
         ReviewResponseDTO response = reviewService.response(updateReview);
         return ResponseEntity.status(200).body(response);
     }

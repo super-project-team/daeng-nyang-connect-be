@@ -15,13 +15,13 @@ import java.util.Map;
 
 public interface ReviewService {
     // 입양 후기 작성
-    Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token);
+    Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, String token);
 
     // 입양 후기 삭제
     void deleteReview(Long reviewId, String token);
 
     // 입양 후기 수정
-    Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token);
+    Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, String token);
 
     // 해당 파양동물의 입양 후기 출력
     List<Review> findAllReviewByAnimal(Long animalId);
