@@ -91,10 +91,6 @@ public class AnimalRequestDTO {
             this.textReason = animal.getTextReason();
         }
 
-        if (Objects.isNull(animalRequestDTO.getTextEtc())){
-            this.textEtc = animal.getTextEtc();
-        }
-
         if (Objects.isNull(animalRequestDTO.getKind())) {
             this.kind = animal.getKind();
         }
