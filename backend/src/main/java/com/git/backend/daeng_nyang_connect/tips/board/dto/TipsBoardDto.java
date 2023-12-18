@@ -1,13 +1,11 @@
 package com.git.backend.daeng_nyang_connect.tips.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
-import com.git.backend.daeng_nyang_connect.tips.board.entity.TipsImage;
-import com.git.backend.daeng_nyang_connect.user.entity.User;
 import lombok.*;
 
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
@@ -16,25 +14,29 @@ import java.util.List;
 @Builder
 public class TipsBoardDto {
 
-    private Long tipsBoardId;
+    private Long boardId;
     private String category;
     private String title;
     private String text;
-    private Integer tipsLike;
+    private Integer like;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
 
     //게시글 조회시 유저 닉네임 필요
-    private String  nickName;
+    private String  nickname;
 
-    public static TipsBoardDto fromEntity(Tips tips,String userNickName){
+
+
+    public static TipsBoardDto fromEntity(Tips tips,String nickname){
         return TipsBoardDto.builder()
-                .tipsBoardId(tips.getTipsBoardId())
+                .boardId(tips.getTipsBoardId())
                 .category(tips.getCategory())
                 .title(tips.getTitle())
                 .text(tips.getText())
-                .nickName(userNickName)
+                .nickname(nickname)
                 .createdAt(tips.getCreatedAt())
-                .tipsLike(tips.getTipsLike())
+                .like(tips.getTipsLike())
                 .build();
     }
 

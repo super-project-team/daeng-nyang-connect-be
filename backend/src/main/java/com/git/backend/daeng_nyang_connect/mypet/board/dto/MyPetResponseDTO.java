@@ -13,17 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class MyPetResponseDTO {
-    private Long myPetBoardId;
+    private Long boardId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private String kind;
-    // private String breed;
     private String text;
     private List<String> img;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
     private List<MyPetCommentsResponseDTO> comments;
-    // private Integer myPetLike;
-    private List<MyPetBoardLikeDTO> myPetLikes;
-
+    private List<MyPetBoardLikeDTO> likes;
 }

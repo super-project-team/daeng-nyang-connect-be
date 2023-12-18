@@ -20,7 +20,7 @@ import java.util.Map;
 public class ReviewCommentsController {
     //    CRUD : 후기에 대한 댓글 등록 * 삭제 * 정보 수정 * 조회
     private final ReviewCommentsService reviewCommentsService;
-    @PostMapping("/add")
+    @PostMapping("/post")
     public ResponseEntity<?> addCommentsOnReview(@RequestParam("reviewId") Long reviewId,
                                                  @RequestBody ReviewCommentsRequestDTO commentDTO,
                                                  @RequestHeader("access_token") String token){
@@ -38,7 +38,7 @@ public class ReviewCommentsController {
     }
 
     @Transactional
-    @PutMapping("/update")
+    @PutMapping("/modify")
     public ResponseEntity<?> updateCommentsOnReview(@RequestParam("reviewCommentsId") Long reviewCommentsId,
                                             @RequestBody ReviewCommentsRequestDTO commentDTO,
                                             @RequestHeader("access_token") String token){

@@ -25,6 +25,7 @@ import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -42,6 +44,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Cacheable
+@Slf4j
 public class TipsBoardService {
     private final TipsBoardRepository tipsBoardRepository;
     private final TipsImgUpload tipsImgUpload;
@@ -60,7 +63,7 @@ public class TipsBoardService {
         User user = userService.checkUserByToken(token);
 
         Tips tips = Tips.builder()
-                .tipsBoardId(tipsBoardDto.getTipsBoardId())
+                .tipsBoardId(tipsBoardDto.getBoardId())
                 .user(user)
                 .category(tipsBoardDto.getCategory())
                 .title(tipsBoardDto.getTitle())
@@ -77,7 +80,7 @@ public class TipsBoardService {
         }
 
     //게시물 ID에 해당하는 user 닉네임 가져오기
-    public String  findUserNickNameByTipsId(Long tipsId) {
+    public String  findUserNicknameByTipsId(Long tipsId) {
         Tips tips = tipsBoardRepository.findById(tipsId).orElse(null);
         if (tips != null && tips.getUser() != null) {
             return tips.getUser().getNickname();
@@ -113,7 +116,7 @@ public class TipsBoardService {
             tipsBoardLikeRepository.save(tipsBoardLike);
             tipsBoardRepository.save(tips);
         }else{
-            tipsBoardLikeRepository.deleteByUser(user);
+            tipsBoardLikeRepository.deleteByUserAndTips(user,tips);
             likeCount--;
             tips.setTipsLike(likeCount);
             tipsBoardRepository.save(tips);
@@ -128,7 +131,7 @@ public class TipsBoardService {
                 .orElseThrow();
 
 
-        if(tipsBoardLikeRepository.findByUser(user).isEmpty()){
+        if(tipsBoardLikeRepository.findByTipsAndUser(isTips,user)==null){
             setHeart(isTips, user, isTips.getTipsLike(), true);
             return ResponseEntity.ok().body(tipsId + "번 게시글에 좋아요가 추가 되었습니다");
             }
@@ -136,7 +139,6 @@ public class TipsBoardService {
             setHeart(isTips, user, isTips.getTipsLike(), false);
             return ResponseEntity.ok().body(tipsId + "번 게시글에 좋아요가 취소 되었습니다");
             }
-
     }
     //게시물 삭제
     public Map<String,String> delete(String token, Long tipsId) {
@@ -177,13 +179,13 @@ public class TipsBoardService {
     //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
     @Transactional
     public List<TipsBoardDto> getAll(Pageable pageable){
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 20, pageable.getSort());
         Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
         List<Tips> tipsList = tipsPage.getContent();
 
         return tipsList.stream()
                 .map(tips -> {
-                    String author = findUserNickNameByTipsId(tips.getTipsBoardId());
+                    String author = findUserNicknameByTipsId(tips.getTipsBoardId());
                     return TipsBoardDto.fromEntity(tips, author);
                 })
                 .collect(Collectors.toList());
@@ -193,8 +195,9 @@ public class TipsBoardService {
     public List<TipsBoardDto> searchBoard(String keyword){
 
         List<Tips> byTitleContaining = tipsBoardRepository.findByTitleContaining(keyword);
+        Integer size = tipsBoardRepository.findByTitleContaining(keyword).size();
         return byTitleContaining.stream().map(tips -> {
-           String author = findUserNickNameByTipsId(tips.getTipsBoardId());
+           String author = findUserNicknameByTipsId(tips.getTipsBoardId());
            return TipsBoardDto.fromEntity(tips, author);
         }).collect(Collectors.toList());
 
@@ -210,27 +213,33 @@ public class TipsBoardService {
         // 필요한 정보만을 DTO로 변환
         List<TipsCommentsDto> tipsCommentsDtoList = thisBoardComments.stream()
                 .map(comment -> TipsCommentsDto.builder()
-                        .tipsCommentsId(comment.getTipsCommentsId())
-                        .tipsId(comment.getTips().getTipsBoardId())
+                        .commentsId(comment.getTipsCommentsId())
+                        .boardId(comment.getTips().getTipsBoardId())
                         .userId(comment.getUser().getUserId())
-                        .nickName(comment.getUser().getNickname())
+                        .userThumbnail(comment.getUser().getMyPage().getImg())
+                        .nickname(comment.getUser().getNickname())
                         .comment(comment.getComment())
-                        .tipsCommentLike(comment.getTipsCommentsLike())
+                        .like(comment.getTipsCommentsLike())
                         .createdAt(comment.getCreatedAt())
-                        .commentsLikes(comment.getLikeList())
+                        .likes(comment.getLikeList())
                         .build())
                 .collect(Collectors.toList());
 
         List<TipsBoardLikeDto> tipsBoardLikeDtos = tipsBoardLikes.stream()
                 .map(like -> TipsBoardLikeDto.builder()
-                        .TipsBoardLikeId(like.getTipsBoardLikeId())
+                        .likeId(like.getTipsBoardLikeId())
                         .userId(like.getUser().getUserId())
                         .build())
                 .toList();
 
-        return TipsBoardDetailDto.fromEntity1(thisBoard, thisBoardImg, tipsCommentsDtoList,tipsBoardLikeDtos);
+        return TipsBoardDetailDto.fromEntity(thisBoard, thisBoardImg, tipsCommentsDtoList,tipsBoardLikeDtos);
 
     }
-
+    public Map<String, Integer> getSize(){
+        Map<String, Integer> response = new HashMap<>();
+        Integer size = tipsBoardRepository.findAll().size();
+        response.put("size", size);
+        return response;
+    }
 
 }

@@ -25,11 +25,10 @@ import java.util.Map;
 public class AnimalController {
 //    CRUD : 파양동물 등록 * 삭제 * 정보 수정 * 조회
     private final AnimalService animalService;
-    @PostMapping("/add")
+    @PostMapping("/post")
     public ResponseEntity<?> addAnimal(AnimalRequestDTO animalRequestDTO,
-                                       List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
-        Animal newAnimal = animalService.addAnimal(animalRequestDTO, files, token);
+        Animal newAnimal = animalService.addAnimal(animalRequestDTO.parseData(), token);
         AnimalResponseDTO response = animalService.response(newAnimal);
         return ResponseEntity.status(200).body(response);
     }
@@ -40,7 +39,8 @@ public class AnimalController {
                                             @RequestParam("adoptedUserId") Long adoptedUserId,
                                             @RequestHeader("access_token") String token){
         AdoptedAnimal adoptedAnimal = animalService.completeAnimal(animalId, adoptedUserId, token);
-        return ResponseEntity.status(200).body(adoptedAnimal.getAnimal().getAnimalName() + " 이 " + adoptedAnimal.getUser().getNickname() +" 님에게 입양되었습니다.");
+        AnimalResponseDTO response = animalService.response(adoptedAnimal);
+        return ResponseEntity.status(200).body(response);
     }
 
     @Transactional
@@ -52,18 +52,17 @@ public class AnimalController {
     }
 
     @Transactional
-    @PutMapping("/update")
+    @PutMapping("/modify")
     public ResponseEntity<?> updateAnimal(@RequestParam("animalId") Long animalId,
-                                          @RequestPart("dto") AnimalRequestDTO animalRequestDTO,
-                                          @RequestPart("files") List<MultipartFile> files,
+                                          AnimalRequestDTO animalRequestDTO,
                                           @RequestHeader("access_token") String token){
-        Animal updateAnimal = animalService.updateAnimal(animalId, animalRequestDTO, files, token);
+        Animal updateAnimal = animalService.updateAnimal(animalId, animalRequestDTO, token);
         AnimalResponseDTO response = animalService.response(updateAnimal);
         return ResponseEntity.status(200).body(response);
     }
 
     // 조회 - 전체 * kind(동물 종류) * city(지역별) * 입양 완료 상태별
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public ResponseEntity<?> findAllAnimal(){
         List<Animal> animalList = animalService.findAllAnimal();
         List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
@@ -91,6 +90,7 @@ public class AnimalController {
         return ResponseEntity.status(200).body(responseList);
     }
 
+    @Transactional
     @PostMapping("/scrap")
     public ResponseEntity<?> scrapAnimal(@RequestParam("animalId") Long animalId,
                                         @RequestHeader("access_token") String token){

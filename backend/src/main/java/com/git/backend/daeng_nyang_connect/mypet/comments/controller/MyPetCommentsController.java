@@ -18,18 +18,18 @@ public class MyPetCommentsController {
 
     private final MyPetCommentsService myPetCommentsService;
 
-    @PostMapping("/upload")
+    @PostMapping("/post")
     public Map<?, ?> uploadComment(@RequestHeader("access_token") String token,
                                            @RequestParam("id")Long myPet,
                                            @RequestBody MyPetCommentsDTO myPetCommentsDTO){
-        return myPetCommentsService.uploadComment(token, myPet, myPetCommentsDTO);
+        return myPetCommentsService.postComment(token, myPet, myPetCommentsDTO);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/modify")
     public Map<?, ?> updateComment(@RequestHeader("access_token") String token,
                                            @RequestParam("id")Long myPetCommentsId,
                                            @RequestBody MyPetCommentsDTO myPetCommentsDTO){
-        return myPetCommentsService.updateComment(token, myPetCommentsId, myPetCommentsDTO);
+        return myPetCommentsService.modifyComment(token, myPetCommentsId, myPetCommentsDTO);
     }
 
     @DeleteMapping("/delete")

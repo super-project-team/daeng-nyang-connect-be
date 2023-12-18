@@ -1,7 +1,9 @@
 package com.git.backend.daeng_nyang_connect.review.board.service;
 
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
+import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
+import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
@@ -13,6 +15,7 @@ import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewLikeRep
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.dao.DuplicateKeyException;
@@ -35,9 +38,10 @@ public class ReviewServiceImpl implements ReviewService {
     private final AdoptedAnimalRepository adoptedAnimalRepository;
     private final ReviewImageService reviewImageService;
     private final TokenProvider tokenProvider;
+    private final AnimalRepository animalRepository;
 
     @Override
-    public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
+    public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -59,8 +63,8 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(newReview);
 
         // 4. 댕냥이 이미지 DB에 저장
-        if(!files.isEmpty()){
-            uploadImage(newReview, files);
+        if(reviewRequestDTO.getFiles()!=null){
+            uploadImage(newReview, reviewRequestDTO.getFiles());
         }
 
         // 5. return 새로운 후기
@@ -80,7 +84,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
+    public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -101,8 +105,8 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(updateReview);
 
         // 4. 댕냥이 이미지 DB에 저장
-        if(!files.isEmpty()){
-            uploadImage(updateReview, files);
+        if(reviewRequestDTO.getFiles()!=null){
+            uploadImage(updateReview, reviewRequestDTO.getFiles());
         }
         // 5. 수정된 댕냥이 후기를 반환
         return updateReview;
@@ -175,8 +179,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public AdoptedAnimal checkMyAdoptedAnimal(Long animalId, User user) {
         // 1. 입양한 댕냥이 존재 유무 확인
+        if(animalRepository.findById(animalId).isEmpty()){
+            throw new NoSuchElementException("없는 댕냥이입니다.");
+        }
+
         AdoptedAnimal adoptedAnimal = adoptedAnimalRepository.findByAnimalId(animalId).orElseThrow(
-                () -> new NoSuchElementException("없는 댕냥이입니다.")
+                () -> new NoSuchElementException("아직 입양되지 않은 댕냥이입니다.")
         );
 
         // 2. 내가 입양한 댕냥이가 맞는지 확인
@@ -243,5 +251,12 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return responseList;
+    }
+
+    public Map<String,Integer>getSize(){
+        Map<String, Integer> response = new HashMap<>();
+        Integer size = reviewRepository.findAll().size();
+        response.put("Size", size);
+        return response;
     }
 }

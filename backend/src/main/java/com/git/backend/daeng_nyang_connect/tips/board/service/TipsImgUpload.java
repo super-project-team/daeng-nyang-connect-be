@@ -44,15 +44,18 @@ public class TipsImgUpload {
 
     public List<String> uploadTipsImgs(Tips tips, String title,List<MultipartFile> multipartFileList){
         List<String> filenameList = new ArrayList<>();
-
-        multipartFileList.forEach(file -> {
-            try{
-                String fileName = uploadTipsImg(tips, title, file);
-                filenameList.add(fileName);
-            } catch (FileUploadFailedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        if(multipartFileList !=null){
+            multipartFileList.forEach(file -> {
+                try{
+                    String fileName = uploadTipsImg(tips, title, file);
+                    filenameList.add(fileName);
+                } catch (FileUploadFailedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }else{
+            return null;
+        }
         return filenameList;
     }
 
@@ -76,6 +79,10 @@ public class TipsImgUpload {
                 .tips(tipsId)
                 .url(amazonS3Client.getUrl(bucketName, fileName).toString())
                 .build();
+
+        if(multipartFile.isEmpty()){
+            return null;
+        }
         tipsImageRepository.save(tipsImage);
 
         return amazonS3Client.getUrl(bucketName, fileName).toString();
@@ -96,6 +103,10 @@ public class TipsImgUpload {
         }catch (Exception e){
             log.error("Amazon S3 파일 업로드 실패: {}", e.getMessage(), e);
             throw new FileUploadFailedException("파일 업로드에 실패했습니다");
+        }
+
+        if(multipartFile.isEmpty()){
+            return null;
         }
 
         return amazonS3Client.getUrl(bucketName, fileName).toString();

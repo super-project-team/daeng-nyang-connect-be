@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class MyPetCommentsLikeDTO {
-    private Long myPetCommentsLikeId;
+    private Long likeId;
     private Long userId;
 }

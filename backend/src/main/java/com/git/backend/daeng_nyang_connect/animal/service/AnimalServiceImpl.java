@@ -34,7 +34,7 @@ public class AnimalServiceImpl  implements AnimalService{
     private final UserRepository userRepository;
 
     @Override
-    public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
+    public Animal addAnimal(AnimalRequestDTO animalRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -46,12 +46,14 @@ public class AnimalServiceImpl  implements AnimalService{
                                 .gender(animalRequestDTO.getGender())
                                 .disease(animalRequestDTO.getDisease())
                                 .training(animalRequestDTO.getTraining())
-                                .neutering(animalRequestDTO.getNeutering())
+                                .neutering(animalRequestDTO.getParseNeutering())
+                                .textEtc(animalRequestDTO.getTextEtc())
                                 .textReason(animalRequestDTO.getTextReason())
+                                .textEtc(animalRequestDTO.getTextEtc())
                                 .healthCheck(animalRequestDTO.getHealthCheck())
                                 .breed(animalRequestDTO.getBreed())
                                 .kind(animalRequestDTO.getKind())
-                                .nurturePeriod(animalRequestDTO.getNurturePeriod())
+                                .nurturePeriod(animalRequestDTO.getParseNurturePeriod())
                                 .city(animalRequestDTO.getCity())
                                 .adoptionStatus(AdoptionStatus.PROGRESS)
                                 .createdAt(nowDate())
@@ -59,8 +61,8 @@ public class AnimalServiceImpl  implements AnimalService{
         animalRepository.save(newAnimal);
 
         // 3. 이미지를 DB에 저장
-        if(!files.isEmpty()){
-            uploadImage(newAnimal, files);
+        if(animalRequestDTO.getFiles()!=null){
+            uploadImage(newAnimal, animalRequestDTO.getFiles());
         }
 
         // 4. return 새로운 댕냥이
@@ -111,7 +113,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
     @Transactional
     @Override
-    public Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
+    public Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -128,12 +130,14 @@ public class AnimalServiceImpl  implements AnimalService{
                                     .gender(animalRequestDTO.getGender())
                                     .disease(animalRequestDTO.getDisease())
                                     .training(animalRequestDTO.getTraining())
-                                    .neutering(animalRequestDTO.getNeutering())
+                                    .neutering(animalRequestDTO.getParseNeutering())
+                                    .textEtc(animalRequestDTO.getTextEtc())
                                     .textReason(animalRequestDTO.getTextReason())
+                                    .textEtc(animalRequestDTO.getTextEtc())
                                     .healthCheck(animalRequestDTO.getHealthCheck())
                                     .breed(animalRequestDTO.getBreed())
                                     .kind(animalRequestDTO.getKind())
-                                    .nurturePeriod(animalRequestDTO.getNurturePeriod())
+                                    .nurturePeriod(animalRequestDTO.getParseNurturePeriod())
                                     .city(animalRequestDTO.getCity())
                                     .adoptionStatus(myAnimal.getAdoptionStatus())
                                     .createdAt(myAnimal.getCreatedAt())
@@ -141,8 +145,8 @@ public class AnimalServiceImpl  implements AnimalService{
         animalRepository.save(updateAnimal);
 
         // 4. 이미지를 DB에 저장
-        if(!files.isEmpty()){
-            uploadImage(myAnimal, files);
+        if(animalRequestDTO.getFiles()!=null){
+            uploadImage(myAnimal, animalRequestDTO.getFiles());
         }
         // 5. 수정된 댕냥이 게시글을 반환
         return updateAnimal;
@@ -183,7 +187,7 @@ public class AnimalServiceImpl  implements AnimalService{
         // 3. 해당 유저가 해당 댕냥이를 이미 스크랩 했는지 확인
         Map<String,String> message = new HashMap<>();
 
-        if(animalScrapRepository.findByUser(user).isPresent()){
+        if(animalScrapRepository.findMyScrapList(user, animalBoard).isPresent()){
             // 3-1. 만약 해당 유저가 해당 댕냥이를 이미 스크랩 했다면 (제거)
             animalScrapRepository.deleteByUser(user);
             message.put("message", animalBoard.getAnimalName() + "이 스크랩 목록에서 삭제되었습니다.");
@@ -210,7 +214,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
         // 2. 내가 작성한 게시글이 맞는지 확인
         if(!myAnimal.getUser().equals(user)){
-            throw new IllegalArgumentException("다른 유저의 작성 댓글입니다.");
+            throw new IllegalArgumentException("다른 유저의 작성 게시글입니다.");
         }
         // 3. 내가 작성한 게시글 반환
         return myAnimal;
@@ -258,6 +262,12 @@ public class AnimalServiceImpl  implements AnimalService{
     public AnimalResponseDTO response(Animal animal) {
         List<AnimalImage> animalImages = animalImageRepository.findByAnimal(animal);
         return new AnimalResponseDTO(animal, animalImages);
+    }
+
+    @Override
+    public AnimalResponseDTO response(AdoptedAnimal adoptedAnimal) {
+        List<AnimalImage> animalImages = animalImageRepository.findByAnimal(adoptedAnimal.getAnimal());
+        return new AnimalResponseDTO(adoptedAnimal, animalImages);
     }
 
     @Override

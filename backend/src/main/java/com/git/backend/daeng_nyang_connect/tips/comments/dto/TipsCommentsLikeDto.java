@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class TipsCommentsLikeDto {
-    private Long TipsCommentsLikeId;
+    private Long likeId;
     private Long userId;
 
 }

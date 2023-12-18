@@ -12,6 +12,6 @@ import java.util.List;
 public interface MateRepository extends JpaRepository<Mate, Long> {
 
     Page<Mate> findByTextContaining(String keyword, Pageable pageable);
-
+    
     List<Mate> findByUserEmail(String userEmail);
 }

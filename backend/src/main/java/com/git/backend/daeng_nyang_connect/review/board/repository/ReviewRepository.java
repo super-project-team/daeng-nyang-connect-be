@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findReviewByAnimalId(@Param("animalId") Long animalId);
 
     Optional<Review> findByUser(User user);
+
+    List<Review> findByUserNickname(String nickname);
 }

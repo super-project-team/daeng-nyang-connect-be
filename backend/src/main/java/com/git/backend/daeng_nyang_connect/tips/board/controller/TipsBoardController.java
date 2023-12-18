@@ -30,11 +30,11 @@ public class TipsBoardController {
     private final TipsBoardService tipsBoardService;
 
 
-    @PostMapping("/upload")
+    @PostMapping("/post")
     public Map<?,?> upload(@RequestHeader("access_token")String token,
-                             @RequestPart("data") TipsBoardDto tipsBoardDto,
-                             @RequestPart("files") List<MultipartFile> fileList){
-       return tipsBoardService.postBoard(tipsBoardDto, token, fileList);
+                            TipsBoardDto tipsBoardDto,
+                            List<MultipartFile> files){
+       return tipsBoardService.postBoard(tipsBoardDto, token, files);
 
     }
 
@@ -54,9 +54,9 @@ public class TipsBoardController {
     public Map<String ,String> modify(@RequestHeader("access_token")String token,
                                       @RequestParam("tipsId")Long tipsId,
                                       @RequestParam("tipsImgId")Long tipsImgId,
-                                      @RequestPart("data") TipsBoardDto tipsBoardDto,
-                                      @RequestPart("img")MultipartFile multipartFile) throws FileUploadFailedException {
-        return tipsBoardService.modifyTips(token,tipsId,tipsBoardDto, tipsImgId, multipartFile);
+                                      TipsBoardDto tipsBoardDto,
+                                      MultipartFile files) throws FileUploadFailedException {
+        return tipsBoardService.modifyTips(token,tipsId,tipsBoardDto, tipsImgId, files);
     }
 
     @GetMapping("/getAll")
@@ -73,6 +73,10 @@ public class TipsBoardController {
     @GetMapping("/search")
     public List<TipsBoardDto> searchBoard(@RequestParam String keyword){
         return tipsBoardService.searchBoard(keyword);
+    }
+    @GetMapping("/getSize")
+    public Map<String ,Integer> getSize(){
+        return tipsBoardService.getSize();
     }
 
 }

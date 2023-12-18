@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class ModifyUserDto {
 
-    private String nickName;
+    private String nickname;
     private String info;
     private String password;
 }

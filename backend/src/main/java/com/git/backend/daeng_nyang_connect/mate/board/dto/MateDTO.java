@@ -13,26 +13,28 @@ import java.sql.Timestamp;
 @Builder
 public class MateDTO {
 
-    private Long mateBoardId;
+    private Long boardId;
     private Long userId;
     private String nickname;
+    private String userThumbnail;
     private String category;
     private String place;
     private String text;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
-    private Integer mateLike;
+    private Integer like;
 
     public static MateDTO fromMateEntity(Mate mate, String nickname) {
         return MateDTO.builder()
-                .mateBoardId(mate.getMateBoardId())
+                .boardId(mate.getMateBoardId())
                 .category(mate.getCategory())
                 .userId(mate.getUser().getUserId())
                 .nickname(nickname)
+                .userThumbnail(mate.getUser().getMyPage().getImg())
                 .place(mate.getPlace())
                 .text(mate.getText())
                 .createdAt(mate.getCreatedAt())
-                .mateLike(mate.getMateLike())
+                .like(mate.getMateLike())
                 .build();
     }
 }

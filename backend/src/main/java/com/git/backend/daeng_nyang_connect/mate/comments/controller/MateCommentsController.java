@@ -18,29 +18,29 @@ public class MateCommentsController {
 
     private final MateCommentsService mateCommentsService;
 
-    @PostMapping("/upload")
-    public Map<?, ?> uploadComment(@RequestHeader("access_token") String token,
-                                @RequestParam("id")Long mate,
-                                @RequestBody MateCommentsDTO mateCommentsDTO){
-        return mateCommentsService.uploadComment(token, mate, mateCommentsDTO);
+    @PostMapping("/post")
+    public Map<?, ?> postComment(@RequestHeader("access_token") String token,
+                                 @RequestParam("id")Long mate,
+                                 @RequestBody MateCommentsDTO mateCommentsDTO){
+        return mateCommentsService.postComment(token, mate, mateCommentsDTO);
     }
 
-    @PutMapping("/update")
-    public Map<?, ?> updateComment(@RequestHeader("access_token") String token,
+    @PutMapping("/modify")
+    public Map<?, ?> modifyComment(@RequestHeader("access_token") String token,
                                    @RequestParam("id")Long mateCommentsId,
                                    @RequestBody MateCommentsDTO mateCommentsDTO){
-        return mateCommentsService.updateComment(token, mateCommentsId, mateCommentsDTO);
+        return mateCommentsService.modifyComment(token, mateCommentsId, mateCommentsDTO);
     }
 
     @DeleteMapping("/delete")
     public Map<?, ?> deleteComment(@RequestHeader("access_token") String token,
-                                    @RequestParam("id")Long mateCommentsId){
+                                   @RequestParam("id")Long mateCommentsId){
         return mateCommentsService.deleteComment(token, mateCommentsId);
     }
 
     @PostMapping("/like")
     public Map<?, ?> addLike(@RequestHeader("access_token") String token,
-                                           @RequestParam("id")Long mateCommentsId){
+                             @RequestParam("id")Long mateCommentsId){
         return mateCommentsService.clickLike(mateCommentsId, token);
     }
 }

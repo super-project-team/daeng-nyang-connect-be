@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface MyPetImageRepository extends JpaRepository<MyPetImage, Long> {
 
     Optional<List<MyPetImage>> findByMyPet(MyPet myPet);
+
+    List<MyPetImage> findByMyPet_MyPetBoardId(Long myPetId);
 }
