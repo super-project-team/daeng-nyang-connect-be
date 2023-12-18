@@ -31,6 +31,7 @@ public class AnimalRequestDTO {
     private Boolean parseNeutering;
 
     private String textReason;
+    private String textEtc;
     private String healthCheck;
     private Kind kind;
     private String breed;
@@ -84,6 +85,10 @@ public class AnimalRequestDTO {
 
         if (Objects.isNull(animalRequestDTO.getTextReason())) {
             this.textReason = animal.getTextReason();
+        }
+
+        if (Objects.isNull(animalRequestDTO.getTextEtc())){
+            this.textEtc = animal.getTextEtc();
         }
 
         if (Objects.isNull(animalRequestDTO.getKind())) {
