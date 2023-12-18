@@ -47,6 +47,7 @@ public class AnimalServiceImpl  implements AnimalService{
                                 .disease(animalRequestDTO.getDisease())
                                 .training(animalRequestDTO.getTraining())
                                 .neutering(animalRequestDTO.getParseNeutering())
+                                .textEtc(animalRequestDTO.getTextEtc())
                                 .textReason(animalRequestDTO.getTextReason())
                                 .textEtc(animalRequestDTO.getTextEtc())
                                 .healthCheck(animalRequestDTO.getHealthCheck())
@@ -130,6 +131,7 @@ public class AnimalServiceImpl  implements AnimalService{
                                     .disease(animalRequestDTO.getDisease())
                                     .training(animalRequestDTO.getTraining())
                                     .neutering(animalRequestDTO.getParseNeutering())
+                                    .textEtc(animalRequestDTO.getTextEtc())
                                     .textReason(animalRequestDTO.getTextReason())
                                     .textEtc(animalRequestDTO.getTextEtc())
                                     .healthCheck(animalRequestDTO.getHealthCheck())
@@ -212,7 +214,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
         // 2. 내가 작성한 게시글이 맞는지 확인
         if(!myAnimal.getUser().equals(user)){
-            throw new IllegalArgumentException("다른 유저의 작성 댓글입니다.");
+            throw new IllegalArgumentException("다른 유저의 작성 게시글입니다.");
         }
         // 3. 내가 작성한 게시글 반환
         return myAnimal;

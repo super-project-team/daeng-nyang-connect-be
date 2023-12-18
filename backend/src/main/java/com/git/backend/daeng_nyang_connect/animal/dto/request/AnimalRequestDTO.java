@@ -30,6 +30,7 @@ public class AnimalRequestDTO {
     private String neutering;
     private Boolean parseNeutering;
 
+    private String textEtc;
     private String textReason;
     private String textEtc;
     private String healthCheck;
@@ -81,6 +82,10 @@ public class AnimalRequestDTO {
 
         if (Objects.isNull(animalRequestDTO.getNeutering())) {
             this.parseNeutering = animal.getNeutering();
+        }
+
+        if (Objects.isNull(animalRequestDTO.getTextEtc())) {
+            this.textEtc = animal.getTextEtc();
         }
 
         if (Objects.isNull(animalRequestDTO.getTextReason())) {
