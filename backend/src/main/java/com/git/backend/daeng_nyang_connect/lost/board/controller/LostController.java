@@ -66,4 +66,9 @@ public class LostController {
     public List<LostBoardDTO> getSearch(@RequestParam String keyword){
         return lostService.searchLost(keyword);
     }
+
+    @GetMapping("/getSize")
+    public Map<String,Integer>getSize(){
+        return lostService.getSize();
+    }
 }

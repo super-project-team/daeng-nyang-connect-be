@@ -6,6 +6,7 @@ import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewReques
 import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.service.ReviewService;
+import com.git.backend.daeng_nyang_connect.review.board.service.ReviewServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class ReviewController {
     //    CRUD : 입양 해온 동물에 대한 리뷰 등록 * 삭제 * 정보 수정 * 조회
     private final ReviewService reviewService;
+    private final ReviewServiceImpl reviewServiceImpl;
     @PostMapping("/post")
     public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
                                        ReviewRequestDTO reviewRequestDTO,
@@ -72,5 +74,10 @@ public class ReviewController {
                                           @RequestHeader("access_token") String token){
         Map<String, String> message = reviewService.likeReview(reviewId, token);
         return ResponseEntity.status(200).body(message);
+    }
+
+    @GetMapping("/getSize")
+    public Map<String,Integer>getSize(){
+        return reviewServiceImpl.getSize();
     }
 }

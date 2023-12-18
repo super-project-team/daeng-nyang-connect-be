@@ -66,5 +66,9 @@ public class MyPetController {
                                        @RequestParam("myPetId") Long myPetId) {
         return myPetService.clickLike(myPetId, token);
     }
+    @GetMapping("/getSize")
+    public Map<String,Integer>getSize(){
+        return myPetService.getSize();
+    }
 
 }

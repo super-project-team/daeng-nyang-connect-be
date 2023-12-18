@@ -27,6 +27,7 @@ public class TipsBoardDto {
     private String  nickname;
 
 
+
     public static TipsBoardDto fromEntity(Tips tips,String nickname){
         return TipsBoardDto.builder()
                 .boardId(tips.getTipsBoardId())

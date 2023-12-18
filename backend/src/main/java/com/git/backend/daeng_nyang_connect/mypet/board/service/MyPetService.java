@@ -292,4 +292,11 @@ public class MyPetService {
         myPet.setText(myPetDTO.getText());
     }
 
+    public Map<String, Integer> getSize(){
+        Map<String, Integer> response = new HashMap<>();
+        Integer size = myPetRepository.findAll().size();
+        response.put("size", size);
+        return response;
+    }
+
 }

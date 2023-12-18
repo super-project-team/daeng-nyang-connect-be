@@ -74,5 +74,9 @@ public class TipsBoardController {
     public List<TipsBoardDto> searchBoard(@RequestParam String keyword){
         return tipsBoardService.searchBoard(keyword);
     }
+    @GetMapping("/getSize")
+    public Map<String ,Integer> getSize(){
+        return tipsBoardService.getSize();
+    }
 
 }

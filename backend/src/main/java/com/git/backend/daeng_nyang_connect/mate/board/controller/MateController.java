@@ -67,4 +67,9 @@ public class MateController {
         return mateService.clickLike(mateId, token);
     }
 
+    @GetMapping("/getSize")
+    public Map<String,Integer>getSize(){
+        return mateService.getSize();
+    }
+
 }

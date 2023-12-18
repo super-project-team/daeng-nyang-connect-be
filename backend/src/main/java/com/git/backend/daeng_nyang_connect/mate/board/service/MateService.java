@@ -300,4 +300,11 @@ public class MateService {
         mate.setText(mateDTO.getText());
     }
 
+    public Map<String, Integer> getSize(){
+        Map<String, Integer> response = new HashMap<>();
+        Integer size = mateRepository.findAll().size();
+        response.put("size", size);
+        return response;
+    }
+
 }

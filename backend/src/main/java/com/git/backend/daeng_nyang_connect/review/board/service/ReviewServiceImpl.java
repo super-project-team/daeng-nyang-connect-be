@@ -15,6 +15,7 @@ import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewLikeRep
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.dao.DuplicateKeyException;
@@ -250,5 +251,12 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return responseList;
+    }
+
+    public Map<String,Integer>getSize(){
+        Map<String, Integer> response = new HashMap<>();
+        Integer size = reviewRepository.findAll().size();
+        response.put("Size", size);
+        return response;
     }
 }

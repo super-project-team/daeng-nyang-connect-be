@@ -25,6 +25,7 @@ import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -42,6 +44,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Cacheable
+@Slf4j
 public class TipsBoardService {
     private final TipsBoardRepository tipsBoardRepository;
     private final TipsImgUpload tipsImgUpload;
@@ -192,6 +195,7 @@ public class TipsBoardService {
     public List<TipsBoardDto> searchBoard(String keyword){
 
         List<Tips> byTitleContaining = tipsBoardRepository.findByTitleContaining(keyword);
+        Integer size = tipsBoardRepository.findByTitleContaining(keyword).size();
         return byTitleContaining.stream().map(tips -> {
            String author = findUserNicknameByTipsId(tips.getTipsBoardId());
            return TipsBoardDto.fromEntity(tips, author);
@@ -231,6 +235,11 @@ public class TipsBoardService {
         return TipsBoardDetailDto.fromEntity(thisBoard, thisBoardImg, tipsCommentsDtoList,tipsBoardLikeDtos);
 
     }
-
+    public Map<String, Integer> getSize(){
+        Map<String, Integer> response = new HashMap<>();
+        Integer size = tipsBoardRepository.findAll().size();
+        response.put("size", size);
+        return response;
+    }
 
 }

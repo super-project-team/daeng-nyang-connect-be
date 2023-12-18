@@ -167,4 +167,11 @@ public class LostService {
                 .map(LostBoardDTO::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    public Map<String, Integer> getSize(){
+        Map<String, Integer> response = new HashMap<>();
+        Integer size = lostRepository.findAll().size();
+        response.put("size", size);
+        return response;
+    }
 }
