@@ -274,10 +274,7 @@ public class UserService {
     public ResponseEntity<?> socialLogin(String email, String password ,HttpServletResponse httpServletResponse) {
 
         try {
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(email, password)
-//            );
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
+
 
             // 회원이 없을 경우 예외 처리
             User isUser = userRepository.findByEmail(email)
