@@ -56,11 +56,11 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
 
             // 이 부분에서 토큰을 반환하도록 처리
-            response.setContentType("application/json;charset=UTF-8");
+            response.setContentType("application/x-www-form-urlencoded;charset=utf-8");
             response.setHeader("access_token", accessToken);
             response.setHeader("refresh_token", refreshToken);
 
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/success")
                     .queryParam("access_token", accessToken)
                     .build()
                     .encode(StandardCharsets.UTF_8)

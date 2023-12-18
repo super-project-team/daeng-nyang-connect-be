@@ -64,4 +64,9 @@ public class UserController {
         return userService.setNewPassword(findDto);
     }
 
+    @GetMapping("/success")
+    public String OAuth(){
+        return "success";
+    }
+
 }

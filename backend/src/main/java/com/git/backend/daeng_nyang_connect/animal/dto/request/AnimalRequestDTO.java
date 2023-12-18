@@ -32,7 +32,6 @@ public class AnimalRequestDTO {
 
     private String textEtc;
     private String textReason;
-    private String textEtc;
     private String healthCheck;
     private Kind kind;
     private String breed;

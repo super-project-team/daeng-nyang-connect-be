@@ -27,6 +27,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final UserRepository userRepository;
 
 
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
@@ -65,6 +66,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         }
         userAttribute.put("exists", true);
+
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(findUser.get().getRole().toString())),
                 userAttribute, "email");
