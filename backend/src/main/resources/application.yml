@@ -3,9 +3,9 @@ spring:
     active: local
     include: oauth
   datasource:
-    username: ${DB_NAME}
-    password: ${DB_PASSWORD}
-    url: ${DB_URL}
+    username: ${DBNAME}
+    password: ${DBPASSWORD}
+    url: ${DBURL}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   servlet:
@@ -35,8 +35,8 @@ cloud:
     s3:
       bucket: ${bucket}
     credentials:
-      access-key: ${access-key}
-      secret-key: ${secret-key}
+      access-key: ${access}
+      secret-key: ${secret}
     region:
       static: ap-northeast-2
 

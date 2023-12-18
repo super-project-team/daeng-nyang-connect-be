@@ -52,7 +52,7 @@ public class UserService {
     private final RedisTemplate<String ,String > redisTemplate;
     private final MyPageRepository myPageRepository;
 
-    @Value("${basic-profile}")
+    @Value("${basicProfile}")
     private String basicProfile;
 
 
