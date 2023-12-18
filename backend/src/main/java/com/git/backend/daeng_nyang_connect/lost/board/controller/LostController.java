@@ -51,8 +51,8 @@ public class LostController {
 
     //모든 lost
     @GetMapping("/getAll")
-    public List<LostBoardDTO> getAll(Pageable pageable){
-        return lostService.getAll(pageable);
+    public List<LostBoardDTO> getAll(){
+        return lostService.getAll();
     }
 
     //하나의 lost

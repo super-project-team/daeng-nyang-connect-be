@@ -47,7 +47,7 @@ public class Lost {
     private String color;
 
     @Column(name = "mobile")
-    private String phone;
+    private String mobile;
 
     @Column(name = "lost_date")
     private Date lostDate;

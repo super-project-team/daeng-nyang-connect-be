@@ -51,7 +51,7 @@ public class LostService {
                 .category(lostBoardDetailDTO.getCategory())
                 .place(lostBoardDetailDTO.getPlace())
                 .reward(lostBoardDetailDTO.getReward())
-                .phone(lostBoardDetailDTO.getPhone())
+                .mobile(lostBoardDetailDTO.getMobile())
                 .kind(lostBoardDetailDTO.getKind())
                 .breed(lostBoardDetailDTO.getBreed())
                 .gender(lostBoardDetailDTO.getGender())
@@ -112,7 +112,7 @@ public class LostService {
         lost.setKind(lostBoardDetailDTO.getKind());
         lost.setBreed(lostBoardDetailDTO.getBreed());
         lost.setPlace(lostBoardDetailDTO.getPlace());
-        lost.setPhone(lostBoardDetailDTO.getPhone());
+        lost.setMobile(lostBoardDetailDTO.getMobile());
         lost.setGender(lostBoardDetailDTO.getGender());
         lost.setColor(lostBoardDetailDTO.getColor());
         lost.setReward(lostBoardDetailDTO.getReward());
@@ -129,10 +129,8 @@ public class LostService {
 
     //모든 lost 가져오기
     @Transactional
-    public List<LostBoardDTO> getAll(Pageable pageable){
-        Pageable pageable1 = PageRequest.of(pageable.getPageNumber(), 9, pageable.getSort());
-        Page<Lost> lostPage = lostRepository.findAll(pageable1);
-        List<Lost> lostList = lostPage.getContent();
+    public List<LostBoardDTO> getAll(){
+        List<Lost> lostList = lostRepository.findAll();
 
         return lostList.stream()
                 .map(LostBoardDTO::fromEntity)

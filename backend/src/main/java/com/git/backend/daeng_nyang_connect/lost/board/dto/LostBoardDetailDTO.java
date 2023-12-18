@@ -21,7 +21,7 @@ public class LostBoardDetailDTO {
     private String category;
     private String place;
     private String reward;
-    private String phone;
+    private String mobile;
     private String kind;
     private String breed;
     private String gender;
@@ -48,7 +48,7 @@ public class LostBoardDetailDTO {
                 .category(lost.getCategory())
                 .place(lost.getPlace())
                 .reward(lost.getReward())
-                .phone(lost.getPhone())
+                .mobile(lost.getMobile())
                 .kind(lost.getKind())
                 .breed(lost.getBreed())
                 .gender(lost.getGender())
