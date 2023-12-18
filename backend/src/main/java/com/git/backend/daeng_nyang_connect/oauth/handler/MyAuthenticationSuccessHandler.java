@@ -60,14 +60,14 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             response.setHeader("access_token", accessToken);
             response.setHeader("refresh_token", refreshToken);
 
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/success")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/naver_redirect")
                     .queryParam("access_token", accessToken)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }else{
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/register")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/naver_redirect")
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();

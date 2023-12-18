@@ -52,6 +52,7 @@ public class UserService {
     private final RedisTemplate<String ,String > redisTemplate;
     private final MyPageRepository myPageRepository;
 
+
     @Value("${basicProfile}")
     private String basicProfile;
 
@@ -99,6 +100,7 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+
 
         MyPage myPage = myPageEntity(user);
         myPageRepository.save(myPage);
@@ -266,6 +268,69 @@ public class UserService {
         }
 
     }
+
+    //로그인
+    @Transactional
+    public ResponseEntity<?> socialLogin(String email, String password ,HttpServletResponse httpServletResponse) {
+
+        try {
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(email, password)
+//            );
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 회원이 없을 경우 예외 처리
+            User isUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("회원이 없습니다"));
+
+            // 로그아웃 토큰이 있는 경우 삭제
+            if (redisTemplate.opsForValue().get("logout: " + email) != null) {
+                redisTemplate.delete("logout: " + email);
+            }
+
+            String accessToken = tokenProvider.createAccessToken(email);
+            String refreshToken = tokenProvider.createRefreshToken(email);
+
+            redisTemplate.opsForValue().set(email, accessToken, Duration.ofSeconds(1800));
+            redisTemplate.opsForValue().set("RF: " + email, refreshToken, Duration.ofHours(1L));
+
+            httpServletResponse.addCookie(new Cookie("access_token", accessToken));
+            httpServletResponse.addCookie(new Cookie("refresh_token", refreshToken));
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "로그인 되었습니다");
+            response.put("access_token", accessToken);
+            response.put("refresh_token", refreshToken);
+            response.put("http_status", HttpStatus.OK.toString());
+            response.put("nickname", isUser.getNickname());
+            response.put("id", isUser.getUserId().toString());
+            return ResponseEntity.ok(response);
+
+        } catch (BadCredentialsException e) {
+            e.printStackTrace();
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "잘못된 자격 증명입니다");
+            response.put("http_status", HttpStatus.UNAUTHORIZED.toString());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+
+
+        } catch (UsernameNotFoundException e) {
+            e.printStackTrace();
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "가입되지 않은 회원입니다");
+            response.put("http_status", HttpStatus.NOT_FOUND.toString());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "알 수 없는 오류가 발생했습니다");
+            response.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
+        }
+    }
+
+
 
 
 }
