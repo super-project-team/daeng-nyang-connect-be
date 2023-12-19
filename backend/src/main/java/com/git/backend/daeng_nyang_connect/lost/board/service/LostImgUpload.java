@@ -85,26 +85,6 @@ public class LostImgUpload {
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
 
-    public String uploadModifyLostImg(Lost lostId, String text, MultipartFile multipartFile) throws FileUploadFailedException{
-
-        String fileName = buildFileName(text,Objects.requireNonNull(multipartFile.getOriginalFilename()));
-
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentDisposition("inline");
-
-        try(InputStream inputStream = multipartFile.getInputStream()){
-            amazonS3Client.putObject(new EncryptedPutObjectRequest(bucketName, fileName, inputStream,objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        }catch (Exception e){
-            log.error("Amazon S3 파일 업로드 실패: {}", e.getMessage(), e);
-            throw new FileUploadFailedException("파일 업로드에 실패했습니다");
-        }
-
-        return amazonS3Client.getUrl(bucketName, fileName).toString();
-    }
-
     @Transactional
     public List<LostImage> getLostImg(Lost lost){
         List<LostImage> lostImages = lostImgRepository.findByLost(lost)

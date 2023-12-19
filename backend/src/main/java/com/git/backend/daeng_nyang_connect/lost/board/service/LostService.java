@@ -97,13 +97,9 @@ public class LostService {
 
     //lost 수정
     public Map<String,String> modifyLost(String token, Long lostBoardId,
-                                         LostBoardDetailDTO lostBoardDetailDTO,
-                                         Long lostImgId, MultipartFile multipartFile)
+                                         LostBoardDetailDTO lostBoardDetailDTO)
             throws FileUploadFailedException {
         Lost lost = checkMyBoard(lostBoardId, token);
-
-        LostImage byId = lostImgRepository.findById(lostImgId)
-                .orElseThrow();
 
         lost.setCategory(lostBoardDetailDTO.getCategory());
         lost.setText(lostBoardDetailDTO.getText());
@@ -117,9 +113,7 @@ public class LostService {
         lost.setColor(lostBoardDetailDTO.getColor());
         lost.setReward(lostBoardDetailDTO.getReward());
         lost.setCreatedAt(timestamp);
-        byId.setUrl(lostImgUpload.uploadModifyLostImg(lost, lost.getText(), multipartFile));
         lostRepository.save(lost);
-        lostImgRepository.save(byId);
 
         Map<String,String> response = new HashMap<>();
         response.put("msg", "게시글 수정 완료");
