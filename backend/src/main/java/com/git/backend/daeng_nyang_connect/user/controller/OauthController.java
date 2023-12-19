@@ -42,7 +42,7 @@ public class OauthController {
     private String client_secret;
 
     @RequestMapping("/naver_redirect")
-    public void naver_redirect(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> naver_redirect(HttpServletRequest request, HttpServletResponse response) {
         // 네이버에서 전달해준 code, state 값 가져오기
         String code = request.getParameter("code");
         String state = request.getParameter("state");
@@ -111,15 +111,15 @@ public class OauthController {
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
                 userRepository.save(naverUser);
-                userService.socialLogin(naverUser.getEmail(), request,response);
+                return userService.socialLogin(naverUser.getEmail(), request,response);
             } else {
                 User user = byEmail.get();
-                userService.socialLogin(user.getEmail(), request,response);
+                return userService.socialLogin(user.getEmail(), request,response);
             }
         } catch (RestClientException ex) {
             ex.printStackTrace();
         }
-//        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("로그인 실패");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("로그인 실패");
     }
 
 }
