@@ -25,6 +25,7 @@ public class LostBoardDTO {
     private List<LostImage> images;
     private Timestamp createdAt;
 
+    private String boardName; //게시판 이름
 
 
     public static LostBoardDTO fromEntity(Lost lost){

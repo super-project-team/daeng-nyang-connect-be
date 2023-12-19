@@ -9,7 +9,6 @@ import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import jakarta.persistence.Cacheable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,16 +42,6 @@ public class OAuthService {
 
     @Value("${naverSecretEc2}")
     private String client_secret;
-    @Value("${basicProfile}")
-    private String basicProfile;
-
-    public MyPage myPageEntity(User user){
-        return MyPage.builder()
-                .user(user)
-                .img(basicProfile)
-                .build();
-    }
-
 
     public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response){
         // 네이버에서 전달해준 code, state 값 가져오기
@@ -117,7 +106,7 @@ public class OAuthService {
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
                 userRepository.save(naverUser);
-                MyPage myPage = myPageEntity(naverUser);
+                MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
                 userService.socialLogin(naverUser.getEmail(),request,response);
                 String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll").build().encode().toUriString();

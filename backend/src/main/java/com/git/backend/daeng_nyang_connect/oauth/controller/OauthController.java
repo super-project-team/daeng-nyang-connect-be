@@ -18,9 +18,11 @@ public class OauthController {
     private final OAuthService oAuthService;
 
     @RequestMapping("/naver_redirect")
-    public ResponseEntity<?> naver_redirect(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response) {
+
         return oAuthService.naverLogin(request, response);
     }
+
 }
 
 

@@ -17,4 +17,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByUser(User user);
 
     List<Review> findByUserNickname(String nickname);
+
 }

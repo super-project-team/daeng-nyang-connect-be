@@ -23,6 +23,8 @@ public class MyPetDTO {
     private Timestamp createdAt;
     private Integer like;
 
+    private String boardName;//게시판 이름
+
     public static MyPetDTO fromMyPetEntity(MyPet myPet, String nickname) {
         return MyPetDTO.builder()
                 .boardId(myPet.getMyPetBoardId())

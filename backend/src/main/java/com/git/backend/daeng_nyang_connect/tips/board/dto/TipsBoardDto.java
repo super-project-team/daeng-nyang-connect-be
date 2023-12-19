@@ -26,6 +26,8 @@ public class TipsBoardDto {
     //게시글 조회시 유저 닉네임 필요
     private String  nickname;
 
+    private String boardName; //게시판 이름
+
 
 
     public static TipsBoardDto fromEntity(Tips tips,String nickname){

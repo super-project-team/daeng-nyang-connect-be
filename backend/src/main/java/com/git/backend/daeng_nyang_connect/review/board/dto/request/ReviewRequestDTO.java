@@ -18,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class ReviewRequestDTO {
 
+
     private String textReview;
     List<MultipartFile> files;
     public void checkUpdateList(ReviewRequestDTO reviewRequestDTO, Review animal) {

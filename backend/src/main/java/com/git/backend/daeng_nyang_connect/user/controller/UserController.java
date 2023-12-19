@@ -64,9 +64,10 @@ public class UserController {
         return userService.setNewPassword(findDto);
     }
 
-    @GetMapping("/success")
-    public String OAuth(){
-        return "success";
-    }
+   @DeleteMapping("/deleteUser")
+    public ResponseEntity<?>deleteUser(@RequestHeader("access_token") String token,
+                                       @RequestBody LoginDto loginDto){
+        return userService.deleteUser(token, loginDto);
+   }
 
 }

@@ -44,20 +44,49 @@ public class MyPageController {
 
     @PutMapping("/modifyInfo")
     private Map<String ,String> modifyInfo(@RequestHeader("access_token")String token,
-                                           @RequestBody ModifyUserDto modifyUserDto){
-        return myPageService.modifyInfo(token, modifyUserDto);
+                                           @RequestParam("info") String info){
+        return myPageService.modifyInfo(token, info);
     }
 
     @PutMapping("/modifyNickname")
     public Map<String ,String > modifyNickname(@RequestHeader("access_token")String token,
-                                               @RequestBody ModifyUserDto modifyUserDto){
-        return myPageService.modifyNickname(token, modifyUserDto);
+                                               @RequestParam("nickname") String nickname){
+        return myPageService.modifyNickname(token, nickname);
+    }
+
+    @PutMapping("/modifyCityTown")
+    public ResponseEntity<?> modifyCityTown(@RequestHeader("access_token") String token,
+                                            @RequestParam("city") String city,
+                                            @RequestParam("town") String town){
+        return myPageService.modifyCityTown(token,city,town);
+    }
+
+    @PutMapping("/modifyExperience")
+    public ResponseEntity<?> modifyExperience(@RequestHeader("access_token") String token,
+                                            @RequestParam("experience") Boolean experience){
+        return myPageService.modifyExperience(token,experience);
     }
 
     @PutMapping("/modifyPassword")
     public Map<String,String > modifyPassword(@RequestHeader("access_token")String token,
-                                              @RequestBody ModifyUserDto modifyUserDto){
-        return myPageService.modifyPassword(token, modifyUserDto);
+                                              @RequestParam("password") String password){
+        return myPageService.modifyPassword(token, password);
+    }
+    @PutMapping("/modifyMobile")
+    public ResponseEntity<?> modifyMobile(@RequestHeader("access_token")String token,
+                                        @RequestParam("mobile") String mobile){
+        return myPageService.modifyMobile(token, mobile);
+    }
+
+    @PutMapping("/modifyName")
+    public ResponseEntity<?> modifyName(@RequestHeader("access_token")String token,
+                                        @RequestParam("name") String name){
+        return myPageService.modifyName(token, name);
+    }
+    @PutMapping("/modifyGender")
+    public ResponseEntity<?> modifyName(@RequestHeader("access_token")String token,
+                                        @RequestParam("gender") char gender){
+        return myPageService.modifyGender(token, gender);
     }
 
     @GetMapping("/getMyBoard")

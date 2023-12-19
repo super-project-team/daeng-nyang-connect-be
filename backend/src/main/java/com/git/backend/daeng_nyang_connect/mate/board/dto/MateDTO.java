@@ -24,6 +24,8 @@ public class MateDTO {
     private Timestamp createdAt;
     private Integer like;
 
+    private String boardName; //게시판 이름
+
     public static MateDTO fromMateEntity(Mate mate, String nickname) {
         return MateDTO.builder()
                 .boardId(mate.getMateBoardId())

@@ -14,11 +14,9 @@ import com.git.backend.daeng_nyang_connect.user.role.Role;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,22 +27,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.server.NotAcceptableStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.swing.*;
-import java.awt.*;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -275,7 +263,7 @@ public class UserService {
 
     }
 
-    //로그인
+    //소셜 로그인
     @Transactional
     public Map<String, String> socialLogin(String email, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
@@ -334,8 +322,22 @@ public class UserService {
             return response;
         }
     }
+    //이메일 비밀번호 삭제
+    public ResponseEntity<?> deleteUser(String token, LoginDto loginDto){
+        User user = checkUserByToken(token);
 
+        if(user.getEmail().equals(loginDto.getEmail())){
+            if(passwordEncoder.matches(loginDto.getPassword(), user.getPassword())){
+                userRepository.delete(user);
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("유저 비밀번호가 다릅니다");
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("유저 아이디가 다릅니다");
+        }
 
+        return ResponseEntity.ok("회원이 삭제되었습니다");
+    }
 
 
 }

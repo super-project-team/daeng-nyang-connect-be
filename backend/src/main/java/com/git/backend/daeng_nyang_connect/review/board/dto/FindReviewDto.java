@@ -15,6 +15,8 @@ public class FindReviewDto {
     private Long boardId;
     private String text;
 
+    private String boardName; //게시판 이름
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp createdAt;
 }
