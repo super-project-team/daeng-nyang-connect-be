@@ -53,10 +53,9 @@ public class TipsBoardController {
     @PutMapping("/modify")
     public Map<String ,String> modify(@RequestHeader("access_token")String token,
                                       @RequestParam("tipsId")Long tipsId,
-                                      @RequestParam("tipsImgId")Long tipsImgId,
-                                      TipsBoardDto tipsBoardDto,
-                                      MultipartFile files) throws FileUploadFailedException {
-        return tipsBoardService.modifyTips(token,tipsId,tipsBoardDto, tipsImgId, files);
+//                                     @RequestParam("tipsImgId")Long tipsImgId,
+                                      TipsBoardDto tipsBoardDto)  {
+        return tipsBoardService.modifyTipsNoImg(token,tipsId,tipsBoardDto);
     }
 
     @GetMapping("/getAll")

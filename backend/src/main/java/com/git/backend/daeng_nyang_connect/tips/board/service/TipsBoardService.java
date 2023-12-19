@@ -176,6 +176,21 @@ public class TipsBoardService {
         response.put("http_status", HttpStatus.OK.toString());
         return response;
     }
+    //게시글 수정
+    public Map<String ,String> modifyTipsNoImg(String token, Long tipsId, TipsBoardDto tipsBoardDto) {
+
+        Tips tips = checkMyBoard(tipsId, token);
+        tips.setCategory(tipsBoardDto.getCategory());
+        tips.setTitle(tipsBoardDto.getTitle());
+        tips.setText(tipsBoardDto.getText());
+        tips.setCreatedAt(timestamp);
+        tipsBoardRepository.save(tips);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", "게시글 수정 완료 되었습니다");
+        response.put("http_status", HttpStatus.OK.toString());
+        return response;
+    }
     //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
     @Transactional
     public List<TipsBoardDto> getAll(Pageable pageable){

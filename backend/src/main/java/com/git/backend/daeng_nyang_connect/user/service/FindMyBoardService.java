@@ -79,6 +79,7 @@ public class FindMyBoardService {
                 map(tipsDto -> TipsBoardDto.builder()
                         .boardId(tipsDto.getTipsBoardId())
                         .title(tipsDto.getTitle())
+                        .text(tipsDto.getText())
                         .createdAt(tipsDto.getCreatedAt())
                         .build()).toList();
 
@@ -134,6 +135,7 @@ public class FindMyBoardService {
             TipsBoardDto dto = TipsBoardDto.builder()
                     .boardId(byId.getTipsBoardId())
                     .title(byId.getTitle())
+                    .text(byId.getText())
                     .build();
             tipsBoardDtoList.add(dto);
         }
