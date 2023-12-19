@@ -3,8 +3,6 @@ package com.git.backend.daeng_nyang_connect.config.security;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.filter.JwtAuthenticationFilter;
-import com.git.backend.daeng_nyang_connect.oauth.handler.MyAuthenticationSuccessHandler;
-//import com.git.backend.daeng_nyang_connect.oauth.service.CustomOAuth2UserService;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -37,8 +35,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
-    private final MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
-//    private final CustomOAuth2UserService customOAuth2UserService;
+
 
 
     @Bean
@@ -66,14 +63,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth2 -> {
-                    oauth2
-//                            .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService))
-                            .successHandler(myAuthenticationSuccessHandler);
-//                            .redirectionEndpoint(redirectionEndpointConfig -> redirectionEndpointConfig.baseUri("http://localhost:8080/api/tips/getAll"))
-//                            .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig.baseUri("http://localhost:8080/login/oauth2/code"));
 
-                })
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

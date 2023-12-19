@@ -1,37 +1,37 @@
-package com.git.backend.daeng_nyang_connect.user.controller;
+package com.git.backend.daeng_nyang_connect.oauth.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
-import com.git.backend.daeng_nyang_connect.config.security.SecurityConfig;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
-import com.nimbusds.jose.shaded.gson.Gson;
-import com.nimbusds.jose.shaded.gson.JsonObject;
-import com.sun.net.httpserver.Headers;
+import jakarta.persistence.Cacheable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-@RestController
+@Service
 @RequiredArgsConstructor
 @Slf4j
-public class OauthController {
-
+@Cacheable
+public class OAuthService {
     private final UserRepository userRepository;
     private final UserService userService;
 
@@ -41,8 +41,7 @@ public class OauthController {
     @Value("${naverSecretEc2}")
     private String client_secret;
 
-    @RequestMapping("/naver_redirect")
-    public ResponseEntity<?> naver_redirect(HttpServletRequest request, HttpServletResponse response) {
+    public void naverLogin(HttpServletRequest request, HttpServletResponse response){
         // 네이버에서 전달해준 code, state 값 가져오기
         String code = request.getParameter("code");
         String state = request.getParameter("state");
@@ -68,7 +67,6 @@ public class OauthController {
 
         // header 와 body로 Request 생성
         HttpEntity<?> entity = new HttpEntity<>(parameter, headers);
-
         try {
             RestTemplate restTemplate = new RestTemplate();
             // 응답 데이터(json)를 Map 으로 받을 수 있도록 관련 메시지 컨버터 추가
@@ -111,17 +109,31 @@ public class OauthController {
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
                 userRepository.save(naverUser);
-                return userService.socialLogin(naverUser.getEmail(), request,response);
+                userService.socialLogin(naverUser.getEmail(),request,response);
+                String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll").build().encode().toUriString();
+                RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+                redirectStrategy.sendRedirect(request, response, targetUrl);
+
+
             } else {
                 User user = byEmail.get();
-                return userService.socialLogin(user.getEmail(), request,response);
+                userService.socialLogin(user.getEmail(), request,response);
+                String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll").build().encode().toUriString();
+                RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+                redirectStrategy.sendRedirect(request, response, targetUrl);
+
             }
         } catch (RestClientException ex) {
             ex.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("로그인 실패");
+        Map<String, String> rs = new HashMap<>();
+        rs.put("message", "알 수 없는 오류가 발생했습니다");
+        rs.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        //   return rs;
     }
 
-}
 
+}
 
