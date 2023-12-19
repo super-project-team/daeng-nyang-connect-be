@@ -47,6 +47,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
                 .orElseThrow(IllegalAccessError::new) // 존재하지 않을 시 예외를 던진다.
                 .getAuthority(); // ROLE 가져옴
 
+
         // 회원이 있는 경우
         if (isExist) {
             // 회원이 존재하면 jwt 토큰 발행
@@ -60,14 +61,14 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
             response.setHeader("access_token", accessToken);
             response.setHeader("refresh_token", refreshToken);
 
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/naver_redirect")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
                     .queryParam("access_token", accessToken)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }else{
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/naver_redirect")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll")
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();

@@ -12,6 +12,7 @@ import com.git.backend.daeng_nyang_connect.user.repository.MyPageRepository;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.NotAcceptableStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -271,10 +275,9 @@ public class UserService {
 
     //로그인
     @Transactional
-    public ResponseEntity<?> socialLogin(String email, String password ,HttpServletResponse httpServletResponse) {
+    public void socialLogin(String email, HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse) {
 
         try {
-
 
             // 회원이 없을 경우 예외 처리
             User isUser = userRepository.findByEmail(email)
@@ -301,14 +304,20 @@ public class UserService {
             response.put("http_status", HttpStatus.OK.toString());
             response.put("nickname", isUser.getNickname());
             response.put("id", isUser.getUserId().toString());
-            return ResponseEntity.ok(response);
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000").build().encode().toUriString();
+            RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
+            redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, targetUrl);
+
+
+            //          return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
             response.put("message", "잘못된 자격 증명입니다");
             response.put("http_status", HttpStatus.UNAUTHORIZED.toString());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
 
         } catch (UsernameNotFoundException e) {
@@ -316,14 +325,14 @@ public class UserService {
             Map<String, String> response = new HashMap<>();
             response.put("message", "가입되지 않은 회원입니다");
             response.put("http_status", HttpStatus.NOT_FOUND.toString());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+      //      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
         } catch (Exception e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
             response.put("message", "알 수 없는 오류가 발생했습니다");
             response.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
+  //          return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
         }
     }
 
