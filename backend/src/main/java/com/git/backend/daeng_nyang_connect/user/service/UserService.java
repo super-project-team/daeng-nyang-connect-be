@@ -268,7 +268,6 @@ public class UserService {
     public Map<String, String> socialLogin(String email, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
-
             // 회원이 없을 경우 예외 처리
             User isUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("회원이 없습니다"));

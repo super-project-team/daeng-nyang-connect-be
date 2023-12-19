@@ -6,8 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -21,6 +20,11 @@ public class OauthController {
     public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response) {
 
         return oAuthService.naverLogin(request, response);
+    }
+
+    @RequestMapping("/kakao_redirect")
+    public ResponseEntity<?> kakaoLogin(HttpServletRequest request, HttpServletResponse response) {
+        return oAuthService.kakaoLogin(request, response);
     }
 
 }
