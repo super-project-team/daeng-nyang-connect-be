@@ -42,11 +42,9 @@ public class LostController {
     @PutMapping("/modify")
     public Map<String, String> modify(@RequestHeader("access_token") String token,
                                       @RequestParam("id")Long lostBoardId,
-                                      @RequestParam("lostImgId")Long lostImgId,
-                                      LostBoardDetailDTO lostBoardDetailDTO,
-                                      MultipartFile files)
+                                      LostBoardDetailDTO lostBoardDetailDTO)
         throws FileUploadFailedException {
-        return lostService.modifyLost(token, lostBoardId, lostBoardDetailDTO, lostImgId, files);
+        return lostService.modifyLost(token, lostBoardId, lostBoardDetailDTO);
     }
 
     //모든 lost
