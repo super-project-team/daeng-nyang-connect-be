@@ -117,23 +117,11 @@ public class MyPetService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public List<MyPetDTO> searchBoard(String keyword) {
+    public List<MyPetResponseDTO> searchBoard(String keyword) {
         List<MyPet> myPetList = myPetRepository.findByTextContaining(keyword);
         return myPetList.stream()
-                .map(myPet -> {
-                    String author = findUserNickNameByMyPet(myPet.getMyPetBoardId());
-                    return MyPetDTO.fromMyPetEntity(myPet, author);
-                })
+                .map(this::convertToMyPetResponseDTO)
                 .collect(Collectors.toList());
-    }
-
-    private String findUserNickNameByMyPet(Long myPetBoardId) {
-        MyPet myPet = myPetRepository.findById(myPetBoardId).orElse(null);
-        if (myPet != null && myPet.getUser() != null) {
-            return myPet.getUser().getNickname();
-        } else {
-            return null;
-        }
     }
 
     @Transactional

@@ -34,7 +34,7 @@ public class MyPetController {
     }
 
     @GetMapping("/search")
-    public List<MyPetDTO> searchBoard(@RequestParam String keyword){
+    public List<MyPetResponseDTO> searchBoard(@RequestParam String keyword){
         return myPetService.searchBoard(keyword);
     }
 
@@ -65,6 +65,7 @@ public class MyPetController {
                                        @RequestParam("myPetId") Long myPetId) {
         return myPetService.clickLike(myPetId, token);
     }
+
     @GetMapping("/getSize")
     public Map<String,Integer>getSize(){
         return myPetService.getSize();

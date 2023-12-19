@@ -35,7 +35,7 @@ public class MateController {
     }
 
     @GetMapping("/search")
-    public List<MateDTO> searchBoard(@RequestParam String keyword, Pageable pageable) {
+    public List<MateResponseDTO> searchBoard(@RequestParam String keyword, Pageable pageable) {
         return mateService.searchBoard(keyword, pageable);
     }
 

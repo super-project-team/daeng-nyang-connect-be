@@ -61,17 +61,14 @@ public class MateService {
 
     private MateResponseDTO convertToMateResponseDTO(Mate mate) {
 
-        // 이미지 URL 리스트 생성
         List<String> imgUrls = mate.getImg().stream()
                 .map(MateImage::getUrl)
                 .collect(Collectors.toList());
 
-        // 댓글 정보 생성
         List<MateCommentsResponseDTO> comments = mate.getComment().stream()
                 .map(this::convertToMateCommentsResponseDTO)
                 .collect(Collectors.toList());
 
-        // 좋아요 정보 생성
         List<MateBoardLikeDTO> likes = mate.getMateLikes().stream()
                 .map(like -> MateBoardLikeDTO.builder()
                         .likeId(like.getMateBoardLikeId())
@@ -84,7 +81,6 @@ public class MateService {
             userThumbnail = mate.getUser().getMyPage().getImg();
         }
 
-        // MateResponseDTO 생성 및 반환
         return MateResponseDTO.builder()
                 .boardId(mate.getMateBoardId())
                 .userId(mate.getUser().getUserId())
@@ -125,22 +121,10 @@ public class MateService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public List<MateDTO> searchBoard(String keyword, Pageable pageable) {
+    public List<MateResponseDTO> searchBoard(String keyword, Pageable pageable) {
         Page<Mate> matePage = mateRepository.findByTextContaining(keyword, pageable);
         List<Mate> content = matePage.getContent();
-        return content.stream().map(mate -> {
-            String author = findUserNicknameByMate(mate.getMateBoardId());
-            return MateDTO.fromMateEntity(mate, author);
-        }).collect(Collectors.toList());
-    }
-
-    private String findUserNicknameByMate(Long mateBoardId) {
-        Mate mate = mateRepository.findById(mateBoardId).orElse(null);
-        if (mate != null && mate.getUser() != null) {
-            return mate.getUser().getNickname();
-        } else {
-            return null;
-        }
+        return content.stream().map(this::convertToMateResponseDTO).collect(Collectors.toList());
     }
 
     @Transactional
