@@ -20,7 +20,6 @@ import jakarta.persistence.Cacheable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -45,11 +44,11 @@ public class MyPetService {
     private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
     private static final String MSG_OWNER_ACCESS_DENIED = "게시물의 소유자가 아닙니다.";
 
-    public List<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 12, pageable.getSort());
-        Page<MyPet> myPetPage = myPetRepository.findAll(customPageable);
-        List<MyPet> content = myPetPage.getContent();
-        return content.stream().map(this::convertToMyPetResponseDTO).collect(Collectors.toList());
+    public List<MyPetResponseDTO> findAllMyPet() {
+        List<MyPet> myPetList = myPetRepository.findAll();
+        return myPetList.stream()
+                .map(this::convertToMyPetResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public MyPetResponseDTO getThisBoard(Long myPet) {

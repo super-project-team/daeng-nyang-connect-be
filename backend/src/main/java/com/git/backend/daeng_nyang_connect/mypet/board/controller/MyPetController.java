@@ -25,8 +25,8 @@ public class MyPetController {
     private final MyPetService myPetService;
 
     @GetMapping("/getAll")
-    public List<MyPetResponseDTO> findAllMyPet(Pageable pageable) {
-        return myPetService.findAllMyPet(pageable);
+    public List<MyPetResponseDTO> findAllMyPet() {
+        return myPetService.findAllMyPet();
     }
 
     @GetMapping("/getBoard")
