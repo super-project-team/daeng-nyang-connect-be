@@ -1,6 +1,8 @@
 package com.git.backend.daeng_nyang_connect.oauth.service;
 
+import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
+import com.git.backend.daeng_nyang_connect.user.repository.MyPageRepository;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.role.Role;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
@@ -34,21 +36,28 @@ import java.util.Optional;
 public class OAuthService {
     private final UserRepository userRepository;
     private final UserService userService;
+    private final MyPageRepository myPageRepository;
 
     @Value("${naverIdEc2}")
     private String client_id;
 
     @Value("${naverSecretEc2}")
     private String client_secret;
+    @Value("${basicProfile}")
+    private String basicProfile;
 
-    public void naverLogin(HttpServletRequest request, HttpServletResponse response){
+    public MyPage myPageEntity(User user){
+        return MyPage.builder()
+                .user(user)
+                .img(basicProfile)
+                .build();
+    }
+
+
+    public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response){
         // 네이버에서 전달해준 code, state 값 가져오기
         String code = request.getParameter("code");
         String state = request.getParameter("state");
-
-        // 세션에 저장해둔 state값 가져오기
-        String session_state = String.valueOf(request.getSession().getAttribute("state"));
-
 
         String tokenURL = "https://nid.naver.com/oauth2.0/token";
 
@@ -91,7 +100,6 @@ public class OAuthService {
             // Post 방식으로 Http 요청
             // 응답 데이터 형식은 Hashmap 으로 지정
             ResponseEntity<HashMap> userResult = restTemplate.postForEntity(userInfoURL, userInfoEntity, HashMap.class);
-            Map<String, String> userResultMap = userResult.getBody();
 
             HashMap<String, Object> responseMap = (HashMap<String, Object>) userResult.getBody().get("response");
             String email = (String) responseMap.get("email");
@@ -109,10 +117,13 @@ public class OAuthService {
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
                 userRepository.save(naverUser);
+                MyPage myPage = myPageEntity(naverUser);
+                myPageRepository.save(myPage);
                 userService.socialLogin(naverUser.getEmail(),request,response);
                 String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll").build().encode().toUriString();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 redirectStrategy.sendRedirect(request, response, targetUrl);
+                return ResponseEntity.ok(response);
 
 
             } else {
@@ -121,7 +132,7 @@ public class OAuthService {
                 String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll").build().encode().toUriString();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 redirectStrategy.sendRedirect(request, response, targetUrl);
-
+                return ResponseEntity.ok(response);
             }
         } catch (RestClientException ex) {
             ex.printStackTrace();
@@ -131,8 +142,9 @@ public class OAuthService {
         Map<String, String> rs = new HashMap<>();
         rs.put("message", "알 수 없는 오류가 발생했습니다");
         rs.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
-        //   return rs;
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rs);
     }
+
 
 
 }
