@@ -128,7 +128,7 @@ public class OAuthService {
 
             } else {
                 User user = byEmail.get();
-                userService.socialLogin(user.getEmail(), request,response);
+                userService.socialLogin(user.getEmail(),request,response);
                 String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/tips/getAll").build().encode().toUriString();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 redirectStrategy.sendRedirect(request, response, targetUrl);
@@ -144,6 +144,8 @@ public class OAuthService {
         rs.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(rs);
     }
+
+
 
 
 
