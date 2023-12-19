@@ -11,6 +11,4 @@ import java.util.Optional;
 @Repository
 public interface MateImageRepository extends JpaRepository<MateImage, Long> {
     Optional<List<MateImage>> findByMate(Mate mate);
-
-    List<MateImage> findByMate_MateBoardId(Long mateId);
 }

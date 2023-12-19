@@ -1,7 +1,6 @@
 package com.git.backend.daeng_nyang_connect.mypet.board.service;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
-import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetBoardLikeDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetResponseDTO;
@@ -154,7 +153,7 @@ public class MyPetService {
     }
 
     @Transactional
-    public Map<String, String> modifyMyPet(Long myPetId, MyPetDTO myPetDTO, String token, MultipartFile files)throws FileUploadFailedException {
+    public Map<String, String> modifyMyPet(Long myPetId, MyPetDTO myPetDTO, String token) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
@@ -166,23 +165,11 @@ public class MyPetService {
             modifyMyPetFields(myPet, myPetDTO);
             myPetRepository.save(myPet);
 
-            if (files != null && !files.isEmpty()) {
-                // 이미지를 수정하는 경우
-                deleteMyPetImageIfRequested(myPet.getMyPetBoardId());
-                myPetImgUpload.uploadModifyMyPetImg(myPet, myPetDTO.getText(), files);
-            }
-
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return createErrorResponse(MSG_BOARD_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (AccessDeniedException e) {
             return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
-        }
-    }
-
-    private void deleteMyPetImageIfRequested(Long myPetImgId) {
-        if (myPetImgId != null) {
-            myPetImgUpload.deleteMyPetImg(myPetImgId);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.git.backend.daeng_nyang_connect.mypet.board.controller;
 
-import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.dto.MyPetResponseDTO;
 import com.git.backend.daeng_nyang_connect.mypet.board.service.MyPetService;
@@ -48,9 +47,8 @@ public class MyPetController {
     @PutMapping("/modify")
     public Map<?,?> modifyMyPet(@RequestHeader("access_token") String token,
                                 @RequestParam("myPetId") Long myPetId,
-                                MyPetDTO myPetDTO,
-                                MultipartFile files) throws FileUploadFailedException {
-        return myPetService.modifyMyPet(myPetId, myPetDTO, token, files);
+                                MyPetDTO myPetDTO) {
+        return myPetService.modifyMyPet(myPetId, myPetDTO, token);
     }
 
     @DeleteMapping("/delete")

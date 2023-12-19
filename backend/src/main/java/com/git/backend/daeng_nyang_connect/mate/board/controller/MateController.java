@@ -1,6 +1,5 @@
 package com.git.backend.daeng_nyang_connect.mate.board.controller;
 
-import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateResponseDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.service.MateService;
@@ -49,9 +48,8 @@ public class MateController {
     @PutMapping("/modify")
     public Map<?,?> modifyMate(@RequestHeader("access_token") String token,
                                @RequestParam("mateId") Long mateId,
-                               MateDTO mateDTO,
-                               MultipartFile files) throws FileUploadFailedException {
-        return mateService.modifyMate(mateId, mateDTO, token, files);
+                               MateDTO mateDTO) {
+        return mateService.modifyMate(mateId, mateDTO, token);
     }
 
     @DeleteMapping("/delete")

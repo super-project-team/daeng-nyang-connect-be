@@ -1,7 +1,6 @@
 package com.git.backend.daeng_nyang_connect.mate.board.service;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
-import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateBoardLikeDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateDTO;
 import com.git.backend.daeng_nyang_connect.mate.board.dto.MateResponseDTO;
@@ -158,7 +157,7 @@ public class MateService {
     }
 
     @Transactional
-    public Map<String, String> modifyMate(Long mateId, MateDTO mateDTO, String token, MultipartFile files)throws FileUploadFailedException {
+    public Map<String, String> modifyMate(Long mateId, MateDTO mateDTO, String token) {
         try {
             User user = userRepository.findByEmail(tokenProvider.getEmailBytoken(token))
                     .orElseThrow(() -> new EntityNotFoundException(MSG_USER_NOT_FOUND));
@@ -170,23 +169,11 @@ public class MateService {
             modifyMateFields(mate, mateDTO);
             mateRepository.save(mate);
 
-            if (files != null && !files.isEmpty()) {
-                // 이미지를 수정하는 경우
-                deleteMateImageIfRequested(mate.getMateBoardId());
-                mateImgUpload.uploadModifyMateImg(mate, mateDTO.getText(), files);
-            }
-
             return createSuccessResponse("게시물이 수정되었습니다.", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return createErrorResponse(MSG_BOARD_NOT_FOUND, HttpStatus.NOT_FOUND);
         } catch (AccessDeniedException e) {
             return createErrorResponse(MSG_OWNER_ACCESS_DENIED, HttpStatus.FORBIDDEN);
-        }
-    }
-
-    private void deleteMateImageIfRequested(Long mateImgId) {
-        if (mateImgId != null) {
-            mateImgUpload.deleteMateImg(mateImgId);
         }
     }
 
