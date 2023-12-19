@@ -19,8 +19,6 @@ import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -119,13 +117,14 @@ public class MyPetService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public List<MyPetDTO> searchBoard(String keyword, Pageable pageable) {
-        Page<MyPet> myPetPage = myPetRepository.findByTextContaining(keyword, pageable);
-        List<MyPet> content = myPetPage.getContent();
-        return content.stream().map(myPet -> {
-            String author = findUserNickNameByMyPet(myPet.getMyPetBoardId());
-            return MyPetDTO.fromMyPetEntity(myPet, author);
-        }).collect(Collectors.toList());
+    public List<MyPetDTO> searchBoard(String keyword) {
+        List<MyPet> myPetList = myPetRepository.findByTextContaining(keyword);
+        return myPetList.stream()
+                .map(myPet -> {
+                    String author = findUserNickNameByMyPet(myPet.getMyPetBoardId());
+                    return MyPetDTO.fromMyPetEntity(myPet, author);
+                })
+                .collect(Collectors.toList());
     }
 
     private String findUserNickNameByMyPet(Long myPetBoardId) {
