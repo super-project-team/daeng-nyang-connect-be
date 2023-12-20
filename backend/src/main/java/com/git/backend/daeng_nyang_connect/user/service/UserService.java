@@ -283,10 +283,15 @@ public class UserService {
             redisTemplate.opsForValue().set(email, accessToken, Duration.ofSeconds(1800));
             redisTemplate.opsForValue().set("RF: " + email, refreshToken, Duration.ofHours(1L));
 
+            Cookie accessCookie = new Cookie("access_token", accessToken);
+            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+            accessCookie.setSecure(false);
+            refreshCookie.setSecure(false);
+            accessCookie.setMaxAge(1000);
+            refreshCookie.setMaxAge(1000);
 
-
-            httpServletResponse.addCookie(new Cookie("access_token", accessToken));
-            httpServletResponse.addCookie(new Cookie("refresh_token", refreshToken));
+            httpServletResponse.addCookie(accessCookie);
+            httpServletResponse.addCookie(refreshCookie);
 
 
             Map<String, String> response = new HashMap<>();
