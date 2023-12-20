@@ -7,6 +7,8 @@ import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewRespo
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.service.ReviewService;
 import com.git.backend.daeng_nyang_connect.review.board.service.ReviewServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,15 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "후기 게시물 API")
 @RequestMapping("/api/review")
 @EnableCaching
 public class ReviewController {
     //    CRUD : 입양 해온 동물에 대한 리뷰 등록 * 삭제 * 정보 수정 * 조회
     private final ReviewService reviewService;
     private final ReviewServiceImpl reviewServiceImpl;
+
+    @Operation(summary = "게시물 작성")
     @PostMapping("/post")
     public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
                                        ReviewRequestDTO reviewRequestDTO,
@@ -36,6 +41,7 @@ public class ReviewController {
     }
 
     @Transactional
+    @Operation(summary = "게시물 삭제")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteReview(@RequestParam("reviewId") Long reviewId,
                                             @RequestHeader("access_token") String token){
@@ -44,6 +50,7 @@ public class ReviewController {
     }
 
     @Transactional
+    @Operation(summary = "게시물 수정")
     @PutMapping("/modify")
     public ResponseEntity<?> updateReview(@RequestParam("reviewId") Long reviewId,
                                           ReviewRequestDTO reviewRequestDTO,
@@ -54,6 +61,7 @@ public class ReviewController {
     }
 
     // 입양간 동물에 대한 리뷰 전체 출력
+    @Operation(summary = "게시물 전체 조회")
     @GetMapping("/getAll")
     public ResponseEntity<?> findAllReview(){
         List<Review> reviewList = reviewService.findAllReview();
@@ -62,6 +70,7 @@ public class ReviewController {
     }
 
     // 원하는 입양간 동물에 대한 리뷰 전체 출력
+    @Operation(summary = "원하는 입양간 동물에 대한 리뷰 전체 조회")
     @GetMapping()
     public ResponseEntity<?> findAllReviewByAnimalId(@RequestParam("animalId") Long animalId){
         List<Review> reviewList = reviewService.findAllReviewByAnimal(animalId);
@@ -69,6 +78,7 @@ public class ReviewController {
         return ResponseEntity.status(200).body(responseList);
     }
     @Transactional
+    @Operation(summary = "게시물 좋아요")
     @PostMapping("/like")
     public ResponseEntity<?> likeReview(@RequestParam("reviewId") Long reviewId,
                                           @RequestHeader("access_token") String token){
@@ -76,6 +86,7 @@ public class ReviewController {
         return ResponseEntity.status(200).body(message);
     }
 
+    @Operation(summary = "게시물 사이즈")
     @GetMapping("/getSize")
     public Map<String,Integer>getSize(){
         return reviewServiceImpl.getSize();

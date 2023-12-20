@@ -4,6 +4,8 @@ import com.git.backend.daeng_nyang_connect.review.comments.dto.request.ReviewCom
 import com.git.backend.daeng_nyang_connect.review.comments.dto.response.ReviewCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
 import com.git.backend.daeng_nyang_connect.review.comments.service.ReviewCommentsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import java.util.Map;
 public class ReviewCommentsController {
     //    CRUD : 후기에 대한 댓글 등록 * 삭제 * 정보 수정 * 조회
     private final ReviewCommentsService reviewCommentsService;
+
+    @Operation(summary = "댓글 작성")
     @PostMapping("/post")
     public ResponseEntity<?> addCommentsOnReview(@RequestParam("reviewId") Long reviewId,
                                                  @RequestBody ReviewCommentsRequestDTO commentDTO,
@@ -30,6 +34,7 @@ public class ReviewCommentsController {
     }
 
     @Transactional
+    @Operation(summary = "댓글 삭제")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteCommentsOnReview(@RequestParam("reviewCommentsId") Long reviewCommentsId,
                                             @RequestHeader("access_token") String token){
@@ -38,6 +43,7 @@ public class ReviewCommentsController {
     }
 
     @Transactional
+    @Operation(summary = "댓글 수정")
     @PutMapping("/modify")
     public ResponseEntity<?> updateCommentsOnReview(@RequestParam("reviewCommentsId") Long reviewCommentsId,
                                             @RequestBody ReviewCommentsRequestDTO commentDTO,
@@ -48,6 +54,7 @@ public class ReviewCommentsController {
     }
 
     // 내가 원하는 리뷰의 댓글 목록 전체 출력
+    @Operation(summary = "내가 원하는 리뷰의 댓글 목록 전체 출력")
     @GetMapping()
     public ResponseEntity<?> findAllCommentsByReview(@RequestParam("reviewId") Long reviewId){
         List<ReviewComments> reviewCommentList = reviewCommentsService.findAllCommentsByReview(reviewId);
@@ -56,6 +63,7 @@ public class ReviewCommentsController {
     }
 
     @Transactional
+    @Operation(summary = "댓글 좋아요")
     @PostMapping("/like")
     public ResponseEntity<?> likeCommentsOnReview(@RequestParam("reviewCommentsId") Long reviewCommentsId,
                                           @RequestHeader("access_token") String token){

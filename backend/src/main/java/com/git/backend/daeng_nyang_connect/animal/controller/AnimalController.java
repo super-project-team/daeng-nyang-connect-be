@@ -7,6 +7,8 @@ import com.git.backend.daeng_nyang_connect.animal.entity.AdoptionStatus;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
 import com.git.backend.daeng_nyang_connect.animal.service.AnimalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +22,14 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "파양동물 게시물 API")
 @RequestMapping("/api/animal")
 @EnableCaching
 public class AnimalController {
 //    CRUD : 파양동물 등록 * 삭제 * 정보 수정 * 조회
     private final AnimalService animalService;
+
+    @Operation(summary = "게시물 작성")
     @PostMapping("/post")
     public ResponseEntity<?> addAnimal(AnimalRequestDTO animalRequestDTO,
                                        @RequestHeader("access_token") String token){
@@ -33,6 +38,7 @@ public class AnimalController {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Operation(summary = "입양 완료")
     @Transactional
     @PutMapping("/complete")
     public ResponseEntity<?> completeAnimal(@RequestParam("animalId") Long animalId,
@@ -44,6 +50,7 @@ public class AnimalController {
     }
 
     @Transactional
+    @Operation(summary = "게시물 삭제")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteAnimal(@RequestParam("animalId") Long animalId,
                                           @RequestHeader("access_token") String token){
@@ -52,6 +59,7 @@ public class AnimalController {
     }
 
     @Transactional
+    @Operation(summary = "게시물 수정")
     @PutMapping("/modify")
     public ResponseEntity<?> updateAnimal(@RequestParam("animalId") Long animalId,
                                           AnimalRequestDTO animalRequestDTO,
@@ -62,6 +70,7 @@ public class AnimalController {
     }
 
     // 조회 - 전체 * kind(동물 종류) * city(지역별) * 입양 완료 상태별
+    @Operation(summary = "게시물 전체 조회")
     @GetMapping("/getAll")
     public ResponseEntity<?> findAllAnimal(){
         List<Animal> animalList = animalService.findAllAnimal();
@@ -69,6 +78,7 @@ public class AnimalController {
         return ResponseEntity.status(200).body(responseList);
     }
 
+    @Operation(summary = "종류별로 조회")
     @GetMapping("/kind/{kind}")
     public ResponseEntity<?> findAnimalByKind(@PathVariable("kind") Kind kind) {
         List<Animal> animalList = animalService.findAnimalByKind(kind);
@@ -76,6 +86,7 @@ public class AnimalController {
         return ResponseEntity.status(200).body(responseList);
     }
 
+    @Operation(summary = "지역별로 조회")
     @GetMapping("/city/{city}")
     public ResponseEntity<?> findAnimalByCity(@PathVariable("city") String city) {
         List<Animal> animalList = animalService.findAnimalByCity(city);
@@ -83,6 +94,7 @@ public class AnimalController {
         return ResponseEntity.status(200).body(responseList);
     }
 
+    @Operation(summary = "입양 상태별로 조회")
     @GetMapping("/adoptionStatus/{adoptionStatus}")
     public ResponseEntity<?> findAnimalByAdoptionStatus(@PathVariable("adoptionStatus") AdoptionStatus adoptionStatus) {
         List<Animal> animalList = animalService.findAnimalByAdoptionStatus(adoptionStatus);
@@ -91,6 +103,7 @@ public class AnimalController {
     }
 
     @Transactional
+    @Operation(summary = "게시물 스크랩")
     @PostMapping("/scrap")
     public ResponseEntity<?> scrapAnimal(@RequestParam("animalId") Long animalId,
                                         @RequestHeader("access_token") String token){
