@@ -54,9 +54,9 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers("/", "/style.css", "/images/**", "/script.js","/index.html").permitAll()
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage",
-                                        "api/tips/search","api/tips/getBoard","api/tips/getAll",
+                                        "api/tips/search","api/tips/getBoard","api/tips/getAll", "/websocket/**",
                                         "api/animal/all/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
-                                        "api/review/all", "api/review", "api/review/comment", "/swagger-ui/**", "/v3/api-docs/**","/naver_redirect", "/NaverRegister").permitAll()
+                                        "api/review/all", "api/review", "api/review/comment", "/swagger-ui/**", "/v3/api-docs/**","/naver_redirect", "/NaverRegister", "/kakao_redirect").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
