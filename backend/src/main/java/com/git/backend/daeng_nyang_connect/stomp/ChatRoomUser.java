@@ -12,17 +12,21 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "chat_room")
-public class ChatRoom {
+@Table(name = "chat_room_user")
+public class ChatRoomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_room_idx")
-    private Long chatRoomId;
+    @Column(name = "chat_room_user_idx")
+    private Long chatRoomUserId;
 
-    private String roomName;
+    @ManyToOne
+    @JoinColumn(name = "chat_room_idx")
+    private ChatRoom chatRoom;
 
-    @OneToMany(mappedBy = "user")
-    private Set<User> userList = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "user_idx")
+    private User user;
+
     // Getter, Setter, 생성자 등 필요한 메서드 구현
 }
 

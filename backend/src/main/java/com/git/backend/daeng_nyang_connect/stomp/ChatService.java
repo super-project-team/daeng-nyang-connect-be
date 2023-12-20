@@ -19,13 +19,14 @@ public class ChatService {
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageRepository messageRepository;
     private final TokenProvider tokenProvider;
+    private final ChatRoomUserRepository chatRoomUserRepository;
 
     public void handleChatMessage(MessageDTO message, String token) {
         String email = tokenProvider.getEmailBytoken(token);
         User sender = userRepository.findByEmail(email).orElseThrow();
         ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow();
 
-        if (!chatRoom.getUsers().contains(sender)) {
+        if (!chatRoom.getUserList().contains(sender)) {
             throw new NoSuchElementException("채팅방에 참여 중이지 않습니다.");
         }
 
@@ -50,21 +51,24 @@ public class ChatService {
     public void addChatRoom(String receiverUsername, String token) {
 
         String email = tokenProvider.getEmailBytoken(token);
-        Set<User> users = new HashSet<>();
         User receiverUser = userRepository.findByNickname(receiverUsername);
         User sender = userRepository.findByEmail(email).orElseThrow();
-        users.add(receiverUser);
-        users.add(sender);
         // 예시로 chatRoom을 생성하는 코드
         ChatRoom newChatRoom = ChatRoom.builder()
                 .roomName("채팅방")
-                .users(users)
                 .build();
 
         chatRoomRepository.save(newChatRoom);
 
+        addUser(newChatRoom, sender);
+        addUser(newChatRoom, receiverUser);
         // 상대방에게 chatRoom 생성을 알리는 메시지 전송
         messagingTemplate.convertAndSendToUser(receiverUsername, "/queue/chat", "채팅을 시작합니다.");
+    }
+
+    public void addUser(ChatRoom chatRoom, User user){
+        ChatRoomUser addUser = ChatRoomUser.builder().chatRoom(chatRoom).user(user).build();
+        chatRoomUserRepository.save(addUser);
     }
 }
 
