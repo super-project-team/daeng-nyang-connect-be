@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.oauth.controller;
 
 import com.git.backend.daeng_nyang_connect.oauth.service.OAuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "OAuth API")
 public class OauthController {
 
     private final OAuthService oAuthService;
