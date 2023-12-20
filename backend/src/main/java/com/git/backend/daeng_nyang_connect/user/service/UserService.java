@@ -304,7 +304,7 @@ public class UserService {
 
             httpServletResponse.addHeader("access_token", accessToken);
             httpServletResponse.addHeader("refresh_token", refreshToken);
-            return response;
+            return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
             e.printStackTrace();

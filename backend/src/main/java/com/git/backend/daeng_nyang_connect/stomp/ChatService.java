@@ -26,7 +26,7 @@ public class ChatService {
         User sender = userRepository.findByEmail(email).orElseThrow();
         ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow();
 
-        if (!chatRoom.getUserList().contains(sender)) {
+        if (!chatRoom.getUserList().contains(chatRoomUserRepository.findByUser(sender))) {
             throw new NoSuchElementException("채팅방에 참여 중이지 않습니다.");
         }
 

@@ -21,8 +21,8 @@ public class ChatRoom {
 
     private String roomName;
 
-    @OneToMany(mappedBy = "user")
-    private Set<User> userList = new HashSet<>();
+    @OneToMany(mappedBy = "chatRoom")
+    private Set<ChatRoomUser> userList = new HashSet<>();
     // Getter, Setter, 생성자 등 필요한 메서드 구현
 }
 
