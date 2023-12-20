@@ -29,7 +29,7 @@ public class CustomRestControllerAdvice {
     // 이미 존재할 때 사용하는 exception
     @ExceptionHandler(DuplicateKeyException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleCustomException(DuplicateKeyException  de) {
+    public ResponseEntity<String> handleCustomException(DuplicateKeyException de) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST + " : " +  de.getMessage());
     }
 
@@ -38,4 +38,5 @@ public class CustomRestControllerAdvice {
     public ResponseEntity<String> handleCustomException(IllegalStateException ie) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST + " : " +  ie.getMessage());
     }
+
 }
