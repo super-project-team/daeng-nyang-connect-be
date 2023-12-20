@@ -265,7 +265,7 @@ public class UserService {
 
     //소셜 로그인
     @Transactional
-    public Map<String, String> socialLogin(String email, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public Map<String, String> socialLogin(String email, HttpServletResponse httpServletResponse) {
 
         try {
             // 회원이 없을 경우 예외 처리
@@ -283,8 +283,11 @@ public class UserService {
             redisTemplate.opsForValue().set(email, accessToken, Duration.ofSeconds(1800));
             redisTemplate.opsForValue().set("RF: " + email, refreshToken, Duration.ofHours(1L));
 
+
+
             httpServletResponse.addCookie(new Cookie("access_token", accessToken));
             httpServletResponse.addCookie(new Cookie("refresh_token", refreshToken));
+
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "로그인 되었습니다");
