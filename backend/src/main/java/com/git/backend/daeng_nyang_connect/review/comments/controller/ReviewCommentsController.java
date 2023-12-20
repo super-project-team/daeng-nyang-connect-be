@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/review/comment")
+@RequestMapping("/api/review/comments")
 @EnableCaching
 public class ReviewCommentsController {
     //    CRUD : 후기에 대한 댓글 등록 * 삭제 * 정보 수정 * 조회

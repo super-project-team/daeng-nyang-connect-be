@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReviewResponseDTO {
     private Long boardId;
+    private Long animalId;
     private String nickname;
     private String adoptedAnimalName;
     private String textReview;
@@ -26,6 +27,7 @@ public class ReviewResponseDTO {
 
     public ReviewResponseDTO(Review review, List<ReviewImage> reviewImages) {
         this.boardId = review.getReviewId();
+        this.animalId = review.getAdoptedAnimal().getAnimal().getAnimalId();
         this.nickname = review.getUser().getNickname();
         this.adoptedAnimalName = review.getAdoptedAnimal().getAnimal().getAnimalName();
         this.textReview = review.getTextReview();
