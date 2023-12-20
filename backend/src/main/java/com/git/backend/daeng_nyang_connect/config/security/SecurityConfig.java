@@ -58,7 +58,7 @@ public class SecurityConfig {
                                         "api/animal/getAll/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**",
                                         "api/review/getAll", "api/review", "api/review/comment", "api/lost/getAll", "api/lost/getBoard", "api/lost/search",
                                         "/api/mate/getAll", "api/my_pet/getAll","/api/mate/**","/api/my_pet/**","/oauth-login/**","/api/findId", "/api/tips/getSize", "/api/review/getSize",
-                                        "/api/mate/getSize", "/api/lost/getSize","/api/my_pet/getSize", "/api/success", "/naver_redirect", "/naver_login", "/kakao_redirect", "/api/addNaverInfo", "api/addKakaoInfo").permitAll()
+                                        "/api/mate/getSize", "/api/lost/getSize","/api/my_pet/getSize", "/api/success", "/naver_redirect", "/naver_login", "/kakao_redirect", "/api/addNaverInfo", "/api/addKakaoInfo", "/swagger-ui/index.html").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comment/**","api/lost/**").hasRole("USER")
                                 .anyRequest().authenticated()
                 )
