@@ -26,7 +26,7 @@ public class ChatService {
         ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow();
 
         if (!chatRoom.getUsers().contains(sender)) {
-            throw new NoSuchElementException("x");
+            throw new NoSuchElementException("채팅방에 참여 중이지 않습니다.");
         }
 
         Message sendMessage = Message.builder()
