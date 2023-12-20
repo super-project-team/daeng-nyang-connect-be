@@ -114,14 +114,15 @@ public class OAuthService {
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
-                response.sendRedirect("http://localhost:8080/api/tips/getAll");
-                log.info("access_token" + access_token);
-                return userService.socialLogin(naverUser.getEmail(),request,response);
+                userService.socialLogin(naverUser.getEmail(),request,response);
+                response.sendRedirect("http://localhost:3000/NaverRedirect");
+                return ResponseEntity.ok(response)
 
             } else {
                 User user = byEmail.get();
-                response.sendRedirect("http://localhost:8080/api/tips/getAll");
-                return userService.socialLogin(user.getEmail(), request,response);
+                userService.socialLogin(user.getEmail(), request,response);
+                response.sendRedirect("http://localhost:3000/");
+                return ResponseEntity.ok(response);
 
             }
         }catch (RestClientException ex) {
@@ -202,12 +203,14 @@ public class OAuthService {
                 MyPage myPage = userService.myPageEntity(kakao);
                 myPage.setImg(profileImg);
                 myPageRepository.save(myPage);
+                userService.socialLogin(kakao.getEmail(), request,response);
                 response.sendRedirect("http://localhost:3000/");
-                return userService.socialLogin(kakao.getEmail(), request,response);
+                return ResponseEntity.ok(response);
 
             }else{
+                userService.socialLogin(isUser.getEmail(),request ,response);
                 response.sendRedirect("http://localhost:3000/");
-                return userService.socialLogin(isUser.getEmail(),request ,response);
+                return ResponseEntity.ok(response);
 
             }
 

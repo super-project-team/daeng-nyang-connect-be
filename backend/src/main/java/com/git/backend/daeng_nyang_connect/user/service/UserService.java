@@ -265,7 +265,7 @@ public class UserService {
 
     //소셜 로그인
     @Transactional
-    public ResponseEntity<?> socialLogin(String email,HttpServletRequest request ,HttpServletResponse httpServletResponse) {
+    public Map<String ,String> socialLogin(String email,HttpServletRequest request ,HttpServletResponse httpServletResponse) {
 
         try {
             // 회원이 없을 경우 예외 처리
@@ -299,14 +299,14 @@ public class UserService {
             httpServletResponse.addHeader("access_token", accessToken);
             httpServletResponse.addHeader("refresh_token", refreshToken);
             log.info(accessToken);
-            return ResponseEntity.ok(response);
+            return response;
 
         } catch (BadCredentialsException e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
             response.put("message", "잘못된 자격 증명입니다");
             response.put("http_status", HttpStatus.UNAUTHORIZED.toString());
-            return ResponseEntity.ok(response);
+            return response;
 
 
         } catch (UsernameNotFoundException e) {
@@ -314,14 +314,14 @@ public class UserService {
             Map<String, String> response = new HashMap<>();
             response.put("message", "가입되지 않은 회원입니다");
             response.put("http_status", HttpStatus.NOT_FOUND.toString());
-            return ResponseEntity.ok(response);
+            return response;
 
         } catch (Exception e) {
             e.printStackTrace();
             Map<String, String> response = new HashMap<>();
             response.put("message", "알 수 없는 오류가 발생했습니다");
             response.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
-            return ResponseEntity.ok(response);
+            return response;
         }
     }
     //이메일 비밀번호 삭제
