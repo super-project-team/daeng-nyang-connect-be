@@ -116,8 +116,6 @@ public class OAuthService {
                 myPageRepository.save(myPage);
                 response.sendRedirect("http://localhost:3000/NaverRegister");
                 return userService.socialLogin(naverUser.getEmail(),response);
-
-
             } else {
                 User user = byEmail.get();
                 response.sendRedirect("http://localhost:8080/");
