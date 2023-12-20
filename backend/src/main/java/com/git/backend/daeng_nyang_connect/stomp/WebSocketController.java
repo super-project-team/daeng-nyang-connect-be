@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.stomp;
 
+import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
+@Cacheable
 public class WebSocketController {
 
     private final ChatService chatService;

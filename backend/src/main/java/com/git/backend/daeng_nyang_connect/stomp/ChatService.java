@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.stomp;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
+import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Cacheable
 public class ChatService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
