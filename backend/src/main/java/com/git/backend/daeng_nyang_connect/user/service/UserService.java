@@ -265,7 +265,7 @@ public class UserService {
 
     //소셜 로그인
     @Transactional
-    public ResponseEntity<?> socialLogin(String email, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> socialLogin(String email,HttpServletRequest request ,HttpServletResponse httpServletResponse) {
 
         try {
             // 회원이 없을 경우 예외 처리
@@ -298,6 +298,7 @@ public class UserService {
 
             httpServletResponse.addHeader("access_token", accessToken);
             httpServletResponse.addHeader("refresh_token", refreshToken);
+            log.info(accessToken);
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
