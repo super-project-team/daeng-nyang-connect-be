@@ -125,9 +125,9 @@ public class OAuthService {
                 response.sendRedirect("http://localhost:3000/");
                 return ResponseEntity.ok(response);
             }
-        } catch (RestClientException ex) {
+        }catch (RestClientException ex) {
             ex.printStackTrace();
-        } catch (IOException e) {
+        }catch (IOException e) {
             throw new RuntimeException(e);
         }
         Map<String, String> rs = new HashMap<>();
@@ -212,9 +212,9 @@ public class OAuthService {
                 return ResponseEntity.ok(response);
             }
 
-            } catch (IOException e) {
+            }catch (IOException e) {
             e.printStackTrace();
-                throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }catch (RestClientException rex){
             rex.printStackTrace();
 
