@@ -297,6 +297,8 @@ public class UserService {
             Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
 
             accessCookie.setHttpOnly(false);
+            accessCookie.setPath("/");
+            accessCookie.setSecure(false);
 
             httpServletResponse.addCookie(accessCookie);
             httpServletResponse.addCookie(refreshCookie);
