@@ -115,7 +115,7 @@ public class OAuthService {
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
                 userService.socialLogin(naverUser.getEmail(),request,response);
-                response.sendRedirect("http://localhost:3000/NaverRedirect");
+                response.sendRedirect("http://localhost:3000/NaverRegister");
                 return ResponseEntity.ok(response);
 
             } else {

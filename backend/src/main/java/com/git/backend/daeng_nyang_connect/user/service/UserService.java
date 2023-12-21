@@ -284,10 +284,16 @@ public class UserService {
             redisTemplate.opsForValue().set("RF: " + email, refreshToken, Duration.ofHours(1L));
 
 
-            httpServletResponse.addCookie(new Cookie("access_token", accessToken));
-            httpServletResponse.addCookie(new Cookie("refresh_token", refreshToken));
+            Cookie accessCookie = new Cookie("access_token", accessToken);
+            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
 
-
+            accessCookie.setDomain("localhost:3000");
+            refreshCookie.setDomain("localhost:3000");
+            refreshCookie.setPath("/");
+            accessCookie.setPath("/");
+            httpServletResponse.addCookie(accessCookie);
+            httpServletResponse.addCookie(refreshCookie);
+            
             Map<String, String> response = new HashMap<>();
             response.put("message", "로그인 되었습니다");
             response.put("access_token", accessToken);
