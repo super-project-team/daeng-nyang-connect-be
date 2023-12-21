@@ -35,63 +35,42 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi getMyPageApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("myPage_마이페이지")
-                .pathsToMatch("/api/myPage/**")
-                .build();
+        return createGroupedOpenApi("myPage_마이페이지", "/api/myPage/**");
     }
 
     @Bean
     public GroupedOpenApi getAnimalApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("animal_파양동물")
-                .pathsToMatch("/api/animal/**")
-                .build();
+        return createGroupedOpenApi("animal_파양동물", "/api/animal/**");
     }
 
     @Bean
     public GroupedOpenApi getReviewApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("review_입양 후기")
-                .pathsToMatch("/api/review/**")
-                .build();
+        return createGroupedOpenApi("review_입양 후기", "/api/review/**");
     }
 
     @Bean
     public GroupedOpenApi getLostApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("lost_미아센터")
-                .pathsToMatch("/api/lost/**")
-                .build();
+        return createGroupedOpenApi("lost_미아센터", "/api/lost/**");
     }
     @Bean
     public GroupedOpenApi getMateApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("mate_댕냥메이트")
-                .pathsToMatch("/api/mate/**")
-                .build();
+        return createGroupedOpenApi("mate_댕냥메이트", "/api/mate/**");
     }
 
     @Bean
     public GroupedOpenApi getMyPetApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("myPet_나의 댕냥이")
-                .pathsToMatch("/api/my_pet/**")
-                .build();
+        return createGroupedOpenApi("myPet_나의 댕냥이", "/api/my_pet/**");
     }
 
     @Bean
     public GroupedOpenApi getTipsApi() {
-        return GroupedOpenApi
-                .builder()
-                .group("tips_댕냥 꿀팁")
-                .pathsToMatch("/api/tips/**")
+        return createGroupedOpenApi("tips_댕냥 꿀팁", "/api/tips/**");
+    }
+
+    private GroupedOpenApi createGroupedOpenApi(String groupName, String path) {
+        return GroupedOpenApi.builder()
+                .group(groupName)
+                .pathsToMatch(path)
                 .build();
     }
 }

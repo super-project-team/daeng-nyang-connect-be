@@ -17,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "후기 댓글 API")
 @RequestMapping("/api/review/comments")
 @EnableCaching
 public class ReviewCommentsController {
