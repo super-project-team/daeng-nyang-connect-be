@@ -17,15 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,16 +116,12 @@ public class OAuthService {
                 myPageRepository.save(myPage);
                 userService.socialLogin(naverUser,request,response);
                 response.sendRedirect("http://localhost:3000/NaverRegister");
-
-
                 return ResponseEntity.ok(response);
-
             } else {
                 User user = byEmail.get();
                 userService.socialLogin(user,request,response);
                 response.sendRedirect("http://localhost:3000/");
                 return ResponseEntity.ok(response);
-
             }
         }catch (RestClientException ex) {
             ex.printStackTrace();
@@ -220,9 +212,7 @@ public class OAuthService {
                 userService.socialLogin(isUser,request ,response);
                 response.sendRedirect("http://localhost:3000/");
                 return ResponseEntity.ok(response);
-
             }
-
             }catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -233,7 +223,6 @@ public class OAuthService {
         rs.put("message", "알 수 없는 오류가 발생했습니다");
         rs.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
-
     }
 
     //네이버 로그인 시 추가 정보 입력 API

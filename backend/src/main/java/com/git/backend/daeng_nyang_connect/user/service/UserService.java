@@ -272,10 +272,6 @@ public class UserService {
         String email = user.getEmail();
         String password = user.getRawPassword();
 
-
-        log.info("email : " + email);
-        log.info("password : " +password);
-
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email,password)
@@ -300,6 +296,7 @@ public class UserService {
             Cookie accessCookie = new Cookie("access_token", accessToken);
             Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
 
+            accessCookie.setHttpOnly(false);
 
             httpServletResponse.addCookie(accessCookie);
             httpServletResponse.addCookie(refreshCookie);
