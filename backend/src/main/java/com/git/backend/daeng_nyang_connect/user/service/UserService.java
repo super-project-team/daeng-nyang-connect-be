@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.user.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.config.security.SecurityConfig;
 import com.git.backend.daeng_nyang_connect.user.dto.FindDto;
 import com.git.backend.daeng_nyang_connect.user.dto.LoginDto;
 import com.git.backend.daeng_nyang_connect.user.dto.SignUpDto;
@@ -45,6 +46,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final RedisTemplate<String ,String > redisTemplate;
     private final MyPageRepository myPageRepository;
+    private final SecurityConfig securityConfig;
 
 
     @Value("${basicProfile}")
@@ -265,9 +267,20 @@ public class UserService {
 
     //소셜 로그인
     @Transactional
-    public Map<String ,String> socialLogin(String email,HttpServletRequest request ,HttpServletResponse httpServletResponse) {
+    public Map<String ,String> socialLogin(User user,HttpServletRequest request ,HttpServletResponse httpServletResponse) {
+
+        String email = user.getEmail();
+        String password = user.getRawPassword();
+
+
+        log.info("email : " + email);
+        log.info("password : " +password);
 
         try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email,password)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             // 회원이 없을 경우 예외 처리
             User isUser = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("회원이 없습니다"));
