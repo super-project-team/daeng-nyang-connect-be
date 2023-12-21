@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.oauth.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import com.git.backend.daeng_nyang_connect.config.security.SecurityConfig;
 import com.git.backend.daeng_nyang_connect.user.dto.AddExtraInfoDto;
 import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -39,6 +40,7 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final MyPageRepository myPageRepository;
+    private final SecurityConfig securityConfig;
 
     @Value("${naverIdEc2}")
     private String naver_client_id;
@@ -111,24 +113,28 @@ public class OAuthService {
                 naverUser.setName(name);
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
+                naverUser.setRawPassword("naver");
+                naverUser.setPassword(securityConfig.passwordEncoder().encode("naver"));
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
-                return userService.socialLogin(naverUser.getEmail(),request,response);
-//                response.sendRedirect("http://localhost:3000/NaverRegister");
+                response.sendRedirect("http://localhost:3000/NaverRegister");
+                return userService.socialLogin(naverUser,request,response);
+
 //                return ResponseEntity.ok(response);
 
             } else {
                 User user = byEmail.get();
-                return userService.socialLogin(user.getEmail(), request,response);
-//                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("http://localhost:3000/");
+                return userService.socialLogin(user,request,response);
+
 //                return ResponseEntity.ok(response);
 
             }
         }catch (RestClientException ex) {
             ex.printStackTrace();
-//        }catch (IOException e) {
-//            throw new RuntimeException(e);
+        }catch (IOException e) {
+            throw new RuntimeException(e);
         }
         Map<String, String> rs = new HashMap<>();
         rs.put("message", "알 수 없는 오류가 발생했습니다");
@@ -200,24 +206,26 @@ public class OAuthService {
                 kakao.setName(name);
                 kakao.setNickname("kakao :" +nickName);
                 kakao.setRole(Role.USER);
+                kakao.setRawPassword("kakao");
+                kakao.setPassword(securityConfig.passwordEncoder().encode("kakao"));
                 userRepository.save(kakao);
                 MyPage myPage = userService.myPageEntity(kakao);
                 myPage.setImg(profileImg);
                 myPageRepository.save(myPage);
-                return userService.socialLogin(kakao.getEmail(), request,response);
-//                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("http://localhost:3000/");
+                return userService.socialLogin(kakao,request,response);
 //                return ResponseEntity.ok(response);
 
             }else{
-                return userService.socialLogin(isUser.getEmail(),request ,response);
-//                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("http://localhost:3000/");
+                return userService.socialLogin(isUser,request ,response);
 //                return ResponseEntity.ok(response);
 
             }
 
-//            }catch (IOException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
+            }catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }catch (RestClientException rex){
             rex.printStackTrace();
         }

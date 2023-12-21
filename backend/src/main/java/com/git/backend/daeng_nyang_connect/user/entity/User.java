@@ -37,6 +37,7 @@ public class User implements UserDetails {
     private char gender;
     private String mobile;
     private Boolean experience;
+    private String rawPassword;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "role")
