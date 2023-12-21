@@ -41,7 +41,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final AnimalRepository animalRepository;
 
     @Override
-    public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, String token) {
+    public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -63,8 +63,8 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(newReview);
 
         // 4. 댕냥이 이미지 DB에 저장
-        if(reviewRequestDTO.getFiles()!=null){
-            uploadImage(newReview, reviewRequestDTO.getFiles());
+        if(files!=null){
+            uploadImage(newReview, files);
         }
 
         // 5. return 새로운 후기
@@ -105,9 +105,9 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(updateReview);
 
         // 4. 댕냥이 이미지 DB에 저장
-        if(reviewRequestDTO.getFiles()!=null){
-            uploadImage(updateReview, reviewRequestDTO.getFiles());
-        }
+//        if(reviewRequestDTO.getFiles()!=null){
+//            uploadImage(updateReview, reviewRequestDTO.getFiles());
+//        }
         // 5. 수정된 댕냥이 후기를 반환
         return updateReview;
     }

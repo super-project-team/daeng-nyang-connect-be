@@ -15,7 +15,7 @@ import java.util.Map;
 
 public interface ReviewService {
     // 입양 후기 작성
-    Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, String token);
+    Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token);
 
     // 입양 후기 삭제
     void deleteReview(Long reviewId, String token);

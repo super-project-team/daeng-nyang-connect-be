@@ -41,7 +41,7 @@ public class AnimalRequestDTO {
 
     private String city;
 
-    List<MultipartFile> files = new ArrayList<>();
+//    List<MultipartFile> files = new ArrayList<>();
 
     public AnimalRequestDTO parseData(){
         if(neutering!=null) {
