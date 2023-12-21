@@ -140,7 +140,7 @@ public class OAuthService {
         String code = request.getParameter("code");
 
         String tokenURL = "https://kauth.kakao.com/oauth/token";
-        String redirect_uri = "http://3.35.16.126:8080/kakao_redirect";
+        String redirect_uri = "http://localhost:8080/kakao_redirect";
 
 
         // body data 생성
@@ -186,11 +186,12 @@ public class OAuthService {
             HashMap<String, Object> rs = (HashMap<String, Object>) responseMap.get("profile");
             log.info("response map : " + rs.toString());
             String name = (String) rs.get("nickname");
+            String mobile = (String) rs.get("mobile");
             String nickName = (String) rs.get("nickname");
             String profileImg = (String) rs.get("thumbnail_image_url");
             log.info("name" + nickName);
 
-            User isUser = userRepository.findByName(name);
+            User isUser = userRepository.findByNameAndMobile(name,mobile);
 
             if(isUser==null){
                 User kakao = new User();
