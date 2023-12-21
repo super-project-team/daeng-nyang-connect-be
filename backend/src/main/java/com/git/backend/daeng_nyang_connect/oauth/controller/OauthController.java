@@ -22,13 +22,13 @@ public class OauthController {
     private final OAuthService oAuthService;
 
     @RequestMapping("/naver_redirect")
-    public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response) {
+    public Map<String,String> naverLogin(HttpServletRequest request, HttpServletResponse response) {
 
         return oAuthService.naverLogin(request, response);
     }
 
     @RequestMapping("/kakao_redirect")
-    public ResponseEntity<?> kakaoLogin(HttpServletRequest request, HttpServletResponse response) {
+    public Map<String,String> kakaoLogin(HttpServletRequest request, HttpServletResponse response) {
         return oAuthService.kakaoLogin(request, response);
     }
 

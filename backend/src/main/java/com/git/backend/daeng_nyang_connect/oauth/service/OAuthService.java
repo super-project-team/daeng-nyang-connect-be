@@ -49,7 +49,7 @@ public class OAuthService {
     @Value("${kakaoIdEc2}")
     private String kakao_client_id;
 
-    public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response){
+    public Map<String,String> naverLogin(HttpServletRequest request, HttpServletResponse response){
         // 네이버에서 전달해준 code, state 값 가져오기
         String code = request.getParameter("code");
         String state = request.getParameter("state");
@@ -114,15 +114,15 @@ public class OAuthService {
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
-                userService.socialLogin(naverUser.getEmail(),request,response);
+                return userService.socialLogin(naverUser.getEmail(),request,response);
 //                response.sendRedirect("http://localhost:3000/NaverRegister");
-                return ResponseEntity.ok(response);
+//                return ResponseEntity.ok(response);
 
             } else {
                 User user = byEmail.get();
-                userService.socialLogin(user.getEmail(), request,response);
+                return userService.socialLogin(user.getEmail(), request,response);
 //                response.sendRedirect("http://localhost:3000/");
-                return ResponseEntity.ok(response);
+//                return ResponseEntity.ok(response);
 
             }
         }catch (RestClientException ex) {
@@ -133,10 +133,11 @@ public class OAuthService {
         Map<String, String> rs = new HashMap<>();
         rs.put("message", "알 수 없는 오류가 발생했습니다");
         rs.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
+        return rs;
     }
 
-    public ResponseEntity<?> kakaoLogin(HttpServletRequest request, HttpServletResponse response){
+    public Map<String,String> kakaoLogin(HttpServletRequest request, HttpServletResponse response){
         // 카카오에서 전달해준 code, state 값 가져오기
         String code = request.getParameter("code");
 
@@ -203,14 +204,14 @@ public class OAuthService {
                 MyPage myPage = userService.myPageEntity(kakao);
                 myPage.setImg(profileImg);
                 myPageRepository.save(myPage);
-                userService.socialLogin(kakao.getEmail(), request,response);
+                return userService.socialLogin(kakao.getEmail(), request,response);
 //                response.sendRedirect("http://localhost:3000/");
-                return ResponseEntity.ok(response);
+//                return ResponseEntity.ok(response);
 
             }else{
-                userService.socialLogin(isUser.getEmail(),request ,response);
+                return userService.socialLogin(isUser.getEmail(),request ,response);
 //                response.sendRedirect("http://localhost:3000/");
-                return ResponseEntity.ok(response);
+//                return ResponseEntity.ok(response);
 
             }
 
@@ -223,7 +224,8 @@ public class OAuthService {
         Map<String, String> rs = new HashMap<>();
         rs.put("message", "알 수 없는 오류가 발생했습니다");
         rs.put("http_status", HttpStatus.INTERNAL_SERVER_ERROR.toString());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rs);
+        return rs;
     }
 
     //네이버 로그인 시 추가 정보 입력 API
