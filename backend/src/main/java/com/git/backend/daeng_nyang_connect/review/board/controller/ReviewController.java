@@ -34,8 +34,9 @@ public class ReviewController {
     @PostMapping("/post")
     public ResponseEntity<?> addReview(@RequestParam("animalId") Long animalId,
                                        ReviewRequestDTO reviewRequestDTO,
+                                       List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
-        Review newReview = reviewService.addReview(animalId, reviewRequestDTO, token);
+        Review newReview = reviewService.addReview(animalId, reviewRequestDTO, files, token);
         ReviewResponseDTO response = reviewService.response(newReview);
         return ResponseEntity.status(200).body(response);
     }

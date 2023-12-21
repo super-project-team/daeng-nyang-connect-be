@@ -15,7 +15,7 @@ import java.util.Map;
 
 public interface AnimalService {
     // 댕냥 게시판에 내 파양동물 등록
-    Animal addAnimal(AnimalRequestDTO animalRequestDTO, String token);
+    Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token);
 
     AdoptedAnimal completeAnimal(Long animalId, Long adoptedUserId, String token);
 

@@ -34,7 +34,7 @@ public class AnimalServiceImpl  implements AnimalService{
     private final UserRepository userRepository;
 
     @Override
-    public Animal addAnimal(AnimalRequestDTO animalRequestDTO, String token) {
+    public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
         // 1. 토큰으로 유저 확인
         User user = checkUserByToken(token);
 
@@ -61,8 +61,8 @@ public class AnimalServiceImpl  implements AnimalService{
         animalRepository.save(newAnimal);
 
         // 3. 이미지를 DB에 저장
-        if(animalRequestDTO.getFiles()!=null){
-            uploadImage(newAnimal, animalRequestDTO.getFiles());
+        if(files!=null){
+            uploadImage(newAnimal, files);
         }
 
         // 4. return 새로운 댕냥이
@@ -145,9 +145,9 @@ public class AnimalServiceImpl  implements AnimalService{
         animalRepository.save(updateAnimal);
 
         // 4. 이미지를 DB에 저장
-        if(animalRequestDTO.getFiles()!=null){
-            uploadImage(myAnimal, animalRequestDTO.getFiles());
-        }
+//        if(animalRequestDTO.getFiles()!=null){
+//            uploadImage(myAnimal, animalRequestDTO.getFiles());
+//        }
         // 5. 수정된 댕냥이 게시글을 반환
         return updateAnimal;
     }
@@ -229,9 +229,9 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     public void uploadImage(Animal animal, List<MultipartFile> multipartFileList) {
         List<String> imageUrlList = animalImageService.uploadImages(animal.getAnimalName(), multipartFileList);
-        if(animal.getImages() != null && !animal.getImages().isEmpty()) {
-            animalImageRepository.deleteByAnimal(animal);
-        }
+//        if(animal.getImages() != null && !animal.getImages().isEmpty()) {
+//            animalImageRepository.deleteByAnimal(animal);
+//        }
 
         for (String imageUrl : imageUrlList) {
             AnimalImage animalImage = AnimalImage.builder()

@@ -20,7 +20,7 @@ public class ReviewRequestDTO {
 
 
     private String textReview;
-    List<MultipartFile> files;
+//    List<MultipartFile> files;
     public void checkUpdateList(ReviewRequestDTO reviewRequestDTO, Review animal) {
         if (Objects.isNull(reviewRequestDTO.getTextReview())) {
             this.textReview = animal.getTextReview();

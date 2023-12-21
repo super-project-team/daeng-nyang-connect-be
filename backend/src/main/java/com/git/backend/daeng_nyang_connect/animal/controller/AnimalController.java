@@ -32,8 +32,9 @@ public class AnimalController {
     @Operation(summary = "게시물 작성")
     @PostMapping("/post")
     public ResponseEntity<?> addAnimal(AnimalRequestDTO animalRequestDTO,
+                                       List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
-        Animal newAnimal = animalService.addAnimal(animalRequestDTO.parseData(), token);
+        Animal newAnimal = animalService.addAnimal(animalRequestDTO.parseData(), files, token);
         AnimalResponseDTO response = animalService.response(newAnimal);
         return ResponseEntity.status(200).body(response);
     }
