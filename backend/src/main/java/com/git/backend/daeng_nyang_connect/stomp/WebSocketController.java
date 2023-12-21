@@ -1,15 +1,34 @@
-//package com.git.backend.daeng_nyang_connect.stomp;
-//
-//import jakarta.persistence.Cacheable;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.messaging.handler.annotation.MessageMapping;
-//import org.springframework.messaging.handler.annotation.SendTo;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestHeader;
-//import org.springframework.web.bind.annotation.RequestParam;
-//
+package com.git.backend.daeng_nyang_connect.stomp;
+
+import jakarta.persistence.Cacheable;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+
+@Controller
+@RequiredArgsConstructor
+@Cacheable
+public class WebSocketController {
+
+    @MessageMapping("/sendMessage") // 클라이언트에서 메시지를 보내는 엔드포인트
+    @SendTo("/topic/messages") // 메시지를 발행할 토픽
+    public MessageDTO processMessageFromClient(@RequestHeader("access_token") String token,
+                                               MessageDTO message) throws Exception {
+        // 받은 메시지를 처리하는 비즈니스 로직을 작성
+        // 여기서는 간단히 받은 메시지를 다시 클라이언트로 보내는 예제
+        return message;
+    }
+}
+
 //@Controller
 //@RequiredArgsConstructor
 //@Cacheable
