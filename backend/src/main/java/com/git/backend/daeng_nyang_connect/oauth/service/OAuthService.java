@@ -110,7 +110,7 @@ public class OAuthService {
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
                 naverUser.setRawPassword("naver");
-                naverUser.setPassword(securityConfig.passwordEncoder().encode("naver"));
+                naverUser.setPassword(securityConfig.passwordEncoder().encode("naver123!"));
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
@@ -140,7 +140,7 @@ public class OAuthService {
         String code = request.getParameter("code");
 
         String tokenURL = "https://kauth.kakao.com/oauth/token";
-        String redirect_uri = "http://3.35.16.126:8080/kakao_redirect";
+        String redirect_uri = "http://52.79.108.20:8080/kakao_redirect";
 
 
         // body data 생성
@@ -199,7 +199,7 @@ public class OAuthService {
                 kakao.setNickname("kakao :" +nickName);
                 kakao.setRole(Role.USER);
                 kakao.setRawPassword("kakao");
-                kakao.setPassword(securityConfig.passwordEncoder().encode("kakao"));
+                kakao.setPassword(securityConfig.passwordEncoder().encode("kakao123!"));
                 userRepository.save(kakao);
                 MyPage myPage = userService.myPageEntity(kakao);
                 myPage.setImg(profileImg);

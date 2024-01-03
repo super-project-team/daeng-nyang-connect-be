@@ -88,6 +88,12 @@ public class UserController {
         return oAuthService.kakaoAddInfo(token, addExtraInfoDto);
     }
 
+    @Operation(summary = "리프레쉬 토큰 발급")
+    @PostMapping("/refresh")
+    public ResponseEntity<?>refresh(@RequestHeader("refresh_token")String token){
+        return userService.refresh(token);
+    }
+
 
 
 }

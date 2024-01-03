@@ -356,5 +356,19 @@ public class UserService {
         return ResponseEntity.ok("회원이 삭제되었습니다");
     }
 
+    public ResponseEntity<?> refresh(String token){
+        User user = checkUserByToken(token);
+        String email = user.getEmail();
+        if(redisTemplate.opsForValue().get("RF: " + email) !=null){
+            String accessToken = tokenProvider.createAccessToken(email);
+            redisTemplate.opsForValue().set(email, accessToken, Duration.ofSeconds(1800));
+            Map<String, String> response = new HashMap<>();
+            response.put("access_token", accessToken);
+            response.put("http_status", HttpStatus.CREATED.toString());
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원이 없습니다");
+    }
+
 
 }
