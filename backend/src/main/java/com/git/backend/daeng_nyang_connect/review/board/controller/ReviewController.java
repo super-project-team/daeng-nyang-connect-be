@@ -1,7 +1,5 @@
 package com.git.backend.daeng_nyang_connect.review.board.controller;
 
-
-import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +51,7 @@ public class ReviewController {
     @Operation(summary = "게시물 수정")
     @PutMapping("/modify")
     public ResponseEntity<?> updateReview(@RequestParam("reviewId") Long reviewId,
-                                          ReviewRequestDTO reviewRequestDTO,
+                                          @RequestBody ReviewRequestDTO reviewRequestDTO,
                                           @RequestHeader("access_token") String token){
         Review updateReview = reviewService.updateReview(reviewId, reviewRequestDTO, token);
         ReviewResponseDTO response = reviewService.response(updateReview);
