@@ -20,6 +20,7 @@ public class ReviewCommentsResponseDTO {
     private String comment;
     private String createdAt;
     private String userThumbnail;
+    private Integer reviewCommentLike;
 
     public ReviewCommentsResponseDTO(ReviewComments reviewComments) {
         this.commentsId = reviewComments.getReviewCommentsId();
@@ -30,6 +31,7 @@ public class ReviewCommentsResponseDTO {
         this.comment = reviewComments.getComment();
         this.createdAt = TimestampToFormattedString(reviewComments.getCreatedAt());
         this.userThumbnail = reviewComments.getUser().getMyPage().getImg();
+        this.reviewCommentLike = reviewComments.getReviewCommentLike();
     }
 
     public String TimestampToFormattedString(Timestamp time) {
