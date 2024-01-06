@@ -17,4 +17,6 @@ import java.util.Objects;
 public class MessageDTO {
     private Long roomId;
     private String content;
+    private Long receiverUserId;
+    private String sender;
 }
