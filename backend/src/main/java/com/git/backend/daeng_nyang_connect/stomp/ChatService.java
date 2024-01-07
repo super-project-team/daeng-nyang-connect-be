@@ -4,9 +4,11 @@ import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -23,6 +25,7 @@ public class ChatService {
     private final TokenProvider tokenProvider;
     private final ChatRoomUserRepository chatRoomUserRepository;
 
+    @Transactional
     public void handleChatMessage(MessageDTO message, String token) {
         String email = tokenProvider.getEmailBytoken(token);
         User sender = userRepository.findByEmail(email).orElseThrow(

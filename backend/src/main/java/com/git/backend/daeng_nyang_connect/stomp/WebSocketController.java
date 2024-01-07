@@ -21,7 +21,7 @@ public class WebSocketController {
 
     private final ChatService chatService;
 
-    @Transactional
+    @Transactional 
     @MessageMapping("/sendMessage")
     @SendTo("/topic/chat/{roomId}")
     public ResponseEntity<?> sendMessage(@RequestHeader("access_token") String token,
