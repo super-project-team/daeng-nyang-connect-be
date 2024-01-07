@@ -25,11 +25,15 @@ public class ChatService {
 
     public void handleChatMessage(MessageDTO message, String token) {
         String email = tokenProvider.getEmailBytoken(token);
-        User sender = userRepository.findByEmail(email).orElseThrow();
+        User sender = userRepository.findByEmail(email).orElseThrow(
+                () -> new NoSuchElementException("없는 유저입니다")
+        );
         if(chatRoomRepository.findById(message.getRoomId()).isEmpty()){
             addChatRoom(token, message.getReceiverUserId());
         }
-        ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow();
+        ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow(
+                () -> new NoSuchElementException("없는 채팅방입니다")
+        );
 
         if (!chatRoom.getUserList().contains(chatRoomUserRepository.findByUser(sender))) {
             throw new NoSuchElementException("x");

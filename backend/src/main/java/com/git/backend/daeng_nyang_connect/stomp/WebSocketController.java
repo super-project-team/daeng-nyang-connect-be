@@ -24,10 +24,11 @@ public class WebSocketController {
     @Transactional
     @MessageMapping("/sendMessage")
     @SendTo("/topic/chat/{roomId}")
-    public void sendMessage(@RequestHeader("access_token") String token,
-                            @RequestBody MessageDTO message) {
+    public ResponseEntity<?> sendMessage(@RequestHeader("access_token") String token,
+                                            @RequestBody MessageDTO message) {
         // 채팅방에 메세지를 보내는 로직
         // 메세지 정보(ChatMessage)를 클라이언트에게 전송
         chatService.handleChatMessage(message, token);
+        return ResponseEntity.status(200).body(message);
     }
 }
