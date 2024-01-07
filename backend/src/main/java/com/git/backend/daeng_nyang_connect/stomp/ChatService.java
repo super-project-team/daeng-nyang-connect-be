@@ -47,7 +47,7 @@ public class ChatService {
         message.setSender(sender.getNickname());
 
         // 채팅방 내 모든 사용자에게 메시지 전송
-        messagingTemplate.convertAndSend("/topic/messages/" + chatRoom.getChatRoomId(), message);
+        messagingTemplate.convertAndSend("/topic/chat/" + chatRoom.getChatRoomId(), message);
     }
 
     public void addChatRoom(String token, Long receiverUserId) {
