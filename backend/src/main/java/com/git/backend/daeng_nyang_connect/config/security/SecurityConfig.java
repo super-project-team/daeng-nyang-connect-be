@@ -56,7 +56,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage", "api/my_pet/getBoard",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll", "/websocket/**","/api/mate/getAll", "api/lost/getAll", "api/my_pet/getAll", "api/lost/getBoard", "api/tips/getBoard", "api/animal/city/**",
                                         "api/animal/getAll/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**", "api/tips/search" , "/api/my_pet/search", "/api/mate/getBoard", "api/mate/search", "api/animal/kind/**",
-                                        "api/review/getAll", "api/review", "api/review/comments", "/swagger-ui/**", "/v3/api-docs/**","/naver_redirect", "/NaverRegister", "/kakao_redirect", "api/animal/adoptionStatus/**", "api/lost/search", "api/refresh").permitAll()
+                                        "api/review/getAll", "api/review", "api/review/comments", "/swagger-ui/**", "/v3/api-docs/**","/naver_redirect", "/NaverRegister", "/kakao_redirect", "api/animal/adoptionStatus/**", "api/lost/search", "api/refresh",
+                                        "/topic/chat/**", "/app/**").permitAll()
                                 .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comments/**", "api/websocket/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
