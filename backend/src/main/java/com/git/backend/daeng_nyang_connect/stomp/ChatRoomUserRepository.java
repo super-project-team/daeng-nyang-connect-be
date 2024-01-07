@@ -10,6 +10,6 @@ import java.util.List;
 public interface ChatRoomUserRepository extends JpaRepository<ChatRoomUser, Long> {
     ChatRoomUser findByUser(User sender);
 
-    @Query("SELECT cru.chatRoom FROM ChatRoomUser cru WHERE cru.chatRoomUserId =: chatRoomUserId")
-    List<ChatRoom> findMyChatRoom(@Param("chatRoomUserId") Long chatRoomUserId);
+    @Query("SELECT cru.chatRoom FROM ChatRoomUser cru WHERE cru.user.userId=:userId")
+    List<ChatRoom> findMyChatRoom(@Param("userId") Long userId);
 }
