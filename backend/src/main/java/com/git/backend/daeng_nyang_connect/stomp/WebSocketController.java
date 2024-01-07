@@ -21,7 +21,7 @@ public class WebSocketController {
 
     private final ChatService chatService;
 
-    @Transactional 
+    @Transactional
     @MessageMapping("/sendMessage")
     @SendTo("/topic/chat/{roomId}")
     public ResponseEntity<?> sendMessage(@RequestHeader("access_token") String token,
@@ -29,6 +29,6 @@ public class WebSocketController {
         // 채팅방에 메세지를 보내는 로직
         // 메세지 정보(ChatMessage)를 클라이언트에게 전송
         chatService.handleChatMessage(message, token);
-        return ResponseEntity.status(200).body(message);
+        return ResponseEntity.status(200).body("전송완료");
     }
 }
