@@ -21,15 +21,13 @@ import java.util.Set;
 public class ChatService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final SimpMessagingTemplate messagingTemplate;
-    private final MessageRepository messageRepository;
     private final TokenProvider tokenProvider;
     private final ChatRoomUserRepository chatRoomUserRepository;
 
 
 
     @Transactional
-    public void handleChatMessage(MessageDTO message, String token) {
+    public MessageDTO handleChatMessage(MessageDTO message, String token) {
         String email = tokenProvider.getEmailBytoken(token);
         User sender = userRepository.findByEmail(email).orElseThrow(
                 () -> new NoSuchElementException("없는 유저입니다")
@@ -48,17 +46,9 @@ public class ChatService {
         message.setSender(sender.getNickname());
 
         // 채팅방 내 모든 사용자에게 메시지 전송
-        messagingTemplate.convertAndSend("/topic/chat/" + chatRoom.getChatRoomId(), message);
 
 
-        Message sendMessage = Message.builder()
-                .content(message.getContent())
-                .chatRoom(chatRoom)
-                .sender(sender)
-                .build();
-
-        // 메시지 저장
-        messageRepository.save(sendMessage);
+        return message;
     }
 
     public void addChatRoom(String token, Long receiverUserId) {
