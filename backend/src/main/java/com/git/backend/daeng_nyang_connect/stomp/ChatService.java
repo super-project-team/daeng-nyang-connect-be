@@ -4,6 +4,7 @@ import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -25,6 +26,8 @@ public class ChatService {
     private final TokenProvider tokenProvider;
     private final ChatRoomUserRepository chatRoomUserRepository;
 
+
+
     @Transactional
     public void handleChatMessage(MessageDTO message, String token) {
         String email = tokenProvider.getEmailBytoken(token);
@@ -42,19 +45,20 @@ public class ChatService {
             throw new NoSuchElementException("x");
         }
 
-        Message sendMessage = Message.builder()
-                                    .content(message.getContent())
-                                    .chatRoom(chatRoom)
-                                    .sender(sender)
-                                    .build();
-
-        // 메시지 저장
-        messageRepository.save(sendMessage);
-
         message.setSender(sender.getNickname());
 
         // 채팅방 내 모든 사용자에게 메시지 전송
         messagingTemplate.convertAndSend("/topic/chat/" + chatRoom.getChatRoomId(), message);
+
+
+        Message sendMessage = Message.builder()
+                .content(message.getContent())
+                .chatRoom(chatRoom)
+                .sender(sender)
+                .build();
+
+        // 메시지 저장
+        messageRepository.save(sendMessage);
     }
 
     public void addChatRoom(String token, Long receiverUserId) {
