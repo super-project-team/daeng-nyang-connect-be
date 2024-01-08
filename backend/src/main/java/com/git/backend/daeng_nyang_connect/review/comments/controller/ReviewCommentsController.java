@@ -40,7 +40,7 @@ public class ReviewCommentsController {
     public ResponseEntity<?> deleteCommentsOnReview(@RequestParam("reviewCommentsId") Long reviewCommentsId,
                                             @RequestHeader("access_token") String token){
         reviewCommentsService.deleteCommentsOnReview(reviewCommentsId, token);
-        return ResponseEntity.status(200).body("게시글이 삭제되었습니다.");
+        return ResponseEntity.status(200).body("댓글이 삭제되었습니다.");
     }
 
     @Transactional

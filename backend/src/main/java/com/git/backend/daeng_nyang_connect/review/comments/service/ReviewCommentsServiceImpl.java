@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.review.comments.service;
 
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.board.repository.ReviewRepository;
 import com.git.backend.daeng_nyang_connect.review.comments.dto.request.ReviewCommentsRequestDTO;
@@ -29,6 +30,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
     private final ReviewCommentsRepository reviewCommentsRepository;
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
+    private final NotificationService notificationService;
 
     @Override
     public ReviewComments addCommentsOnReview(Long reviewId, ReviewCommentsRequestDTO comment, String token) {
@@ -50,6 +52,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
                                                 .createdAt(nowDate())
                                                 .build();
         reviewCommentsRepository.save(newComment);
+        notificationService.notifyComment(review.getReviewId(), "입양 후기");
 
         // 4. 새로운 댓글 반환
         return newComment;
@@ -135,6 +138,7 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
         updateLike(reviewComments, reviewCommentsLikeRepository.totalReviewLike(reviewCommentsId));
 
         message.put("add", "좋아요가 성공적으로 추가되었습니다.");
+        notifyCommentLike(reviewComments);
         return message;
     }
 
@@ -170,6 +174,11 @@ public class ReviewCommentsServiceImpl implements ReviewCommentsService {
                                                 .reviewCommentLike(like) // 좋아요만 수정
                                                 .build();
         reviewCommentsRepository.save(totalLike);
+    }
+
+    @Override
+    public void notifyCommentLike(ReviewComments reviewComments) {
+        notificationService.notifyCommentLike(reviewComments.getReviewCommentsId(), "입양 후기");
     }
 
     @Override

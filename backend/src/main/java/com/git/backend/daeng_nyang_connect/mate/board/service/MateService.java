@@ -13,6 +13,7 @@ import com.git.backend.daeng_nyang_connect.mate.comments.dto.MateCommentsLikeDTO
 import com.git.backend.daeng_nyang_connect.mate.comments.dto.MateCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.mate.comments.entity.MateComments;
 import com.git.backend.daeng_nyang_connect.mate.comments.entity.MateCommentsLike;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
@@ -38,6 +39,7 @@ public class MateService {
     private final MateImgUpload mateImgUpload;
     private final UserRepository userRepository;
     private final MateBoardLikeRepository mateBoardLikeRepository;
+    private final NotificationService notificationService;
 
     private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
     private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
@@ -208,6 +210,7 @@ public class MateService {
                 mate.getMateLikes().add(mateBoardLike);
                 mate.setMateLike(mate.getMateLike() + 1);
                 mateRepository.save(mate);
+                notifyPostLike(mate);
             }
         } else {
             // 좋아요 취소
@@ -243,6 +246,10 @@ public class MateService {
             return createSuccessResponse(mateId + "번 게시글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
 
+    }
+
+    private void notifyPostLike(Mate mate) {
+        notificationService.notifyPostLike(mate.getMateBoardId(), "댕냥메이트");
     }
 
     private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {

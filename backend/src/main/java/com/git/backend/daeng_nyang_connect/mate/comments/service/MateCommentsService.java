@@ -8,6 +8,7 @@ import com.git.backend.daeng_nyang_connect.mate.comments.entity.MateComments;
 import com.git.backend.daeng_nyang_connect.mate.comments.entity.MateCommentsLike;
 import com.git.backend.daeng_nyang_connect.mate.comments.repository.MateCommentsLikeRepository;
 import com.git.backend.daeng_nyang_connect.mate.comments.repository.MateCommentsRepository;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
@@ -32,6 +33,7 @@ public class MateCommentsService {
     private final MateCommentsRepository mateCommentsRepository;
     private final MateCommentsLikeRepository mateCommentsLikeRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
     private static final String MSG_COMMENT_NOT_FOUND = "댓글을 찾을 수 없습니다.";
@@ -55,6 +57,7 @@ public class MateCommentsService {
                     .build();
 
             mateCommentsRepository.save(mateComments);
+            notificationService.notifyComment(mate, "댕냥메이트");
 
             return createSuccessResponse("댓글이 등록되었습니다.", HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
@@ -116,6 +119,7 @@ public class MateCommentsService {
                 mateComments.getMateCommentsLikes().add(mateCommentsLike);
                 mateComments.setMateCommentsLike(mateComments.getMateCommentsLike() + 1);
                 mateCommentsRepository.save(mateComments);
+                notifyCommentLike(mateComments);
             }
         } else {
             // 좋아요 취소
@@ -151,6 +155,10 @@ public class MateCommentsService {
             setHeart(mateComments, user, false);
             return createSuccessResponse(mateCommentId + "번 댓글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
+    }
+
+    private void notifyCommentLike(MateComments mateComments) {
+        notificationService.notifyCommentLike(mateComments.getMateCommentsId(), "댕냥메이트");
     }
 
     private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {

@@ -4,6 +4,7 @@ package com.git.backend.daeng_nyang_connect.tips.board.service;
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardLikeDto;
@@ -53,6 +54,7 @@ public class TipsBoardService {
     private final TipsImageRepository tipsImageRepository;
     private final TipsCommentsRepository tipsCommentsRepository;
     private final TipsCommentsLikeRepository tipsCommentsLikeRepository;
+    private final NotificationService notificationService;
 
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -115,6 +117,7 @@ public class TipsBoardService {
             tips.setTipsLike(likeCount);
             tipsBoardLikeRepository.save(tipsBoardLike);
             tipsBoardRepository.save(tips);
+            notifyPostLike(tips);
         }else{
             tipsBoardLikeRepository.deleteByUserAndTips(user,tips);
             likeCount--;
@@ -139,6 +142,10 @@ public class TipsBoardService {
             setHeart(isTips, user, isTips.getTipsLike(), false);
             return ResponseEntity.ok().body(tipsId + "번 게시글에 좋아요가 취소 되었습니다");
             }
+    }
+    // 좋아요 알림
+    private void notifyPostLike(Tips tips) {
+        notificationService.notifyPostLike(tips.getTipsBoardId(), "댕냥꿀팁");
     }
     //게시물 삭제
     public Map<String,String> delete(String token, Long tipsId) {

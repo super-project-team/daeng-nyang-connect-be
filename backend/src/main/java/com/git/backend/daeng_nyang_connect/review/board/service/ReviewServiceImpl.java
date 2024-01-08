@@ -5,6 +5,7 @@ import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.review.board.dto.request.ReviewRequestDTO;
 import com.git.backend.daeng_nyang_connect.review.board.dto.response.ReviewResponseDTO;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
@@ -39,6 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewImageService reviewImageService;
     private final TokenProvider tokenProvider;
     private final AnimalRepository animalRepository;
+    private final NotificationService notificationService;
 
     @Override
     public Review addReview(Long animalId, ReviewRequestDTO reviewRequestDTO, List<MultipartFile> files, String token) {
@@ -158,6 +160,7 @@ public class ReviewServiceImpl implements ReviewService {
         updateLike(review, reviewLikeRepository.totalReviewLike(reviewId));
 
         message.put("message", "좋아요가 성공적으로 추가되었습니다.");
+        notifyPostLike(review);
         return message;
     }
 
@@ -214,6 +217,11 @@ public class ReviewServiceImpl implements ReviewService {
                                 .reviewLike(like) // 좋아요만 수정
                                 .build();
         reviewRepository.save(totalLike);
+    }
+
+    @Override
+    public void notifyPostLike(Review review) {
+        notificationService.notifyPostLike(review.getReviewId(), "입양 후기");
     }
 
     @Override
