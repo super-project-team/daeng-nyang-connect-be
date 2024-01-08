@@ -32,7 +32,7 @@ public class ChatController {
         return myRoomList;
     }
 
-    @PostMapping("add")
+    @PostMapping("/add")
     public ResponseEntity<?> addRoom(@RequestHeader("access_token") String token,
                                      @RequestParam("animalId") Long animalId){
         chatService.addChatRoom(token, animalId);
