@@ -3,14 +3,11 @@ package com.git.backend.daeng_nyang_connect.stomp;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,11 +20,22 @@ public class ChatController {
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
+    private final ChatService chatService;
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
     public List<ChatRoom> myRoom(@RequestHeader("access_token") String token) {
+//        내가 속한 채팅방 리스트 - user
+//        그 채팅방의 유저 뽑기
         String email = tokenProvider.getEmailBytoken(token);
         User user = userRepository.findByEmail(email).orElseThrow();
-        return chatRoomUserRepository.findMyChatRoom(user.getUserId());
+        List<ChatRoom> myRoomList= chatRoomUserRepository.findMyChatRoom(user.getUserId());
+        return myRoomList;
+    }
+
+    @PostMapping("add")
+    public ResponseEntity<?> addRoom(@RequestHeader("access_token") String token,
+                                     @RequestParam("animalId") Long animalId){
+        chatService.addChatRoom(token, animalId);
+        return ResponseEntity.status(200).body("채팅방 생성 완료");
     }
 }

@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class MyPage {
     @Column(name = "my_page_idx")
     private Long myPageId;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_idx", unique = true)
     private User user;

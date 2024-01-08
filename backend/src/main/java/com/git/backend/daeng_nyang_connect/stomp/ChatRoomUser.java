@@ -1,5 +1,8 @@
 package com.git.backend.daeng_nyang_connect.stomp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,10 +22,13 @@ public class ChatRoomUser {
     @Column(name = "chat_room_user_idx")
     private Long chatRoomUserId;
 
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "chat_room_idx")
     private ChatRoom chatRoom;
 
+//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;

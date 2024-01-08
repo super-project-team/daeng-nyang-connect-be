@@ -23,27 +23,37 @@ public class WebSocketController {
 
     private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final MessageRepository messageRepository;
-    private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
+
+//    @Transactional
+//    @MessageMapping("/sendMessage")
+//    @SendTo("/topic/chat/{roomId}")
+//    public void sendMessage(@RequestHeader("access_token") String token,
+//                                            @RequestBody MessageDTO message) {
+//        // 채팅방에 메세지를 보내는 로직
+//        // 메세지 정보(ChatMessage)를 클라이언트에게 전송
+//        MessageDTO responseMessage = chatService.handleChatMessage(message, token);
+//        messagingTemplate.convertAndSend("/topic/chat/" + message.getRoomId(), responseMessage);
+//
+//        // 메시지 저장
+//        Message sendMessage = Message.builder()
+//                .content(message.getContent())
+//                .chatRoom(chatRoomRepository.findById(message.getRoomId()).orElseThrow())
+//                .sender(userRepository.findByNickname(responseMessage.getSender()))
+//                .build();
+//
+//        messageRepository.save(sendMessage);
+//    }
 
     @Transactional
     @MessageMapping("/sendMessage")
     @SendTo("/topic/chat/{roomId}")
     public void sendMessage(@RequestHeader("access_token") String token,
-                                            @RequestBody MessageDTO message) {
+                            @RequestBody MessageDTO message) {
         // 채팅방에 메세지를 보내는 로직
         // 메세지 정보(ChatMessage)를 클라이언트에게 전송
         MessageDTO responseMessage = chatService.handleChatMessage(message, token);
-        messagingTemplate.convertAndSend("/topic/chat/" + message.getRoomId(), responseMessage);
-
-        // 메시지 저장
-        Message sendMessage = Message.builder()
-                .content(message.getContent())
-                .chatRoom(chatRoomRepository.findById(message.getRoomId()).orElseThrow())
-                .sender(userRepository.findByNickname(responseMessage.getSender()))
-                .build();
-
-        messageRepository.save(sendMessage);
+        messagingTemplate.convertAndSend("/topic/chat/" + responseMessage.getRoomId(), responseMessage);
+        chatService.saveMessage(responseMessage);
     }
+
 }

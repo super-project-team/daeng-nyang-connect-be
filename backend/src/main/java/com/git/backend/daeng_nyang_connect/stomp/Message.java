@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.stomp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +24,7 @@ public class Message {
     @JoinColumn(name = "user_idx")
     private User sender;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "chat_room_idx")
     private ChatRoom chatRoom;
