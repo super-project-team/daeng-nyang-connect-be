@@ -54,7 +54,9 @@ public class User implements UserDetails {
     @JsonManagedReference(value = "scrap")
     private List<AnimalScrap> myAnimalScrap;
 
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChatRoomUser> chatRooms = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

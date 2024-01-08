@@ -35,10 +35,14 @@ public class ChatService {
                 ()->new NoSuchElementException("없는 게시글입니다.")
         );
 
+        if(board.getUser().equals(sender)){
+            throw new IllegalArgumentException("당신의 게시글입니다.");
+        }
+
 
         // 예시로 chatRoom을 생성하는 코드
         ChatRoom newChatRoom = ChatRoom.builder()
-                .roomName("채팅방")
+                .animal(board)
                 .build();
 
         chatRoomRepository.save(newChatRoom);

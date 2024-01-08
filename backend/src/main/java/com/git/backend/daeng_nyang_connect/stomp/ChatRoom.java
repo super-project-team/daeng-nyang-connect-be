@@ -2,6 +2,7 @@ package com.git.backend.daeng_nyang_connect.stomp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,8 +23,9 @@ public class ChatRoom {
     @Column(name = "chat_room_idx")
     private Long chatRoomId;
 
-    @Column(name = "room_name")
-    private String roomName;
+    @ManyToOne
+    @JoinColumn(name = "animal_idx")
+    private Animal animal;
 
 //    @JsonManagedReference
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
