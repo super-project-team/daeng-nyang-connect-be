@@ -116,13 +116,13 @@ public class OAuthService {
                 naverUser.setName(name);
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
-                naverUser.setRawPassword("naver");
+                naverUser.setRawPassword("naver123!");
                 naverUser.setPassword(securityConfig.passwordEncoder().encode("naver123!"));
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
-                response.sendRedirect("http://localhost:3000/NaverRegister");
                 userService.socialLogin(naverUser,request,response);
+                response.sendRedirect("http://localhost:3000/oauthAddInfo");
                 return ResponseEntity.ok(response);
             } else {
                 User user = byEmail.get();
@@ -147,7 +147,7 @@ public class OAuthService {
         String code = request.getParameter("code");
 
         String tokenURL = "https://kauth.kakao.com/oauth/token";
-        String redirect_uri = "http://52.79.108.20:8080/kakao_redirect";
+        String redirect_uri = "http://localhost:8080/oauth/kakao";
 
 
         // body data 생성
@@ -205,19 +205,19 @@ public class OAuthService {
                 kakao.setName(name);
                 kakao.setNickname("kakao :" +nickName);
                 kakao.setRole(Role.USER);
-                kakao.setRawPassword("kakao");
+                kakao.setRawPassword("kakao123!");
                 kakao.setPassword(securityConfig.passwordEncoder().encode("kakao123!"));
                 userRepository.save(kakao);
                 MyPage myPage = userService.myPageEntity(kakao);
                 myPage.setImg(profileImg);
                 myPageRepository.save(myPage);
                 userService.socialLogin(kakao,request,response);
-                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("http://localhost:3000/oauthAddInfo");
                 return ResponseEntity.ok(response);
 
             }else{
                 userService.socialLogin(isUser,request ,response);
-                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("http://localhost:3000/socialLogin");
                 return ResponseEntity.ok(response);
             }
             }catch (IOException e) {
@@ -240,6 +240,7 @@ public class OAuthService {
             user.setTown(addExtraInfoDto.getTown());
             user.setExperience(addExtraInfoDto.getExperience());
             user.setGender(addExtraInfoDto.getGender());
+            user.setNickname(addExtraInfoDto.getNickname());
             userRepository.save(user);
         }catch (NotFoundException e){
             e.printStackTrace();
@@ -274,22 +275,11 @@ public class OAuthService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<?> oauthLogin(String token){
+    public ResponseEntity<?> oauthLogin(String token, HttpServletRequest request,HttpServletResponse response){
         String email = tokenProvider.getEmailBytoken(token);
-        String naverPwd = "naver";
+        User user = userRepository.findByEmail(email).orElseThrow();
 
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, naverPwd)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
-            return ResponseEntity.ok().body("로그인 되었습니다");
-        }
-        catch (Exception e){
-            return ResponseEntity.badRequest().body("잘못된 접근입니다.");
-        }
+        return userService.socialLogin(user, request, response);
     }
 
 
