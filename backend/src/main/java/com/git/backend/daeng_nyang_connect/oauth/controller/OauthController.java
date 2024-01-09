@@ -22,7 +22,7 @@ public class OauthController {
 
     private final OAuthService oAuthService;
 
-    @PostMapping("/naver")
+    @GetMapping("/naver")
     public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response) {
         return oAuthService.naverLogin(request, response);
     }
