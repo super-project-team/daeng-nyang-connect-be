@@ -147,7 +147,7 @@ public class OAuthService {
         String code = request.getParameter("code");
 
         String tokenURL = "https://kauth.kakao.com/oauth/token";
-        String redirect_uri = "http://localhost:8080/oauth/kakao";
+        String redirect_uri = "http://52.79.108.20:8080/oauth/kakao";
 
 
         // body data 생성
