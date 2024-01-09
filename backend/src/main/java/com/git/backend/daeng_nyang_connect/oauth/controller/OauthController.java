@@ -27,9 +27,14 @@ public class OauthController {
         return oAuthService.naverLogin(request, response);
     }
 
-    @PostMapping("/kakao")
+    @GetMapping ("/kakao")
     public ResponseEntity<?> kakaoLogin(HttpServletRequest request, HttpServletResponse response) {
         return oAuthService.kakaoLogin(request, response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> oauthLogin(@RequestHeader("access_token")String token){
+        return oAuthService.oauthLogin(token);
     }
 
 }

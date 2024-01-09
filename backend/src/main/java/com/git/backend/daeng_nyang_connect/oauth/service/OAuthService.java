@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.oauth.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.config.security.SecurityConfig;
 import com.git.backend.daeng_nyang_connect.user.dto.AddExtraInfoDto;
 import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
@@ -17,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -37,6 +42,8 @@ public class OAuthService {
     private final UserService userService;
     private final MyPageRepository myPageRepository;
     private final SecurityConfig securityConfig;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     @Value("${naverIdEc2}")
     private String naver_client_id;
@@ -114,13 +121,13 @@ public class OAuthService {
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
-                userService.socialLogin(naverUser,request,response);
                 response.sendRedirect("http://localhost:3000/NaverRegister");
+                userService.socialLogin(naverUser,request,response);
                 return ResponseEntity.ok(response);
             } else {
                 User user = byEmail.get();
                 userService.socialLogin(user,request,response);
-                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("http://localhost:3000/socialLogin");
                 return ResponseEntity.ok(response);
             }
         }catch (RestClientException ex) {
@@ -265,6 +272,24 @@ public class OAuthService {
         response.put("msg", "개인정보 추가가 성공적으로 되었습니다");
         response.put("http_status", HttpStatus.CREATED.toString());
         return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<?> oauthLogin(String token){
+        String email = tokenProvider.getEmailBytoken(token);
+        String naverPwd = "naver";
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, naverPwd)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+            return ResponseEntity.ok().body("로그인 되었습니다");
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("잘못된 접근입니다.");
+        }
     }
 
 
