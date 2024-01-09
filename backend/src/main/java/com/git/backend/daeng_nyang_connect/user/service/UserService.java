@@ -267,7 +267,7 @@ public class UserService {
 
     //소셜 로그인
     @Transactional
-    public ResponseEntity<?> socialLogin(User user,HttpServletRequest request ,HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> socialLogin(User user,HttpServletRequest request,HttpServletResponse httpServletResponse) {
 
         String email = user.getEmail();
         String password = user.getRawPassword();
@@ -296,10 +296,6 @@ public class UserService {
             Cookie accessCookie = new Cookie("access_token", accessToken);
             Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
 
-            accessCookie.setHttpOnly(false);
-            accessCookie.setPath("/");
-            accessCookie.setSecure(false);
-
             httpServletResponse.addCookie(accessCookie);
             httpServletResponse.addCookie(refreshCookie);
 
@@ -313,7 +309,6 @@ public class UserService {
 
             httpServletResponse.addHeader("access_token", accessToken);
             httpServletResponse.addHeader("refresh_token", refreshToken);
-            log.info(accessToken);
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {

@@ -33,8 +33,10 @@ public class OauthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> oauthLogin(@RequestHeader("access_token")String token){
-        return oAuthService.oauthLogin(token);
+    public ResponseEntity<?> oauthLogin(@RequestHeader("access_token")String token,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response){
+        return oAuthService.oauthLogin(token, request,response);
     }
 
 }

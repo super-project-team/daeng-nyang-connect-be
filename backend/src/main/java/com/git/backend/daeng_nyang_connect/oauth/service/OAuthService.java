@@ -116,12 +116,12 @@ public class OAuthService {
                 naverUser.setName(name);
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
-                naverUser.setRawPassword("naver");
+                naverUser.setRawPassword("naver123!");
                 naverUser.setPassword(securityConfig.passwordEncoder().encode("naver123!"));
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
-                response.sendRedirect("http://localhost:3000/NaverRegister");
+                response.sendRedirect("http://localhost:3000/oauthAddInfo");
                 userService.socialLogin(naverUser,request,response);
                 return ResponseEntity.ok(response);
             } else {
@@ -197,7 +197,7 @@ public class OAuthService {
             String profileImg = (String) rs.get("thumbnail_image_url");
             log.info("name" + nickName);
 
-            User isUser = userRepository.findByName(name);
+            User isUser = userRepository.findByNameAndNickname(name, "kakao :" +nickName);
 
             if(isUser==null){
                 User kakao = new User();
@@ -216,7 +216,7 @@ public class OAuthService {
                 return ResponseEntity.ok(response);
 
             }else{
-                userService.socialLogin(isUser,request ,response);
+                userService.socialLogin(isUser ,request,response);
                 response.sendRedirect("http://localhost:3000/");
                 return ResponseEntity.ok(response);
             }
@@ -274,22 +274,10 @@ public class OAuthService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<?> oauthLogin(String token){
+    public ResponseEntity<?> oauthLogin(String token, HttpServletRequest request,HttpServletResponse response){
         String email = tokenProvider.getEmailBytoken(token);
-        String naverPwd = "naver";
-
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, naverPwd)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
-            return ResponseEntity.ok().body("로그인 되었습니다");
-        }
-        catch (Exception e){
-            return ResponseEntity.badRequest().body("잘못된 접근입니다.");
-        }
+        User user = userRepository.findByEmail(email).orElseThrow();
+        return userService.socialLogin(user, request,response);
     }
 
 
