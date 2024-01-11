@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,8 +56,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api", "/api/signup", "api/IdCheck","api/NicknameCheck","/api/login","/api/logout", "api/findPassword","api/findId","api/myPage", "api/my_pet/getBoard",
                                         "api/tips/search","api/tips/getBoard","api/tips/getAll", "/websocket/**","/api/mate/getAll", "api/lost/getAll", "api/my_pet/getAll", "api/lost/getBoard", "api/tips/getBoard", "api/animal/city/**",
                                         "api/animal/getAll/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**", "api/tips/search" , "/api/my_pet/search", "/api/mate/getBoard", "api/mate/search", "api/animal/kind/**",
-                                        "api/review/getAll", "api/review", "api/review/comments", "/swagger-ui/**", "/v3/api-docs/**","/naver_redirect", "/NaverRegister", "/kakao_redirect", "api/animal/adoptionStatus/**", "api/lost/search", "api/refresh").permitAll()
-                                .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comments/**","/api/notifications","/api/notifications/**").hasRole("USER")
+                                        "api/review/getAll", "api/review", "api/review/comments", "/swagger-ui/**", "/v3/api-docs/**", "api/animal/adoptionStatus/**", "api/lost/search", "api/refresh",
+                                        "/topic/chat/**", "/app/**", "/oauth/**", "/naver_redirect", "api/addNaverInfo").permitAll()
+                                .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comments/**", "api/websocket/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
@@ -70,10 +70,11 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001","http://localhost:8080"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001","http://localhost:8080", "http://52.79.108.20:8080"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
+        config.setAllowedOriginPatterns(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
