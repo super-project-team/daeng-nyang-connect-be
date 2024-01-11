@@ -3,6 +3,7 @@ package com.git.backend.daeng_nyang_connect.stomp;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
@@ -24,7 +25,7 @@ public class ChatService {
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final MessageRepository messageRepository;
     private final AnimalRepository animalRepository;
-
+    private final NotificationService notificationService;
 
     public void addChatRoom(String token, Long animalId) {
         String email = tokenProvider.getEmailBytoken(token);
@@ -71,6 +72,7 @@ public class ChatService {
         if (!chatRoom.getUserList().contains(chatRoomUserRepository.findByUser(sender))) {
             throw new NoSuchElementException("해당 채팅방에 당신은 없습니다");
         }
+        notificationService.notifyNewChatMessage(message.getRoomId(), sender.getNickname());
 
         return message;
     }

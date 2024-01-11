@@ -8,6 +8,8 @@ import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPet;
 import com.git.backend.daeng_nyang_connect.mypet.comments.entity.MyPetComments;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
+import com.git.backend.daeng_nyang_connect.stomp.ChatRoom;
+import com.git.backend.daeng_nyang_connect.stomp.ChatRoomRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsComments;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -19,9 +21,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,6 +34,7 @@ public class NotificationService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
+    private final ChatRoomRepository chatRoomRepository;
 
     private final Map<String, JpaRepository<?, Long>> boardTypeRepositories;
     private final Map<String, JpaRepository<?, Long>> commentTypeRepositories;
@@ -38,6 +43,7 @@ public class NotificationService {
     public NotificationService(
             UserRepository userRepository,
             TokenProvider tokenProvider,
+            ChatRoomRepository chatRoomRepository,
             JpaRepository<Mate, Long> mateRepository,
             JpaRepository<MyPet, Long> myPetRepository,
             JpaRepository<Lost, Long> lostRepository,
@@ -50,6 +56,7 @@ public class NotificationService {
     ) {
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
+        this.chatRoomRepository = chatRoomRepository;
 
         this.boardTypeRepositories = Map.of(
                 "댕냥메이트", mateRepository,
@@ -122,6 +129,27 @@ public class NotificationService {
         } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("게시글 또는 댓글을 찾을 수 없습니다. entityId: " + entityId);
         }
+    }
+
+    public void notifyNewChatMessage(Long chatRoomId, String senderNickname) {
+        String eventName = "newChatMessage";
+        String eventData = senderNickname + "님이 메시지를 보냈습니다.";
+
+        List<Long> userIds = getUserIdsFromChatRoom(chatRoomId);
+
+        for (Long userId : userIds) {
+            sendNotification(userId, eventName, eventData);
+        }
+    }
+
+    private List<Long> getUserIdsFromChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NoSuchElementException("채팅방을 찾을 수 없습니다. chatRoomId: " + chatRoomId));
+
+        return chatRoom.getUserList()
+                .stream()
+                .map(user -> user.getUser().getUserId())
+                .collect(Collectors.toList());
     }
 
     public static void sendNotification(Long userId, String eventName, String eventData) {

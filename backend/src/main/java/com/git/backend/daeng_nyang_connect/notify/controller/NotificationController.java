@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @Operation(summary = "댓글 & 좋아요 알림")
+    @Operation(summary = "알림 가져오기")
     @GetMapping("")
     public SseEmitter getNotificationEmitter(@RequestHeader("access_token") String token) {
         return notificationService.createSseEmitter(token);
