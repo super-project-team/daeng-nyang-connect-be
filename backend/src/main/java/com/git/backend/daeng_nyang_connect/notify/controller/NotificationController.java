@@ -3,10 +3,12 @@ package com.git.backend.daeng_nyang_connect.notify.controller;
 import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Cacheable
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "실시간 알림")
@@ -20,6 +22,7 @@ public class NotificationController {
         return notificationService.createSseEmitter(token);
     }
 
+    @Operation(summary = "SSE Emitter 제거")
     @DeleteMapping("/delete")
     public void removeNotificationEmitter(@RequestHeader("access_token") String token) {
         notificationService.removeEmitter(token);
