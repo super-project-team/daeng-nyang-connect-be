@@ -15,7 +15,7 @@ spring:
       max-request-size: 300MB
   data:
     redis:
-      host: localhost
+      host: daeng-nyang-redis-001.jdox6c.0001.apn2.cache.amazonaws.com
       port: 6379
 
   jpa:
