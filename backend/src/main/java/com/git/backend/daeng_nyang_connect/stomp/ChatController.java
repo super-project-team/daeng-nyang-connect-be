@@ -61,4 +61,11 @@ public class ChatController {
         chatService.addChatRoom(token, animalId);
         return ResponseEntity.status(200).body("채팅방 생성 완료");
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteRoom(@RequestHeader("access_token") String token,
+                                        @RequestParam("roomId") Long roomId){
+        chatService.deleteChatRoom(token, roomId);
+        return ResponseEntity.status(200).body("채팅방 삭제 완료");
+    }
 }

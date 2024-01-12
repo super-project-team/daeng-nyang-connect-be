@@ -23,6 +23,7 @@ public class WebSocketController {
 
     private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
+    private ChatService cServ = CTXProvider.ctx.getBean(ChatService.class);
 
 //    @Transactional
 //    @MessageMapping("/sendMessage")
@@ -53,7 +54,7 @@ public class WebSocketController {
         // 메세지 정보(ChatMessage)를 클라이언트에게 전송
         MessageDTO responseMessage = chatService.handleChatMessage(message, token);
         messagingTemplate.convertAndSend("/topic/chat/" + responseMessage.getRoomId(), responseMessage);
-        chatService.saveMessage(responseMessage);
+        cServ.saveMessage(responseMessage);
     }
 
 }

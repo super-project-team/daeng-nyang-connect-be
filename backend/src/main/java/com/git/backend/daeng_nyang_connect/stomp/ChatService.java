@@ -51,6 +51,19 @@ public class ChatService {
         addUser(newChatRoom, board.getUser());
     }
 
+    public void deleteChatRoom(String token, Long roomId) {
+        String email = tokenProvider.getEmailBytoken(token);
+        if(userRepository.findByEmail(email).isEmpty()) {
+            throw new NoSuchElementException("토큰을 확인해주세요.");
+        }
+
+        if(chatRoomRepository.findById(roomId).isEmpty()){
+            throw new NoSuchElementException("없는 방입니다.");
+        }
+
+        chatRoomRepository.deleteById(roomId);
+    }
+
     public void addUser(ChatRoom chatRoom, User user){
         ChatRoomUser addUser = ChatRoomUser.builder().chatRoom(chatRoom).user(user).build();
         chatRoomUserRepository.save(addUser);
@@ -61,8 +74,6 @@ public class ChatService {
         User sender = userRepository.findByEmail(email).orElseThrow(
                 () -> new NoSuchElementException("없는 유저입니다")
         );
-
-        message.setSender(sender.getNickname());
 
         ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow(
                 () -> new NoSuchElementException("없는 채팅방입니다")
@@ -76,7 +87,9 @@ public class ChatService {
     }
 
     public void saveMessage(MessageDTO message){
-        User sender = userRepository.findByNickname(message.getSender());
+        User sender = userRepository.findById(message.getSenderId()).orElseThrow(
+                ()-> new NoSuchElementException("유저를 확인해주세요.")
+        );
         ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow(
                 ()->new NoSuchElementException("없는 채팅방입니다.")
         );
@@ -88,5 +101,7 @@ public class ChatService {
 
         messageRepository.save(newMessage);
     }
+
+
 }
 
