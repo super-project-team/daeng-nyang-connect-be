@@ -10,10 +10,7 @@ import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +24,7 @@ public class ChatService {
     private final AnimalRepository animalRepository;
     private final NotificationService notificationService;
 
-    public void addChatRoom(String token, Long animalId) {
+    public ChatRoom addChatRoom(String token, Long animalId) {
         String email = tokenProvider.getEmailBytoken(token);
         User sender = userRepository.findByEmail(email).orElseThrow(
                 ()->new NoSuchElementException("토큰을 확인해주세요.")
@@ -50,6 +47,8 @@ public class ChatService {
 
         addUser(newChatRoom, sender);
         addUser(newChatRoom, board.getUser());
+
+        return newChatRoom;
     }
 
     public void addUser(ChatRoom chatRoom, User user){

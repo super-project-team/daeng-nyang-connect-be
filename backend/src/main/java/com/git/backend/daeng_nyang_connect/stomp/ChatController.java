@@ -58,7 +58,7 @@ public class ChatController {
     @PostMapping("/add")
     public ResponseEntity<?> addRoom(@RequestHeader("access_token") String token,
                                      @RequestParam("animalId") Long animalId){
-        chatService.addChatRoom(token, animalId);
-        return ResponseEntity.status(200).body("채팅방 생성 완료");
+        ChatRoom newChatRoom = chatService.addChatRoom(token, animalId);
+        return ResponseEntity.status(200).body(newChatRoom);
     }
 }
