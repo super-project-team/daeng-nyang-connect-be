@@ -122,12 +122,12 @@ public class OAuthService {
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
                 userService.socialLogin(naverUser,request,response);
-                response.sendRedirect("http://localhost:3000/oauthAddInfo");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
                 return ResponseEntity.ok(response);
             } else {
                 User user = byEmail.get();
                 userService.socialLogin(user,request,response);
-                response.sendRedirect("http://localhost:3000/socialLogin");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
                 return ResponseEntity.ok(response);
             }
         }catch (RestClientException ex) {
@@ -147,7 +147,7 @@ public class OAuthService {
         String code = request.getParameter("code");
 
         String tokenURL = "https://kauth.kakao.com/oauth/token";
-        String redirect_uri = "http://52.79.108.20:8080/oauth/kakao";
+        String redirect_uri = "https://daeng-nyang-be-qyu5xzcspa-du.a.run.app/oauth/kakao";
 
 
         // body data 생성
@@ -212,12 +212,12 @@ public class OAuthService {
                 myPage.setImg(profileImg);
                 myPageRepository.save(myPage);
                 userService.socialLogin(kakao,request,response);
-                response.sendRedirect("http://localhost:3000/oauthAddInfo");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
                 return ResponseEntity.ok(response);
 
             }else{
                 userService.socialLogin(isUser,request ,response);
-                response.sendRedirect("http://localhost:3000/socialLogin");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
                 return ResponseEntity.ok(response);
             }
             }catch (IOException e) {
