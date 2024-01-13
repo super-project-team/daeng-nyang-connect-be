@@ -53,8 +53,8 @@ public class WebSocketController {
         // 채팅방에 메세지를 보내는 로직
         // 메세지 정보(ChatMessage)를 클라이언트에게 전송
         MessageDTO responseMessage = chatService.handleChatMessage(message, token);
-        messagingTemplate.convertAndSend("/topic/chat/" + responseMessage.getRoomId(), responseMessage);
         cServ.saveMessage(responseMessage);
+        messagingTemplate.convertAndSend("/topic/chat/" + responseMessage.getRoomId(), responseMessage);
     }
 
 }
