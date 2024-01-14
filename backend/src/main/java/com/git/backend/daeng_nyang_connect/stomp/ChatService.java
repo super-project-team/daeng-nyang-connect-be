@@ -101,6 +101,7 @@ public class ChatService {
                 .build();
 
         messageRepository.save(newMessage);
+        messageRepository.flush(); // 이 부분을 추가해보세요
     }
 
 
