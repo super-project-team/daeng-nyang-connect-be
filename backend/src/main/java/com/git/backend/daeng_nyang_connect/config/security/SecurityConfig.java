@@ -58,7 +58,7 @@ public class SecurityConfig {
                                         "api/animal/getAll/**", "api/animal/kind/**", "api/animal/city/**", "api/animal/adoptionStatus/**", "api/tips/search" , "/api/my_pet/search", "/api/mate/getBoard", "api/mate/search", "api/animal/kind/**",
                                         "api/review/getAll", "api/review", "api/review/comments", "/swagger-ui/**", "/v3/api-docs/**", "api/animal/adoptionStatus/**", "api/lost/search", "api/refresh",
                                         "/topic/chat/**", "/app/**", "/oauth/**", "/naver_redirect", "api/addNaverInfo").permitAll()
-                                .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comments/**", "api/websocket/**", "/api/notifications", "/api/notifications/**").hasRole("USER")
+                                .requestMatchers("/api/tips/**", "api/myPage/**", "api/animal/**", "api/review/**", "api/review/comments/**", "api/websocket/**", "/api/notifications/**").hasRole("USER")
                                 .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 

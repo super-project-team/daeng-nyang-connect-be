@@ -11,16 +11,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class NotificationDTO {
+    private Long notificationId;
     private String eventName;
     private String eventData;
-    private LocalDateTime timestamp;
+    private LocalDateTime readTimestamp;
     private boolean isRead;
 
     public static NotificationDTO fromEntity(Notification notification) {
         NotificationDTO notificationDTO = new NotificationDTO();
+        notificationDTO.setNotificationId(notification.getNotificationId());
         notificationDTO.setEventName(notification.getEventName());
         notificationDTO.setEventData(notification.getEventData());
-        notificationDTO.setTimestamp(notification.getTimestamp());
+        notificationDTO.setReadTimestamp(notification.getReadTimestamp());
         notificationDTO.setRead(notification.isRead());
         return notificationDTO;
     }

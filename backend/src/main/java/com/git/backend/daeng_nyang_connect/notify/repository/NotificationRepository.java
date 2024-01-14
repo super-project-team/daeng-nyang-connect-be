@@ -9,5 +9,9 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByUserUserIdAndTimestampBeforeOrderByTimestampDesc(Long userId, LocalDateTime lastLoginTimestamp);
+    List<Notification> findByUserUserIdAndIsReadFalseOrderByReadTimestampDesc(Long userId);
+
+    List<Notification> findByUserUserIdAndIsReadTrueOrderByReadTimestampDesc(Long userId);
+
+    void deleteByIsReadTrueAndReadTimestampBefore(LocalDateTime cutoffTime);
 }
