@@ -5,8 +5,7 @@ import jakarta.persistence.Cacheable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,13 +47,16 @@ public class WebSocketController {
     @Transactional
     @MessageMapping("/sendMessage")
     @SendTo("/topic/chat/{roomId}")
-    public void sendMessage(@RequestHeader("access_token") String token,
-                            @RequestBody MessageDTO message) {
+    public MessageDTO sendMessage(@Header("access_token") String token,
+                                  @Payload MessageDTO message) {
         // 채팅방에 메세지를 보내는 로직
         // 메세지 정보(ChatMessage)를 클라이언트에게 전송
         MessageDTO responseMessage = chatService.handleChatMessage(message, token);
         cServ.saveMessage(responseMessage);
-        messagingTemplate.convertAndSend("/topic/chat/" + responseMessage.getRoomId(), responseMessage);
+
+        // @SendTo 어노테이션을 사용하여 토픽 지정
+        return responseMessage;
     }
+
 
 }
