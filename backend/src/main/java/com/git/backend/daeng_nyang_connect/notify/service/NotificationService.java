@@ -6,6 +6,9 @@ import com.git.backend.daeng_nyang_connect.mate.board.entity.Mate;
 import com.git.backend.daeng_nyang_connect.mate.comments.entity.MateComments;
 import com.git.backend.daeng_nyang_connect.mypet.board.entity.MyPet;
 import com.git.backend.daeng_nyang_connect.mypet.comments.entity.MyPetComments;
+import com.git.backend.daeng_nyang_connect.notify.dto.NotificationDTO;
+import com.git.backend.daeng_nyang_connect.notify.entity.Notification;
+import com.git.backend.daeng_nyang_connect.notify.repository.NotificationRepository;
 import com.git.backend.daeng_nyang_connect.review.board.entity.Review;
 import com.git.backend.daeng_nyang_connect.review.comments.entity.ReviewComments;
 import com.git.backend.daeng_nyang_connect.stomp.ChatRoom;
@@ -19,22 +22,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class NotificationService {
+    private static Map<Long, List<Notification>> userNotifications = new ConcurrentHashMap<>();
     public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
     private final ChatRoomRepository chatRoomRepository;
+    private final NotificationRepository notificationRepository;
 
     private final Map<String, JpaRepository<?, Long>> boardTypeRepositories;
     private final Map<String, JpaRepository<?, Long>> commentTypeRepositories;
@@ -44,6 +45,7 @@ public class NotificationService {
             UserRepository userRepository,
             TokenProvider tokenProvider,
             ChatRoomRepository chatRoomRepository,
+            NotificationRepository notificationRepository,
             JpaRepository<Mate, Long> mateRepository,
             JpaRepository<MyPet, Long> myPetRepository,
             JpaRepository<Lost, Long> lostRepository,
@@ -57,6 +59,7 @@ public class NotificationService {
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
         this.chatRoomRepository = chatRoomRepository;
+        this.notificationRepository = notificationRepository;
 
         this.boardTypeRepositories = Map.of(
                 "댕냥메이트", mateRepository,
@@ -152,15 +155,86 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    public static void sendNotification(Long userId, String eventName, String eventData) {
+    public void sendNotification(Long userId, String eventName, String eventData) {
+        if (!userNotifications.containsKey(userId)) {
+            userNotifications.put(userId, new ArrayList<>());
+        }
+
+        List<Notification> notifications = userNotifications.get(userId);
+        notifications.add(buildNotification(eventName, eventData));
+
         if (sseEmitters.containsKey(userId)) {
             SseEmitter sseEmitter = sseEmitters.get(userId);
             try {
                 sseEmitter.send(SseEmitter.event().name(eventName).data(eventData));
             } catch (Exception e) {
                 sseEmitters.remove(userId);
+                throw new RuntimeException("SseEmitter.send failed", e);
             }
         }
+        saveNotificationsToDatabase(userId, notifications);
+    }
+
+    private void markNotificationsAsRead(List<Notification> notifications) {
+        for (Notification notification : notifications) {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        }
+        deleteNotificationsFromDatabase(notifications);
+    }
+
+    public List<NotificationDTO> getUnreadNotificationsDTO(String token) {
+        User user = getUserFromToken(token);
+
+        if (user != null) {
+            List<Notification> unreadNotifications = getUnreadNotifications(user.getUserId());
+            markNotificationsAsRead(unreadNotifications);
+
+            List<NotificationDTO> unreadNotificationsDTO = unreadNotifications.stream()
+                    .map(NotificationDTO::fromEntity)
+                    .collect(Collectors.toList());
+
+            return unreadNotificationsDTO;
+        }
+
+        return Collections.emptyList();
+    }
+
+    public User getUserFromToken(String token) {
+        String userEmail = tokenProvider.getEmailBytoken(token);
+        return userRepository.findByEmail(userEmail).orElse(null);
+    }
+
+    private List<Notification> getUnreadNotifications(Long userId) {
+        return notificationRepository.findByUserUserIdAndTimestampBeforeOrderByTimestampDesc(userId, LocalDateTime.now());
+    }
+
+
+
+    private void saveNotificationsToDatabase(Long userId, List<Notification> notifications) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user != null) {
+            for (Notification notification : notifications) {
+                notification.setUser(user);
+                notificationRepository.save(notification);
+            }
+        }
+    }
+
+    private void deleteNotificationsFromDatabase(List<Notification> notifications) {
+        for (Notification notification : notifications) {
+            notificationRepository.delete(notification);
+        }
+    }
+
+    private static Notification buildNotification(String eventName, String eventData) {
+        return Notification.builder()
+                .eventName(eventName)
+                .eventData(eventData)
+                .timestamp(LocalDateTime.now())
+                .isRead(false)
+                .build();
     }
 
     public SseEmitter createSseEmitter(String providedToken) {
@@ -168,6 +242,10 @@ public class NotificationService {
             User currentUser = getUserByToken(providedToken);
             if (currentUser != null) {
                 Long userId = currentUser.getUserId();
+
+                if (sseEmitters.containsKey(userId)) {
+                    return sseEmitters.get(userId);
+                }
 
                 SseEmitter emitter = new SseEmitter(60 * 60 * 1000L); // 1시간
                 sseEmitters.put(userId, emitter);
