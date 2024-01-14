@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.notify.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.lost.board.entity.Lost;
 import com.git.backend.daeng_nyang_connect.mate.board.entity.Mate;
@@ -19,6 +20,8 @@ import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -29,8 +32,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
-    private static Map<Long, List<Notification>> userNotifications = new ConcurrentHashMap<>();
-    public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
+    private final Map<Long, List<Notification>> userNotifications = new ConcurrentHashMap<>();
+    public static Map<Long, SseEmitter> sseEmitters = new HashMap<>();
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
@@ -155,6 +158,26 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+
+    public void saveNotificationsToDatabase(Long userId, List<Notification> notifications) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user != null) {
+            for (Notification notification : notifications) {
+                notification.setUser(user);
+                notificationRepository.save(notification);
+            }
+        }
+    }
+    private static Notification buildNotification(String eventName, String eventData) {
+        LocalDateTime currentTimestamp = LocalDateTime.now();
+        return Notification.builder()
+                .eventName(eventName)
+                .eventData(eventData)
+                .readTimestamp(currentTimestamp)
+                .isRead(false)
+                .build();
+    }
     public void sendNotification(Long userId, String eventName, String eventData) {
         if (!userNotifications.containsKey(userId)) {
             userNotifications.put(userId, new ArrayList<>());
@@ -175,66 +198,82 @@ public class NotificationService {
         saveNotificationsToDatabase(userId, notifications);
     }
 
-    private void markNotificationsAsRead(List<Notification> notifications) {
-        for (Notification notification : notifications) {
-            notification.setRead(true);
-            notificationRepository.save(notification);
-        }
-        deleteNotificationsFromDatabase(notifications);
-    }
-
     public List<NotificationDTO> getUnreadNotificationsDTO(String token) {
         User user = getUserFromToken(token);
 
         if (user != null) {
             List<Notification> unreadNotifications = getUnreadNotifications(user.getUserId());
-            markNotificationsAsRead(unreadNotifications);
 
-            List<NotificationDTO> unreadNotificationsDTO = unreadNotifications.stream()
+            return unreadNotifications.stream()
                     .map(NotificationDTO::fromEntity)
                     .collect(Collectors.toList());
-
-            return unreadNotificationsDTO;
         }
-
         return Collections.emptyList();
     }
 
-    public User getUserFromToken(String token) {
-        String userEmail = tokenProvider.getEmailBytoken(token);
-        return userRepository.findByEmail(userEmail).orElse(null);
-    }
-
     private List<Notification> getUnreadNotifications(Long userId) {
-        return notificationRepository.findByUserUserIdAndTimestampBeforeOrderByTimestampDesc(userId, LocalDateTime.now());
+        return notificationRepository.findByUserUserIdAndIsReadFalseOrderByReadTimestampDesc(userId);
     }
 
-
-
-    private void saveNotificationsToDatabase(Long userId, List<Notification> notifications) {
-        User user = userRepository.findById(userId).orElse(null);
-
+    public List<NotificationDTO> getReadNotificationsDTO(String token) {
+        User user = getUserFromToken(token);
         if (user != null) {
-            for (Notification notification : notifications) {
-                notification.setUser(user);
-                notificationRepository.save(notification);
-            }
+            List<Notification> readNotifications = getReadNotifications(user.getUserId());
+            markNotificationsAsRead(readNotifications);
+            return readNotifications.stream()
+                    .map(NotificationDTO::fromEntity)
+                    .collect(Collectors.toList());
         }
+        return Collections.emptyList();
     }
 
-    private void deleteNotificationsFromDatabase(List<Notification> notifications) {
+    public List<Notification> getReadNotifications(Long userId) {
+        return notificationRepository.findByUserUserIdAndIsReadTrueOrderByReadTimestampDesc(userId);
+    }
+
+    public void markNotificationsAsRead(List<Notification> notifications) {
         for (Notification notification : notifications) {
-            notificationRepository.delete(notification);
+            notification.setRead(true);
+            notificationRepository.save(notification);
         }
     }
 
-    private static Notification buildNotification(String eventName, String eventData) {
-        return Notification.builder()
-                .eventName(eventName)
-                .eventData(eventData)
-                .timestamp(LocalDateTime.now())
-                .isRead(false)
-                .build();
+    public void handleNotificationConfirmation(Long userId, Long notificationId) {
+        Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
+
+        if (optionalNotification.isPresent()) {
+            Notification notification = optionalNotification.get();
+
+            if (notification.getUser().getUserId().equals(userId)) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+            } else {
+                throw new AccessDeniedException("사용자의 알림이 아닙니다.");
+            }
+        } else {
+            throw new NotFoundException("알림을 찾을 수 없습니다.");
+        }
+    }
+
+    public void deleteNotification(Long userId, Long notificationId) {
+        Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
+        if (optionalNotification.isPresent()) {
+            Notification notification = optionalNotification.get();
+
+            if (notification.getUser().getUserId().equals(userId)) {
+                notificationRepository.delete(notification);
+            } else {
+                throw new AccessDeniedException("사용자의 알림이 아닙니다.");
+            }
+        } else {
+            throw new NotFoundException("알림을 찾을 수 없습니다.");
+        }
+    }
+
+    @Scheduled(cron = "0 0 1 * * ?") // 매일 새벽 1시에 실행
+    public void deleteOldNotifications() {
+        LocalDateTime cutoffTime = LocalDateTime.now().minusDays(10); // 10일 전 알림 삭제
+        notificationRepository.deleteByIsReadTrueAndReadTimestampBefore(cutoffTime);
     }
 
     public SseEmitter createSseEmitter(String providedToken) {
@@ -264,6 +303,11 @@ public class NotificationService {
                 sseEmitters.remove(userId);
             }
         }
+    }
+
+    public User getUserFromToken(String token) {
+        String userEmail = tokenProvider.getEmailBytoken(token);
+        return userRepository.findByEmail(userEmail).orElse(null);
     }
 
     private User getUserByToken(String token) {

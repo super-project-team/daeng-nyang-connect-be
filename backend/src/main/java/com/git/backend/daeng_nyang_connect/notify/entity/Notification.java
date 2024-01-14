@@ -26,8 +26,8 @@ public class Notification {
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @Column(name = "timestamp", columnDefinition = "TIMESTAMP")
-    private LocalDateTime timestamp;
+    @Column(name = "read_timestamp", columnDefinition = "TIMESTAMP")
+    private LocalDateTime readTimestamp;
 
     private boolean isRead;
 }
