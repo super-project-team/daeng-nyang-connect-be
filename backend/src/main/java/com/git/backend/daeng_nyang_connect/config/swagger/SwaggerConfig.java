@@ -34,6 +34,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi uploadApi() {
+        return GroupedOpenApi.builder()
+                .group("post")
+                .pathsToMatch("/api/**/post")
+                .build();
+    }
+
+    @Bean
     public GroupedOpenApi getMyPageApi() {
         return createGroupedOpenApi("myPage_마이페이지", "/api/myPage/**");
     }

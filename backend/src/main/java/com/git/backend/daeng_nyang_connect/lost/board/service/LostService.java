@@ -12,6 +12,7 @@ import com.git.backend.daeng_nyang_connect.lost.comments.dto.LostCommentsDTO;
 import com.git.backend.daeng_nyang_connect.lost.comments.entity.LostComments;
 import com.git.backend.daeng_nyang_connect.lost.comments.repository.LostCommentsRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
+import com.git.backend.daeng_nyang_connect.user.role.Role;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class LostService {
     private final LostImgUpload lostImgUpload;
     private final LostImgRepository lostImgRepository;
     private final LostCommentsRepository lostCommentsRepository;
+    private final
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     //Lost 글 등록
@@ -75,6 +77,12 @@ public class LostService {
         User user = userService.checkUserByToken(token);
         Lost board = lostRepository.findById(lostboardId)
                 .orElseThrow(()->new NotFoundException("없는 게시물입니다"));
+
+        //관리자인 경우 모든 게시물에 접근 가능
+        if (user.getRole() == Role.ADMIN) {
+            return board;
+        }
+
         List<Lost> byUser = lostRepository.findByUser(user);
 
         if (byUser.contains(board)){
@@ -87,6 +95,13 @@ public class LostService {
     //lost 삭제
     public Map<String, String> deleteLost(String token, Long lostBoardId) {
         Lost lost = checkMyBoard(lostBoardId, token);
+
+        if (lost == null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("msg", "게시물을 찾을 수 없거나 권한이 없습니다");
+            response.put("http_status", HttpStatus.FORBIDDEN.toString());
+            return response;
+        }
 
         lostRepository.delete(lost);
         Map<String,String> response = new HashMap<>();
