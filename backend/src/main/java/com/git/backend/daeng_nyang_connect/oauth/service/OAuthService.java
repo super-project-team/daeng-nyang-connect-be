@@ -122,12 +122,14 @@ public class OAuthService {
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
                 userService.socialLogin(naverUser,request,response);
-                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
+                response.sendRedirect("https://daeng-nyang-fe-qyu5xzcspa-du.a.run.app/oauthAddInfo");
+                userService.socialLogin(naverUser,request,response);
                 return ResponseEntity.ok(response);
             } else {
                 User user = byEmail.get();
                 userService.socialLogin(user,request,response);
-                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
+                response.sendRedirect("https://daeng-nyang-fe-qyu5xzcspa-du.a.run.app/socialLogin");
+                userService.socialLogin(user,request,response);
                 return ResponseEntity.ok(response);
             }
         }catch (RestClientException ex) {
@@ -212,13 +214,13 @@ public class OAuthService {
                 myPage.setImg(profileImg);
                 myPageRepository.save(myPage);
                 userService.socialLogin(kakao,request,response);
-                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
+                response.sendRedirect("https://daeng-nyang-fe-qyu5xzcspa-du.a.run.app/oauthAddInfo");
                 userService.socialLogin(kakao,request,response);
                 return ResponseEntity.ok(response);
 
             }else{
                 userService.socialLogin(isUser,request ,response);
-                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
+                response.sendRedirect("https://daeng-nyang-fe-qyu5xzcspa-du.a.run.app/socialLogin");
                 userService.socialLogin(isUser,request,response);
                 return ResponseEntity.ok(response);
             }

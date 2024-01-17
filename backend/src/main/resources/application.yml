@@ -14,9 +14,6 @@ spring:
       max-file-size: 300MB
       max-request-size: 300MB
 
-  redis:
-    port: 1072
-
   jpa:
     show-sql: false
     properties:
