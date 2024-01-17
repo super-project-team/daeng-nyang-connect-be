@@ -213,11 +213,13 @@ public class OAuthService {
                 myPageRepository.save(myPage);
                 userService.socialLogin(kakao,request,response);
                 response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
+                userService.socialLogin(kakao,request,response);
                 return ResponseEntity.ok(response);
 
             }else{
                 userService.socialLogin(isUser,request ,response);
                 response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
+                userService.socialLogin(isUser,request,response);
                 return ResponseEntity.ok(response);
             }
             }catch (IOException e) {
