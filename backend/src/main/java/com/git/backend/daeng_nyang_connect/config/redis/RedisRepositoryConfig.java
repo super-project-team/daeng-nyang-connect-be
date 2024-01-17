@@ -20,7 +20,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RedisHash
 public class RedisRepositoryConfig {
 
-    private final RedisProperties redisProperties;
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
