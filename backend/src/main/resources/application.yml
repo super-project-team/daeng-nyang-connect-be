@@ -24,8 +24,9 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
   data:
     redis:
-      host: 3.38.198.85
-      port: 6379
+      host: ${redisHost}
+      port: ${redisPort}
+      password: ${redisPwd}
 
 springdoc:
   packages-to-scan: com.git.backend.daeng_nyang_connect
