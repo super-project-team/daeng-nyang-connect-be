@@ -78,10 +78,10 @@ public class ChatService {
         ChatRoom chatRoom = chatRoomRepository.findById(message.getRoomId()).orElseThrow(
                 () -> new NoSuchElementException("없는 채팅방입니다")
         );
-
-        if (!chatRoom.getUserList().contains(chatRoomUserRepository.findByUser(sender))) {
-            throw new NoSuchElementException("해당 채팅방에 당신은 없습니다");
-        }
+//
+//        if (!chatRoom.getUserList().contains(chatRoomUserRepository.findByUser(sender))) {
+//            throw new NoSuchElementException("해당 채팅방에 당신은 없습니다");
+//        }
         notificationService.notifyNewChatMessage(message.getRoomId(), sender.getNickname());
 
         return message;
