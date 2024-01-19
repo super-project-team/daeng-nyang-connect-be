@@ -71,7 +71,7 @@ public class SecurityConfig {
 
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001","http://localhost:8080", "http://52.79.108.20:8080","https://daeng-nyang-connect-fe.vercel.app/",
-                "https://daeng-nyang-be-qyu5xzcspa-du.a.run.app/"));
+               "https://daeng-nyang-fe-qyu5xzcspa-du.a.run.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
