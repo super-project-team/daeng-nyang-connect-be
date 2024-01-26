@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -25,6 +22,8 @@ public class ChatController {
     private final UserRepository userRepository;
     private final ChatService chatService;
     private final ChatRoomRepository chatRoomRepository;
+    private final MessageRepository messageRepository;
+
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
     public Set<ChatRoomResponseDTO> myRoom(@RequestHeader("access_token") String token) {
@@ -34,8 +33,10 @@ public class ChatController {
         User user = userRepository.findByEmail(email).orElseThrow();
         List<ChatRoom> myRoomList= chatRoomUserRepository.findMyChatRoom(user.getUserId());
         Set<ChatRoomResponseDTO> chatRoomSet = new HashSet<>();
+
         for(ChatRoom chatRoom:myRoomList){
-            ChatRoomResponseDTO chatRoomInfo = new ChatRoomResponseDTO(chatRoom);
+            Message latestMessage = messageRepository.findLatestMessage(chatRoom);
+            ChatRoomResponseDTO chatRoomInfo = new ChatRoomResponseDTO(chatRoom, latestMessage);
             chatRoomSet.add(chatRoomInfo);
         }
         return chatRoomSet;
@@ -51,8 +52,8 @@ public class ChatController {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
                 ()->new NoSuchElementException("없는 채팅방")
         );
-        ChatRoomInfo chatRoomInfo = new ChatRoomInfo(chatRoom);
-        return chatRoomInfo;
+
+        return new ChatRoomInfo(chatRoom, messageRepository.findByChatRoom(chatRoom));
     }
 
     @PostMapping("/add")

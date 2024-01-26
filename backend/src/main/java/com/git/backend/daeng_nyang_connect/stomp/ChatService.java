@@ -10,6 +10,10 @@ import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.NoSuchElementException;
 
 @Service
@@ -82,6 +86,7 @@ public class ChatService {
 //        if (!chatRoom.getUserList().contains(chatRoomUserRepository.findByUser(sender))) {
 //            throw new NoSuchElementException("해당 채팅방에 당신은 없습니다");
 //        }
+        message.setCreatedAt(TimestampToFormattedString(nowDate()));
         notificationService.notifyNewChatMessage(message.getRoomId(), sender.getNickname());
 
         return message;
@@ -98,10 +103,21 @@ public class ChatService {
                 .sender(sender)
                 .content(message.getContent())
                 .chatRoom(chatRoom)
+                .createdAt(nowDate())
                 .build();
 
         messageRepository.save(newMessage);
         messageRepository.flush(); // 이 부분을 추가해보세요
+    }
+
+    public Timestamp nowDate(){
+        LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        return Timestamp.valueOf(currentDateTime);
+    }
+
+    public String TimestampToFormattedString(Timestamp time) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분 ss초");
+        return dateFormat.format(time);
     }
 
 

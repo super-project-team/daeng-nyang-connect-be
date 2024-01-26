@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.stomp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
@@ -30,6 +31,11 @@ public class ChatRoom {
 //    @JsonManagedReference
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatRoomUser> userList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Message> messageList;
+
 
 
     // Getter, Setter, 생성자 등 필요한 메서드 구현
