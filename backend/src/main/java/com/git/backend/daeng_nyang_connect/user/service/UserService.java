@@ -295,7 +295,9 @@ public class UserService {
 
             Cookie accessCookie = new Cookie("access_token", accessToken);
             Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-            
+
+            accessCookie.setPath("/oauth/login");
+
             httpServletResponse.addCookie(accessCookie);
             httpServletResponse.addCookie(refreshCookie);
 
