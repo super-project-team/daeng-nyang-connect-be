@@ -123,13 +123,11 @@ public class OAuthService {
                 myPageRepository.save(myPage);
                 userService.socialLogin(naverUser,request,response);
                 response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
-                userService.socialLogin(naverUser,request,response);
                 return ResponseEntity.ok(response);
             } else {
                 User user = byEmail.get();
                 userService.socialLogin(user,request,response);
                 response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
-                userService.socialLogin(user,request,response);
                 return ResponseEntity.ok(response);
             }
         }catch (RestClientException ex) {
@@ -215,13 +213,11 @@ public class OAuthService {
                 myPageRepository.save(myPage);
                 userService.socialLogin(kakao,request,response);
                 response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
-                userService.socialLogin(kakao,request,response);
                 return ResponseEntity.ok(response);
 
             }else{
                 userService.socialLogin(isUser,request ,response);
                 response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
-                userService.socialLogin(isUser,request,response);
                 return ResponseEntity.ok(response);
             }
             }catch (IOException e) {
