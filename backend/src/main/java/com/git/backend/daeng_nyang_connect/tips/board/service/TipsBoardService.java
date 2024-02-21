@@ -91,8 +91,6 @@ public class TipsBoardService {
         }
     }
 
-
-
     //자기가 쓴 게시물인지 확인
     public Tips checkMyBoard(Long tipsId, String token){
 

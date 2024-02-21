@@ -298,6 +298,7 @@ public class UserService {
 
             accessCookie.setPath("/oauth/login");
 
+
             httpServletResponse.addCookie(accessCookie);
             httpServletResponse.addCookie(refreshCookie);
 
