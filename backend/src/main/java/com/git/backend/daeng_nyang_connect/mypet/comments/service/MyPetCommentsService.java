@@ -8,6 +8,7 @@ import com.git.backend.daeng_nyang_connect.mypet.comments.entity.MyPetComments;
 import com.git.backend.daeng_nyang_connect.mypet.comments.entity.MyPetCommentsLike;
 import com.git.backend.daeng_nyang_connect.mypet.comments.repository.MyPetCommentsLikeRepository;
 import com.git.backend.daeng_nyang_connect.mypet.comments.repository.MyPetCommentsRepository;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
@@ -32,6 +33,7 @@ public class MyPetCommentsService {
     private final MyPetCommentsRepository myPetCommentsRepository;
     private final MyPetCommentsLikeRepository myPetCommentsLikeRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
     private static final String MSG_COMMENT_NOT_FOUND = "댓글을 찾을 수 없습니다.";
@@ -55,6 +57,7 @@ public class MyPetCommentsService {
                     .build();
 
             myPetCommentsRepository.save(myPetComments);
+            notificationService.notifyComment(myPet, "나의 댕냥이");
 
             return createSuccessResponse("댓글이 등록되었습니다.", HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
@@ -116,6 +119,7 @@ public class MyPetCommentsService {
                 myPetComments.getMyPetCommentsLikes().add(myPetCommentsLike);
                 myPetComments.setMyPetCommentsLike(myPetComments.getMyPetCommentsLike() + 1);
                 myPetCommentsRepository.save(myPetComments);
+                notifyCommentLike(myPetComments);
             }
         } else {
             // 좋아요 취소
@@ -155,6 +159,10 @@ public class MyPetCommentsService {
             setHeart(myPetComments, user, false);
             return createSuccessResponse(myPetCommentsId + "번 댓글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
+    }
+
+    private void notifyCommentLike(MyPetComments myPetComments) {
+        notificationService.notifyCommentLike(myPetComments.getMyPetCommentsId(), "나의 댕냥이");
     }
 
     private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {

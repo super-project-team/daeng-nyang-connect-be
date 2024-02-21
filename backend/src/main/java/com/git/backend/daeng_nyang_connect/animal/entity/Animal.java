@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import jakarta.persistence.*;

@@ -44,6 +44,9 @@ public interface ReviewService {
     // Builder : 총 좋아요 수 반환
     void updateLike(Review review, Integer like);
 
+    // 입양 후기 좋아요 알림
+    void notifyPostLike(Review review);
+
     // Builder : 이미지 업로드
     void uploadImage(Review review, List<MultipartFile> multipartFileList);
 

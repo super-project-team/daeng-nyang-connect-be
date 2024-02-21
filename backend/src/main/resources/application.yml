@@ -13,16 +13,17 @@ spring:
       enabled: true
       max-file-size: 300MB
       max-request-size: 300MB
-  data:
-    redis:
-      host: localhost
-      port: 6379
 
   jpa:
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: ${redisHost}
+      port: ${redisPort}
+      password: ${redisPwd}
 
 springdoc:
   packages-to-scan: com.git.backend.daeng_nyang_connect

@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.oauth.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.config.security.SecurityConfig;
 import com.git.backend.daeng_nyang_connect.user.dto.AddExtraInfoDto;
 import com.git.backend.daeng_nyang_connect.user.entity.MyPage;
@@ -17,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -37,6 +42,8 @@ public class OAuthService {
     private final UserService userService;
     private final MyPageRepository myPageRepository;
     private final SecurityConfig securityConfig;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     @Value("${naverIdEc2}")
     private String naver_client_id;
@@ -109,18 +116,18 @@ public class OAuthService {
                 naverUser.setName(name);
                 naverUser.setNickname(nickname);
                 naverUser.setMobile(mobile);
-                naverUser.setRawPassword("naver");
-                naverUser.setPassword(securityConfig.passwordEncoder().encode("naver"));
+                naverUser.setRawPassword("naver123!");
+                naverUser.setPassword(securityConfig.passwordEncoder().encode("naver123!"));
                 userRepository.save(naverUser);
                 MyPage myPage = userService.myPageEntity(naverUser);
                 myPageRepository.save(myPage);
                 userService.socialLogin(naverUser,request,response);
-                response.sendRedirect("http://localhost:3000/NaverRegister");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
                 return ResponseEntity.ok(response);
             } else {
                 User user = byEmail.get();
                 userService.socialLogin(user,request,response);
-                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
                 return ResponseEntity.ok(response);
             }
         }catch (RestClientException ex) {
@@ -140,7 +147,7 @@ public class OAuthService {
         String code = request.getParameter("code");
 
         String tokenURL = "https://kauth.kakao.com/oauth/token";
-        String redirect_uri = "http://localhost:8080/kakao_redirect";
+        String redirect_uri = "https://daeng-nyang-be-qyu5xzcspa-du.a.run.app/oauth/kakao";
 
 
         // body data 생성
@@ -186,12 +193,11 @@ public class OAuthService {
             HashMap<String, Object> rs = (HashMap<String, Object>) responseMap.get("profile");
             log.info("response map : " + rs.toString());
             String name = (String) rs.get("nickname");
-            String mobile = (String) rs.get("mobile");
             String nickName = (String) rs.get("nickname");
             String profileImg = (String) rs.get("thumbnail_image_url");
             log.info("name" + nickName);
 
-            User isUser = userRepository.findByNameAndMobile(name,mobile);
+            User isUser = userRepository.findByName(name);
 
             if(isUser==null){
                 User kakao = new User();
@@ -199,19 +205,19 @@ public class OAuthService {
                 kakao.setName(name);
                 kakao.setNickname("kakao :" +nickName);
                 kakao.setRole(Role.USER);
-                kakao.setRawPassword("kakao");
-                kakao.setPassword(securityConfig.passwordEncoder().encode("kakao"));
+                kakao.setRawPassword("kakao123!");
+                kakao.setPassword(securityConfig.passwordEncoder().encode("kakao123!"));
                 userRepository.save(kakao);
                 MyPage myPage = userService.myPageEntity(kakao);
                 myPage.setImg(profileImg);
                 myPageRepository.save(myPage);
                 userService.socialLogin(kakao,request,response);
-                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/oauthAddInfo");
                 return ResponseEntity.ok(response);
 
             }else{
                 userService.socialLogin(isUser,request ,response);
-                response.sendRedirect("http://localhost:3000/");
+                response.sendRedirect("https://daeng-nyang-connect-fe.vercel.app/socialLogin");
                 return ResponseEntity.ok(response);
             }
             }catch (IOException e) {
@@ -234,6 +240,7 @@ public class OAuthService {
             user.setTown(addExtraInfoDto.getTown());
             user.setExperience(addExtraInfoDto.getExperience());
             user.setGender(addExtraInfoDto.getGender());
+            user.setNickname(addExtraInfoDto.getNickname());
             userRepository.save(user);
         }catch (NotFoundException e){
             e.printStackTrace();
@@ -266,6 +273,13 @@ public class OAuthService {
         response.put("msg", "개인정보 추가가 성공적으로 되었습니다");
         response.put("http_status", HttpStatus.CREATED.toString());
         return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<?> oauthLogin(String token, HttpServletRequest request,HttpServletResponse response){
+        String email = tokenProvider.getEmailBytoken(token);
+        User user = userRepository.findByEmail(email).orElseThrow();
+
+        return userService.socialLogin(user, request, response);
     }
 
 

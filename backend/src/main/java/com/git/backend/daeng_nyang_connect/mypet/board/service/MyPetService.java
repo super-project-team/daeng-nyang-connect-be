@@ -13,6 +13,7 @@ import com.git.backend.daeng_nyang_connect.mypet.comments.dto.MyPetCommentsLikeD
 import com.git.backend.daeng_nyang_connect.mypet.comments.dto.MyPetCommentsResponseDTO;
 import com.git.backend.daeng_nyang_connect.mypet.comments.entity.MyPetComments;
 import com.git.backend.daeng_nyang_connect.mypet.comments.entity.MyPetCommentsLike;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.persistence.Cacheable;
@@ -36,6 +37,7 @@ public class MyPetService {
     private final MyPetRepository myPetRepository;
     private final MyPetImgUpload myPetImgUpload;
     private final MyPetBoardLikeRepository myPetBoardLikeRepository;
+    private final NotificationService notificationService;
 
     private static final String MSG_USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
     private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
@@ -204,6 +206,7 @@ public class MyPetService {
                 myPet.getMyPetLikes().add(myPetBoardLike);
                 myPet.setMyPetLike(myPet.getMyPetLike() + 1);
                 myPetRepository.save(myPet);
+                notifyPostLike(myPet);
             }
         } else {
             // 좋아요 취소
@@ -238,6 +241,10 @@ public class MyPetService {
             setHeart(myPet, user, false);
             return createSuccessResponse(myPetId + "번 게시글에 좋아요가 취소되었습니다.", HttpStatus.OK);
         }
+    }
+
+    private void notifyPostLike(MyPet myPet) {
+        notificationService.notifyPostLike(myPet.getMyPetBoardId(), "나의 댕냥이");
     }
 
     private Map<String, String> createSuccessResponse(String message, HttpStatus httpStatus) {

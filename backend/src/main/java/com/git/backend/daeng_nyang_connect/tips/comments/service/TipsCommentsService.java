@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.tips.comments.service;
 
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.service.TipsBoardService;
@@ -32,6 +33,7 @@ public class TipsCommentsService {
     private final TipsCommentsLikeRepository tipsCommentsLikeRepository;
     private final TipsCommentsRepository tipsCommentsRepository;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -50,6 +52,7 @@ public class TipsCommentsService {
                .build();
 
        tipsCommentsRepository.save(tipsComments);
+        notificationService.notifyComment(tipsId,  "댕냥꿀팁");
 
         Map<String, String> response = new HashMap<>();
         response.put("msg", "댓글이 등록 되었습니다");
@@ -107,6 +110,7 @@ public class TipsCommentsService {
             tipsComments.setTipsCommentsLike(likeCount);
             tipsCommentsLikeRepository.save(tipsCommentsLike);
             tipsCommentsRepository.save(tipsComments);
+            notifyCommentLike(tipsComments);
         }else{
             tipsCommentsLikeRepository.deleteByUserAndTipsComments(user, tipsComments);
             likeCount--;
@@ -138,6 +142,8 @@ public class TipsCommentsService {
             return response;
         }
     }
-
-
+    // 댓글 좋아요 알림
+    private void notifyCommentLike(TipsComments tipsComments) {
+        notificationService.notifyCommentLike(tipsComments.getTipsCommentsId(), "댕냥꿀팁");
+    }
 }

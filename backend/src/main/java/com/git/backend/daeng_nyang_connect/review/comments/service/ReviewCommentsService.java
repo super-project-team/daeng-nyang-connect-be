@@ -35,6 +35,9 @@ public interface ReviewCommentsService {
     // Builder : 총 좋아요 수 반환
     void updateLike(ReviewComments reviewComments, Integer like);
 
+    // 댓글 좋아요 알림
+    void notifyCommentLike(ReviewComments reviewComments);
+
     // 토큰으로 user 체크 후 user 반환
     User checkUserByToken(String token);
 

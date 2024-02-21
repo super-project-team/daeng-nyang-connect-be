@@ -5,6 +5,7 @@ import com.git.backend.daeng_nyang_connect.lost.board.repository.LostRepository;
 import com.git.backend.daeng_nyang_connect.lost.comments.dto.LostCommentsDTO;
 import com.git.backend.daeng_nyang_connect.lost.comments.entity.LostComments;
 import com.git.backend.daeng_nyang_connect.lost.comments.repository.LostCommentsRepository;
+import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
 import jakarta.persistence.Cacheable;
@@ -24,6 +25,7 @@ public class LostCommentsService {
     private final UserService userService;
     private final LostRepository lostRepository;
     private final LostCommentsRepository lostCommentsRepository;
+    private final NotificationService notificationService;
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     //댓글 작성
@@ -40,6 +42,7 @@ public class LostCommentsService {
                 .build();
 
         lostCommentsRepository.save(lostComments);
+        notificationService.notifyComment(lostBoardId,  "댕냥 미아센터");
 
         Map<String, String> response = new HashMap<>();
         response.put("msg", "댓글이 등록되었습니다.");

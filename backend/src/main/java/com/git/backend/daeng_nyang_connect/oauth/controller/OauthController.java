@@ -17,19 +17,26 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "OAuth API")
+@RequestMapping("/oauth")
 public class OauthController {
 
     private final OAuthService oAuthService;
 
-    @RequestMapping("/naver_redirect")
+    @GetMapping("/naver")
     public ResponseEntity<?> naverLogin(HttpServletRequest request, HttpServletResponse response) {
-
         return oAuthService.naverLogin(request, response);
     }
 
-    @RequestMapping("/kakao_redirect")
+    @GetMapping ("/kakao")
     public ResponseEntity<?> kakaoLogin(HttpServletRequest request, HttpServletResponse response) {
         return oAuthService.kakaoLogin(request, response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> oauthLogin(@RequestHeader("access_token")String token,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response){
+        return oAuthService.oauthLogin(token, request, response);
     }
 
 }

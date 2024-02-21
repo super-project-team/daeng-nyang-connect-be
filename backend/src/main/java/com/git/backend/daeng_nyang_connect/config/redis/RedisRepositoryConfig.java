@@ -1,12 +1,15 @@
 package com.git.backend.daeng_nyang_connect.config.redis;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -14,13 +17,24 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 @EnableRedisRepositories
+@RedisHash
 public class RedisRepositoryConfig {
 
-    private final RedisProperties redisProperties;
+    @Value("${spring.data.redis.host}")
+    private String host;
+    @Value("${spring.data.redis.port}")
+    private int port;
+    @Value("${spring.data.redis.password}")
+    private String password;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory(){
-        return new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
+        RedisStandaloneConfiguration redisconfig = new RedisStandaloneConfiguration();
+
+        redisconfig.setPort(port);
+        redisconfig.setHostName(host);
+        redisconfig.setPassword(password);
+        return new LettuceConnectionFactory(redisconfig);
     }
 
     @Bean
