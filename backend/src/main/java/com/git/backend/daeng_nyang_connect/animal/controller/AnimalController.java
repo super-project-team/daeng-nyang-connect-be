@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class AnimalController {
     private final AnimalService animalService;
 
     @Operation(summary = "게시물 작성")
-    @PostMapping("/post")
+    @PostMapping(value = "/post",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addAnimal(AnimalRequestDTO animalRequestDTO,
                                        List<MultipartFile> files,
                                        @RequestHeader("access_token") String token){
