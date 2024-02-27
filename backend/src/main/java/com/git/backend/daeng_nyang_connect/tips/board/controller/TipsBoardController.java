@@ -1,11 +1,11 @@
 package com.git.backend.daeng_nyang_connect.tips.board.controller;
 
 
-import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
+
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDto;
 
-import com.git.backend.daeng_nyang_connect.tips.board.entity.Tips;
+
 import com.git.backend.daeng_nyang_connect.tips.board.service.TipsBoardService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,8 +14,10 @@ import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,10 +35,10 @@ public class TipsBoardController {
     private final TipsBoardService tipsBoardService;
 
     @Operation(summary = "게시물 작성")
-    @PostMapping("/post")
+    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<?,?> upload(@RequestHeader("access_token")String token,
-                            TipsBoardDto tipsBoardDto,
-                            List<MultipartFile> files){
+                           @ModelAttribute TipsBoardDto tipsBoardDto,
+                           List<MultipartFile> files){
        return tipsBoardService.postBoard(tipsBoardDto, token, files);
 
     }

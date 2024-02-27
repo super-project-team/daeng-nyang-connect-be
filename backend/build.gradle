@@ -11,6 +11,10 @@ java {
 	sourceCompatibility = '17'
 }
 
+compileJava {
+	options.compilerArgs << '-parameters'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -47,7 +51,12 @@ dependencies {
 
 	//aws
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
+
+	//cache
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation group: 'org.ehcache', name: 'ehcache', version: '3.1.0'
+	implementation 'javax.cache:cache-api:1.0.0'
+
 
 	//파일 이름 유틸
 	implementation 'commons-io:commons-io:2.11.0'
@@ -55,6 +64,8 @@ dependencies {
 	//swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
+	//javaXb
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 }
 

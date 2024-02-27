@@ -2,7 +2,6 @@ package com.git.backend.daeng_nyang_connect.tips.board.service;
 
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
@@ -15,18 +14,15 @@ import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardLikeRe
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsBoardRepository;
 import com.git.backend.daeng_nyang_connect.tips.board.repository.TipsImageRepository;
 import com.git.backend.daeng_nyang_connect.tips.comments.dto.TipsCommentsDto;
-import com.git.backend.daeng_nyang_connect.tips.comments.dto.TipsCommentsLikeDto;
 import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsComments;
-import com.git.backend.daeng_nyang_connect.tips.comments.entity.TipsCommentsLike;
 import com.git.backend.daeng_nyang_connect.tips.comments.repository.TipsCommentsLikeRepository;
 import com.git.backend.daeng_nyang_connect.tips.comments.repository.TipsCommentsRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
-import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
-import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +32,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -44,7 +39,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Cacheable
 @Slf4j
 public class TipsBoardService {
     private final TipsBoardRepository tipsBoardRepository;
@@ -197,9 +191,9 @@ public class TipsBoardService {
         return response;
     }
     //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
-    @Transactional
+    @Cacheable(cacheNames = "tips_Board_All", key = "#pageable.pageNumber")
     public List<TipsBoardDto> getAll(Pageable pageable){
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 20, pageable.getSort());
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
         Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
         List<Tips> tipsList = tipsPage.getContent();
 
@@ -222,7 +216,7 @@ public class TipsBoardService {
         }).collect(Collectors.toList());
 
     }
-
+    @Cacheable(cacheNames = "tips_Board_Detail", key = "#tipsID")
     public TipsBoardDetailDto getThisBoard(Long tipsID){
 
         Tips thisBoard = tipsBoardRepository.findById(tipsID).orElseThrow();
