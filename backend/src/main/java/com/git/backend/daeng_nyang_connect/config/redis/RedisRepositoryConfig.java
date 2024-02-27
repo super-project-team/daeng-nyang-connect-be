@@ -39,12 +39,12 @@ public class RedisRepositoryConfig implements CachingConfigurer {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
-        RedisStandaloneConfiguration redisconfig = new RedisStandaloneConfiguration();
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
 
-        redisconfig.setPort(port);
-        redisconfig.setHostName(host);
+        redisConfig.setPort(port);
+        redisConfig.setHostName(host);
 //        redisconfig.setPassword(password);
-        return new LettuceConnectionFactory(redisconfig);
+        return new LettuceConnectionFactory(redisConfig);
     }
 
     @Bean
