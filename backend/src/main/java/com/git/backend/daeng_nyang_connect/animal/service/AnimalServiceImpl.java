@@ -12,6 +12,7 @@ import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -154,6 +155,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
 
     @Override
+    @Cacheable(value = "animal_getAll")
     public List<Animal> findAllAnimal() {
         // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환
         return animalRepository.findAll();

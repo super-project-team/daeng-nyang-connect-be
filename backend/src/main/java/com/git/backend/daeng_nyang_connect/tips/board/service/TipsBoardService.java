@@ -102,6 +102,7 @@ public class TipsBoardService {
         }
     }
     //좋아요 로직
+    @Transactional
     public void setHeart(Tips tips, User user, Integer likeCount, Boolean msg){
         if(msg){
             TipsBoardLike tipsBoardLike = new TipsBoardLike(tips, user);
@@ -136,10 +137,13 @@ public class TipsBoardService {
             }
     }
     // 좋아요 알림
-    private void notifyPostLike(Tips tips) {
+    @Transactional
+    public void notifyPostLike(Tips tips) {
         notificationService.notifyPostLike(tips.getTipsBoardId(), "댕냥꿀팁");
     }
+
     //게시물 삭제
+    @Transactional
     public Map<String,String> delete(String token, Long tipsId) {
 
         Tips tips = checkMyBoard(tipsId, token);
@@ -176,6 +180,7 @@ public class TipsBoardService {
         return response;
     }
     //게시글 수정
+    @Transactional
     public Map<String ,String> modifyTipsNoImg(String token, Long tipsId, TipsBoardDto tipsBoardDto) {
 
         Tips tips = checkMyBoard(tipsId, token);
@@ -193,7 +198,7 @@ public class TipsBoardService {
     //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
     @Cacheable(cacheNames = "tips_Board_All", key = "#pageable.pageNumber")
     public List<TipsBoardDto> getAll(Pageable pageable){
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 5, pageable.getSort());
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 20, pageable.getSort());
         Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
         List<Tips> tipsList = tipsPage.getContent();
 

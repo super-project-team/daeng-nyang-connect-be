@@ -64,8 +64,18 @@ public class RedisRepositoryConfig implements CachingConfigurer {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
-        redisCacheConfigurationMap.put("tips_Board_All", redisCacheConfiguration.entryTtl(Duration.ofHours(1)));
-        redisCacheConfigurationMap.put("tips_Board_Detail", redisCacheConfiguration.entryTtl(Duration.ofHours(1)));
+        redisCacheConfigurationMap.put("tips_getAll", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("tips_detail", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("animal_getAll", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("review_getAll", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("myPet_getAll", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("myPet_detail", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("mate_getAll", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("mate_detail", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("lost_getAll", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+        redisCacheConfigurationMap.put("lost_detail", redisCacheConfiguration.entryTtl(Duration.ofMinutes(20)));
+
+
 
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(redisCacheFactory)

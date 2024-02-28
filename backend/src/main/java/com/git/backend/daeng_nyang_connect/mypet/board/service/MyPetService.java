@@ -16,9 +16,9 @@ import com.git.backend.daeng_nyang_connect.mypet.comments.entity.MyPetCommentsLi
 import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
-import jakarta.persistence.Cacheable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Cacheable
 public class MyPetService {
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
@@ -43,13 +42,14 @@ public class MyPetService {
     private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
     private static final String MSG_OWNER_ACCESS_DENIED = "게시물의 소유자가 아닙니다.";
 
+    @Cacheable(value = "myPet_getAll")
     public List<MyPetResponseDTO> findAllMyPet() {
         List<MyPet> myPetList = myPetRepository.findAll();
         return myPetList.stream()
                 .map(this::convertToMyPetResponseDTO)
                 .collect(Collectors.toList());
     }
-
+    @Cacheable(value = "myPet_detail", key = "#myPet")
     public MyPetResponseDTO getThisBoard(Long myPet) {
 
         MyPet thisBoard = myPetRepository.findById(myPet)

@@ -16,9 +16,9 @@ import com.git.backend.daeng_nyang_connect.mate.comments.entity.MateCommentsLike
 import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
-import jakarta.persistence.Cacheable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
-@Cacheable
 public class MateService {
     private final TokenProvider tokenProvider;
     private final MateRepository mateRepository;
@@ -45,6 +44,7 @@ public class MateService {
     private static final String MSG_BOARD_NOT_FOUND = "게시물을 찾을 수 없습니다.";
     private static final String MSG_OWNER_ACCESS_DENIED = "게시물의 소유자가 아닙니다.";
 
+    @Cacheable(value = "mate_getAll", key = "#pageable.pageNumber")
     public List<MateResponseDTO> findAllMates(Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 12, pageable.getSort());
         Page<Mate> matePage = mateRepository.findAll(customPageable);
@@ -52,6 +52,7 @@ public class MateService {
         return content.stream().map(this::convertToMateResponseDTO).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "mate_detail", key = "#mate")
     public MateResponseDTO getThisBoard(Long mate) {
 
         Mate thisBoard = mateRepository.findById(mate)

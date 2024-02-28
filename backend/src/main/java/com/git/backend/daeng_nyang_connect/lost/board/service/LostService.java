@@ -13,11 +13,8 @@ import com.git.backend.daeng_nyang_connect.lost.comments.entity.LostComments;
 import com.git.backend.daeng_nyang_connect.lost.comments.repository.LostCommentsRepository;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.service.UserService;
-import jakarta.persistence.Cacheable;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +28,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Cacheable
 public class LostService {
     private final LostRepository lostRepository;
     private final UserService userService;
@@ -123,6 +119,7 @@ public class LostService {
 
     //모든 lost 가져오기
     @Transactional
+    @Cacheable(value = "lost_getAll")
     public List<LostBoardDTO> getAll(){
         List<Lost> lostList = lostRepository.findAll();
 
@@ -133,6 +130,7 @@ public class LostService {
 
     //하나의 lost 가져오기
     @Transactional
+    @Cacheable(value = "lost_detail", key = "#lostBoardId")
     public LostBoardDetailDTO getThis(Long lostBoardId){
         Lost thisLost = lostRepository.findById(lostBoardId).orElseThrow();
         List<LostImage> thisLostImg = lostImgRepository.findByLost(thisLost).orElseThrow();
