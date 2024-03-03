@@ -30,13 +30,13 @@ public interface AnimalService {
     List<AnimalGetAllDTO> findAllAnimal();
 
     // 댕냥 게시판에 등록된 파양동물을 동물 종류별로 출력
-    List<Animal> findAnimalByKind(Kind kind);
+    List<AnimalGetAllDTO> findAnimalByKind(Kind kind);
 
     // 댕냥 게시판에 등록된 파양동물을 동물 지역별로 출력
-    List<Animal> findAnimalByCity(String city);
+    List<AnimalGetAllDTO> findAnimalByCity(String city);
 
     // 댕냥 게시판에 등록된 파양동물을 동물 입양 상태별로 출력
-    List<Animal> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus);
+    List<AnimalGetAllDTO> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus);
 
     // 댕냥 게시판에 등록된 파양동물 스크랩
     Map<String, String> scrapAnimal(Long animalId, String token);

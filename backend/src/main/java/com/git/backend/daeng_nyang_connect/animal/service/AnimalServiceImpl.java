@@ -36,6 +36,12 @@ public class AnimalServiceImpl  implements AnimalService{
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
 
+    //조회 조건으로 반환된 Animal Entity를 Dto로 반환
+    public List<AnimalGetAllDTO> entityToDto(List<Animal> animal){
+        return animal.stream()
+                .map(AnimalGetAllDTO::fromEntity).collect(Collectors.toList());
+    }
+
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
         // 1. 토큰으로 유저 확인
@@ -161,23 +167,28 @@ public class AnimalServiceImpl  implements AnimalService{
     public List<AnimalGetAllDTO> findAllAnimal() {
         // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환
         List<Animal> all = animalRepository.findAll();
-        return all.stream()
-                .map(AnimalGetAllDTO::fromEntity).collect(Collectors.toList());
+        return entityToDto(all);
+    }
+
+
+
+
+    @Override
+    public List<AnimalGetAllDTO> findAnimalByKind(Kind kind) {
+        List<Animal> animalByKind = animalRepository.findAnimalByKind(kind);
+        return entityToDto(animalByKind);
     }
 
     @Override
-    public List<Animal> findAnimalByKind(Kind kind) {
-        return animalRepository.findAnimalByKind(kind);
+    public List<AnimalGetAllDTO> findAnimalByCity(String city) {
+        List<Animal> animalByCity = animalRepository.findAnimalByCity(city);
+        return entityToDto(animalByCity);
     }
 
     @Override
-    public List<Animal> findAnimalByCity(String city) {
-        return animalRepository.findAnimalByCity(city);
-    }
-
-    @Override
-    public List<Animal> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus) {
-        return animalRepository.findAnimalByAdoptionStatus(adoptionStatus);
+    public List<AnimalGetAllDTO> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus) {
+        List<Animal> animalByAdoptionStatus = animalRepository.findAnimalByAdoptionStatus(adoptionStatus);
+        return entityToDto(animalByAdoptionStatus);
     }
 
     @Override

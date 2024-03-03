@@ -83,25 +83,22 @@ public class AnimalController {
     @Operation(summary = "종류별로 조회")
     @GetMapping("/kind/{kind}")
     public ResponseEntity<?> findAnimalByKind(@PathVariable("kind") Kind kind) {
-        List<Animal> animalList = animalService.findAnimalByKind(kind);
-        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
-        return ResponseEntity.status(200).body(responseList);
+        List<AnimalGetAllDTO> animalList = animalService.findAnimalByKind(kind);
+        return ResponseEntity.status(200).body(animalList);
     }
 
     @Operation(summary = "지역별로 조회")
     @GetMapping("/city/{city}")
     public ResponseEntity<?> findAnimalByCity(@PathVariable("city") String city) {
-        List<Animal> animalList = animalService.findAnimalByCity(city);
-        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
-        return ResponseEntity.status(200).body(responseList);
+        List<AnimalGetAllDTO> animalList = animalService.findAnimalByCity(city);
+        return ResponseEntity.status(200).body(animalList);
     }
 
     @Operation(summary = "입양 상태별로 조회")
     @GetMapping("/adoptionStatus/{adoptionStatus}")
     public ResponseEntity<?> findAnimalByAdoptionStatus(@PathVariable("adoptionStatus") AdoptionStatus adoptionStatus) {
-        List<Animal> animalList = animalService.findAnimalByAdoptionStatus(adoptionStatus);
-        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
-        return ResponseEntity.status(200).body(responseList);
+        List<AnimalGetAllDTO> animalList = animalService.findAnimalByAdoptionStatus(adoptionStatus);
+        return ResponseEntity.status(200).body(animalList);
     }
 
     @Transactional
