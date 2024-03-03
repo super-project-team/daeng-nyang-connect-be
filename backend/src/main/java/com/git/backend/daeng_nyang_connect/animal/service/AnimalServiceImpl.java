@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.service;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalGetAllDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.*;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
@@ -21,6 +22,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -156,9 +158,11 @@ public class AnimalServiceImpl  implements AnimalService{
 
     @Override
     @Cacheable(value = "animal_getAll")
-    public List<Animal> findAllAnimal() {
+    public List<AnimalGetAllDTO> findAllAnimal() {
         // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환
-        return animalRepository.findAll();
+        List<Animal> all = animalRepository.findAll();
+        return all.stream()
+                .map(AnimalGetAllDTO::fromEntity).collect(Collectors.toList());
     }
 
     @Override

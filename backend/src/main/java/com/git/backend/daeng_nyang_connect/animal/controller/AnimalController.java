@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.controller;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalGetAllDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptionStatus;
@@ -75,9 +76,8 @@ public class AnimalController {
     @Operation(summary = "게시물 전체 조회")
     @GetMapping("/getAll")
     public ResponseEntity<?> findAllAnimal(){
-        List<Animal> animalList = animalService.findAllAnimal();
-        List<AnimalResponseDTO> responseList = animalService.responseList(animalList);
-        return ResponseEntity.status(200).body(responseList);
+        List<AnimalGetAllDTO> animalList = animalService.findAllAnimal();
+        return ResponseEntity.status(200).body(animalList);
     }
 
     @Operation(summary = "종류별로 조회")
