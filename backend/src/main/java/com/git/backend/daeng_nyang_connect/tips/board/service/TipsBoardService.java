@@ -222,6 +222,7 @@ public class TipsBoardService {
     }
 
 
+
     public List<TipsBoardDto> searchBoard(String keyword){
 
         List<Tips> byTitleContaining = tipsBoardRepository.findByTitleContaining(keyword);

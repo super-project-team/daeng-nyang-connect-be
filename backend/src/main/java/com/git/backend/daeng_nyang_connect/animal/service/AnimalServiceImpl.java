@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.service;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalGetAllDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.*;
 import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalRepository;
@@ -23,6 +24,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,12 @@ public class AnimalServiceImpl  implements AnimalService{
     private final AdoptedAnimalRepository adoptedAnimalRepository;
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
+
+    //조회 조건으로 반환된 Animal Entity를 Dto로 반환
+    public List<AnimalGetAllDTO> entityToDto(List<Animal> animal){
+        return animal.stream()
+                .map(AnimalGetAllDTO::fromEntity).collect(Collectors.toList());
+    }
 
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
@@ -158,24 +166,31 @@ public class AnimalServiceImpl  implements AnimalService{
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "animal_getAll")
-    public List<Animal> findAllAnimal() {
+    public List<AnimalGetAllDTO> findAllAnimal() {
         // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환
-        return animalRepository.findAll();
+        List<Animal> all = animalRepository.findAll();
+        return entityToDto(all);
+    }
+
+
+
+
+    @Override
+    public List<AnimalGetAllDTO> findAnimalByKind(Kind kind) {
+        List<Animal> animalByKind = animalRepository.findAnimalByKind(kind);
+        return entityToDto(animalByKind);
     }
 
     @Override
-    public List<Animal> findAnimalByKind(Kind kind) {
-        return animalRepository.findAnimalByKind(kind);
+    public List<AnimalGetAllDTO> findAnimalByCity(String city) {
+        List<Animal> animalByCity = animalRepository.findAnimalByCity(city);
+        return entityToDto(animalByCity);
     }
 
     @Override
-    public List<Animal> findAnimalByCity(String city) {
-        return animalRepository.findAnimalByCity(city);
-    }
-
-    @Override
-    public List<Animal> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus) {
-        return animalRepository.findAnimalByAdoptionStatus(adoptionStatus);
+    public List<AnimalGetAllDTO> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus) {
+        List<Animal> animalByAdoptionStatus = animalRepository.findAnimalByAdoptionStatus(adoptionStatus);
+        return entityToDto(animalByAdoptionStatus);
     }
 
     @Override
