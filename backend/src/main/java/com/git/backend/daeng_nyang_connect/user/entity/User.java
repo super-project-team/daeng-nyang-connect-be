@@ -55,7 +55,7 @@ public class User implements UserDetails {
     private List<AnimalScrap> myAnimalScrap;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ChatRoomUser> chatRooms = new ArrayList<>();
 
     @Override

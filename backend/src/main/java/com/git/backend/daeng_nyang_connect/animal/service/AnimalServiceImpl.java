@@ -10,11 +10,13 @@ import com.git.backend.daeng_nyang_connect.animal.repository.AnimalScrapReposito
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
@@ -24,7 +26,6 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@EnableCaching
 public class AnimalServiceImpl  implements AnimalService{
     private final AnimalRepository animalRepository;
     private final AnimalImageRepository animalImageRepository;
@@ -155,6 +156,7 @@ public class AnimalServiceImpl  implements AnimalService{
 
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "animal_getAll")
     public List<Animal> findAllAnimal() {
         // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환

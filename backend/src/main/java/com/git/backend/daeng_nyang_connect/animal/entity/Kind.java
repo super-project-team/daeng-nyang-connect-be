@@ -1,5 +1,5 @@
 package com.git.backend.daeng_nyang_connect.animal.entity;
 
 public enum Kind {
-    DOG, CAT, ETC
+    DOG, CAT, ETC, dog
 }

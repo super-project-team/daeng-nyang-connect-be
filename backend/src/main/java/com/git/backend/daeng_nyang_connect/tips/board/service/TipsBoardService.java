@@ -196,13 +196,24 @@ public class TipsBoardService {
         return response;
     }
     //  게시글, 닉네임, 작성 시간 좋아요만 보이면 됨
-    @Cacheable(cacheNames = "tips_Board_All", key = "#pageable.pageNumber")
-    public List<TipsBoardDto> getAll(Pageable pageable){
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 20, pageable.getSort());
-        Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
-        List<Tips> tipsList = tipsPage.getContent();
+//    @Cacheable(cacheNames = "tips_Board_All", key = "#pageable.pageNumber")
+//    public List<TipsBoardDto> getAll(Pageable pageable){
+//        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), 100, pageable.getSort());
+//        Page<Tips> tipsPage = tipsBoardRepository.findAll(customPageable);
+//        List<Tips> tipsList = tipsPage.getContent();
+//
+//        return tipsList.stream()
+//                .map(tips -> {
+//                    String author = findUserNicknameByTipsId(tips.getTipsBoardId());
+//                    return TipsBoardDto.fromEntity(tips, author);
+//                })
+//                .collect(Collectors.toList());
+//    }
+    @Cacheable(cacheNames = "tips_Board", key = "'get_All'")
+    public List<TipsBoardDto> getAll( ){
+        List<Tips> all = tipsBoardRepository.findAll();
 
-        return tipsList.stream()
+        return all.stream()
                 .map(tips -> {
                     String author = findUserNicknameByTipsId(tips.getTipsBoardId());
                     return TipsBoardDto.fromEntity(tips, author);

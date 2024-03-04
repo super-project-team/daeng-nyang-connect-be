@@ -68,8 +68,8 @@ public class TipsBoardController {
 
     @Operation(summary = "게시물 전체 조회")
     @GetMapping("/getAll")
-    public List<TipsBoardDto> getAll(Pageable pageable){
-       return tipsBoardService.getAll(pageable);
+    public List<TipsBoardDto> getAll(){
+       return tipsBoardService.getAll();
     }
 
     @Operation(summary = "특정 게시물 조회")
