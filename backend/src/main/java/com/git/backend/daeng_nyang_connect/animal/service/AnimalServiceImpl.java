@@ -37,11 +37,6 @@ public class AnimalServiceImpl  implements AnimalService{
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
 
-    //조회 조건으로 반환된 Animal Entity를 Dto로 반환
-    public List<AnimalGetAllDTO> entityToDto(List<Animal> animal){
-        return animal.stream()
-                .map(AnimalGetAllDTO::fromEntity).collect(Collectors.toList());
-    }
 
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
@@ -162,10 +157,19 @@ public class AnimalServiceImpl  implements AnimalService{
         return updateAnimal;
     }
 
+    //조회 조건으로 반환된 Animal Entity를 Dto로 반환
+    public List<AnimalGetAllDTO> entityToDto(List<Animal> animals){
+      return animals.stream()
+              .map(animal -> {
+                  List<AnimalImage> images = animalImageRepository.findByAnimal(animal);
+                  return AnimalGetAllDTO.fromEntity(animal, images);
+              }).collect(Collectors.toList());
+    }
+
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "animal_getAll")
+    @Cacheable(value = "animal_getAll", key = "'all_animal'")
     public List<AnimalGetAllDTO> findAllAnimal() {
         // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환
         List<Animal> all = animalRepository.findAll();
@@ -173,21 +177,25 @@ public class AnimalServiceImpl  implements AnimalService{
     }
 
 
-
-
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "animal_getAll", key = "#kind")
     public List<AnimalGetAllDTO> findAnimalByKind(Kind kind) {
         List<Animal> animalByKind = animalRepository.findAnimalByKind(kind);
         return entityToDto(animalByKind);
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "animal_getAll", key = "#city")
     public List<AnimalGetAllDTO> findAnimalByCity(String city) {
         List<Animal> animalByCity = animalRepository.findAnimalByCity(city);
         return entityToDto(animalByCity);
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "animal_getAll", key = "#adoptionStatus")
     public List<AnimalGetAllDTO> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus) {
         List<Animal> animalByAdoptionStatus = animalRepository.findAnimalByAdoptionStatus(adoptionStatus);
         return entityToDto(animalByAdoptionStatus);

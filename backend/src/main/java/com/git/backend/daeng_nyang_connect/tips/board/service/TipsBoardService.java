@@ -2,6 +2,7 @@ package com.git.backend.daeng_nyang_connect.tips.board.service;
 
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import com.git.backend.daeng_nyang_connect.config.redis.RedisRepositoryConfig;
 import com.git.backend.daeng_nyang_connect.exception.FileUploadFailedException;
 import com.git.backend.daeng_nyang_connect.notify.service.NotificationService;
 import com.git.backend.daeng_nyang_connect.tips.board.dto.TipsBoardDetailDto;
@@ -26,6 +27,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -49,6 +51,7 @@ public class TipsBoardService {
     private final TipsCommentsRepository tipsCommentsRepository;
     private final TipsCommentsLikeRepository tipsCommentsLikeRepository;
     private final NotificationService notificationService;
+    private final RedisTemplate<String ,String > redisTemplate;
 
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 

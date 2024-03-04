@@ -18,7 +18,7 @@ public class AnimalImage {
     @Column(name = "animal_image_idx")
     private Long animalImageId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "animal_board_idx")
     private Animal animal;

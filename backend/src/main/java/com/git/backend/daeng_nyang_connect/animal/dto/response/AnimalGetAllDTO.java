@@ -34,13 +34,12 @@ public class AnimalGetAllDTO {
     private String city;
     private AdoptionStatus adoptionStatus; // 입양 완료 여부
     private String createdAt;
-    private String userThumbnail;
     private List<AnimalImage> animalImageList;
-    private Date adoptedDate;
 
-    public static AnimalGetAllDTO fromEntity(Animal animal){
+    public static AnimalGetAllDTO fromEntity(Animal animal, List<AnimalImage> animalImage){
         return AnimalGetAllDTO.builder()
                 .boardId(animal.getAnimalId())
+                .userId(animal.getUser().getUserId())
                 .nickname(animal.getUser().getNickname())
                 .animalName(animal.getAnimalName())
                 .age(animal.getAge())
@@ -57,7 +56,7 @@ public class AnimalGetAllDTO {
                 .textEtc(animal.getTextEtc())
                 .adoptionStatus(animal.getAdoptionStatus())
                 .city(animal.getCity())
-                .animalImageList(animal.getImages())
+                .animalImageList(animalImage)
                 .build();
     }
 }
