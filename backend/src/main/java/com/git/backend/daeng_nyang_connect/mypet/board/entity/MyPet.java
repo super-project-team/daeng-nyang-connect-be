@@ -24,7 +24,7 @@ public class MyPet {
     @Column(name = "my_pet_board_idx")
     private Long myPetBoardId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

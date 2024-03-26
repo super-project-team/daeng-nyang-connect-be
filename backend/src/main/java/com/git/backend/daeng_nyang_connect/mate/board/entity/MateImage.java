@@ -17,7 +17,7 @@ public class MateImage {
     @Column(name = "mate_img_idx")
     private Long mateImgId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mate_board_idx")
     private Mate mate;
 

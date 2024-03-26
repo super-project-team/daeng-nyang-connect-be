@@ -22,11 +22,11 @@ public class ReviewComments {
     @Column(name = "review_comments_idx")
     private Long reviewCommentsId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_idx")
     private Review review;
 

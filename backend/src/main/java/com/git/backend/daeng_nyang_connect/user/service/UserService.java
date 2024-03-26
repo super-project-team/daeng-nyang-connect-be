@@ -106,7 +106,7 @@ public class UserService {
     }
 
     //로그인
-    @Transactional
+
     public ResponseEntity<?> login(LoginDto loginDto, HttpServletResponse httpServletResponse) {
         String email = loginDto.getEmail();
         String password = loginDto.getPassword();
@@ -170,7 +170,6 @@ public class UserService {
     }
 
     //로그아웃
-    @Transactional
     public void logout(String token){
         redisTemplate.opsForValue().set("logout : "+ tokenProvider.getEmailBytoken(token), "logout", Duration.ofSeconds(1800));
         redisTemplate.delete(tokenProvider.getEmailBytoken(token));

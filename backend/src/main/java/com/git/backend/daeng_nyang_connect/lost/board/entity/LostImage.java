@@ -18,7 +18,7 @@ public class LostImage {
 
     private String url;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lost_board_idx")
     @JsonBackReference(value = "Lost")
     private Lost lost;

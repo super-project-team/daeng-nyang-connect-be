@@ -21,12 +21,12 @@ public class TipsBoardLike {
     @Column(name = "tips_board_like_idx")
     private Long tipsBoardLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     @JsonBackReference
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tips_board_idx")
     @JsonBackReference(value = "tipsLike")
     private Tips tips;

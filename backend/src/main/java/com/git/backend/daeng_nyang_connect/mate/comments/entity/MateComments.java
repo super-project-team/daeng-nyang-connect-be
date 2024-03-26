@@ -24,11 +24,11 @@ public class MateComments {
     @Column(name = "mate_comments_idx")
     private Long mateCommentsId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mate_board_idx")
     private Mate mate;
 

@@ -22,7 +22,7 @@ public class Tips {
     @Column(name = "tips_board_idx")
     private Long tipsBoardId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

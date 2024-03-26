@@ -21,7 +21,7 @@ public class Lost {
     @Column(name = "lost_board_idx")
     private Long lostBoardId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

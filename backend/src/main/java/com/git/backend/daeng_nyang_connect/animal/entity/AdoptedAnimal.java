@@ -23,7 +23,7 @@ public class AdoptedAnimal {
     @Column(name = "adopted_animal_idx")
     private Long adoptedAnimalId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

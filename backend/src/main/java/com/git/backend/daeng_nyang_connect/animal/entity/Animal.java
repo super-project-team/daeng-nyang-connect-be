@@ -28,7 +28,7 @@ public class Animal {
     @Column(name = "animal_board_idx")
     private Long animalId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

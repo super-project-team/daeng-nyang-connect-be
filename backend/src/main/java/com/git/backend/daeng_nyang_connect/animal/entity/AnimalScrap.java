@@ -22,12 +22,12 @@ public class AnimalScrap {
     @Column(name = "animal_scrap_idx")
     private Long animalScrapId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "scrap")
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "animal_board_idx")
     private Animal animal;

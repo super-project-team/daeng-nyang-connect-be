@@ -19,11 +19,11 @@ public class MyPetBoardLike {
     @Column(name = "my_pet_board_like_idx")
     private Long myPetBoardLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "my_pet_board_idx")
     private MyPet myPet;
 

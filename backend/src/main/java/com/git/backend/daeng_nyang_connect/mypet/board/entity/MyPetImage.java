@@ -17,7 +17,7 @@ public class MyPetImage {
     @Column(name = "image_idx")
     private Long myPetImgId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "my_pet_board_idx")
     private MyPet myPet;
 

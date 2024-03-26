@@ -19,11 +19,11 @@ public class MateCommentsLike {
     @Column(name = "mate_comments_like_idx")
     private Long mateCommentsLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mate_comments_idx")
     private MateComments mateComments;
 

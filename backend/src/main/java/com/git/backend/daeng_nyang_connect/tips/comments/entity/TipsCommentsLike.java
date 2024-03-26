@@ -19,12 +19,12 @@ public class TipsCommentsLike {
     @Column(name = "tips_comments_like_idx")
     private Long tipsCommentsLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     @JsonBackReference(value = "userLikeReference")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tips_comments_idx")
     @JsonBackReference(value = "tipsCommentsLikeReference")
     private TipsComments tipsComments;

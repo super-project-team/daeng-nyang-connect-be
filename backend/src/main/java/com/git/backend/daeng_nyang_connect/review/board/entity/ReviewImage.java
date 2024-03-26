@@ -18,7 +18,7 @@ public class ReviewImage {
     @Column(name = "review_image_idx")
     private Long reviewImageId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "review_idx")
     private Review review;

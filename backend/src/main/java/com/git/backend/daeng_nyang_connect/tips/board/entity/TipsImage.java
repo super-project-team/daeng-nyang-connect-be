@@ -17,7 +17,7 @@ public class TipsImage {
     @Column(name = "tips_image_idx")
     private Long tipsImageId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tips_board_idx")
     @JsonBackReference(value = "tipsImgReference")
     private Tips tips;

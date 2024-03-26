@@ -19,11 +19,11 @@ public class LostComments {
     @Column(name = "lost_comments_idx")
     private Long lostCommentsId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lost_board_idx")
     private Lost lost;
 

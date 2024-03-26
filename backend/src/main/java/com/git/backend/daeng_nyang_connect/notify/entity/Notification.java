@@ -22,7 +22,7 @@ public class Notification {
     private String eventName;
     private String eventData;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

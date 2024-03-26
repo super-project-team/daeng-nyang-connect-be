@@ -24,7 +24,7 @@ public class Mate {
     @Column(name = "mate_board_idx")
     private Long mateBoardId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

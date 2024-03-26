@@ -19,11 +19,11 @@ public class MateBoardLike {
     @Column(name = "mate_board_like_idx")
     private Long mateBoardLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mate_board_idx")
     private Mate mate;
 

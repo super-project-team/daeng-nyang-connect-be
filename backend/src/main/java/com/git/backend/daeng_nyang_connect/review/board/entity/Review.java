@@ -23,7 +23,7 @@ public class Review {
     @Column(name = "review_idx")
     private Long reviewId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 

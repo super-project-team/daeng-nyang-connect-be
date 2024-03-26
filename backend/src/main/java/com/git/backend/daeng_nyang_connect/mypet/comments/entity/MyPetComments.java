@@ -24,11 +24,11 @@ public class MyPetComments {
     @Column(name = "my_pet_comments_idx")
     private Long myPetCommentsId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "my_pet_board_idx")
     private MyPet myPet;
 
