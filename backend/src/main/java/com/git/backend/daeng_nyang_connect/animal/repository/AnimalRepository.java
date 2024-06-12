@@ -14,4 +14,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     List<Animal> findAnimalByCity(String city);
 
     List<Animal> findAnimalByAdoptionStatus(AdoptionStatus adoptionStatus);
+
+
 }

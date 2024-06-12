@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.service;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalBreedDto;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalGetAllDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.*;
@@ -8,6 +9,7 @@ import com.git.backend.daeng_nyang_connect.animal.repository.AdoptedAnimalReposi
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalImageRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalRepository;
 import com.git.backend.daeng_nyang_connect.animal.repository.AnimalScrapRepository;
+import com.git.backend.daeng_nyang_connect.animal.repository.querydsl.AnimalCustomRepositoryImpl;
 import com.git.backend.daeng_nyang_connect.config.jwt.TokenProvider;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
@@ -16,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +41,7 @@ public class AnimalServiceImpl  implements AnimalService{
     private final AdoptedAnimalRepository adoptedAnimalRepository;
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
-
+    private final AnimalCustomRepositoryImpl animalCustomRepository;
 
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
@@ -166,14 +171,36 @@ public class AnimalServiceImpl  implements AnimalService{
               }).collect(Collectors.toList());
     }
 
+    public List<AnimalGetAllDTO> entityToDtoPage(List<Animal> animals) {
+        return animals.stream()
+                .map(animal -> {
+                    List<AnimalImage> images = animalImageRepository.findByAnimal(animal);
+                    return AnimalGetAllDTO.fromEntity(animal, images);
+                }).collect(Collectors.toList());
+    }
 
+
+
+//    @Override
+//    @Transactional(readOnly = true)
+//    @Cacheable(value = "animal_getAll", key = "'all_animal_' + #pageable.pageNumber + '_' + #pageable.pageSize ")
+//    public Page<List<AnimalGetAllDTO>> findAllAnimal(Pageable pageable) {
+//        // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환
+//        Page<List<AnimalGetAllDTO>> all = animalRepository.findAll(pageable);
+//        return entityToDtoPage(all);
+//    }
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "animal_getAll", key = "'all_animal'")
-    public List<AnimalGetAllDTO> findAllAnimal() {
-        // DB에 저장된 댕냥이 리스트 반환, 없다면 null 반환
-        List<Animal> all = animalRepository.findAll();
-        return entityToDto(all);
+    @Cacheable(value = "animal_getAll", key = "'all_animal_' + #pageable.pageNumber + '_' + #pageable.pageSize")
+    public Page<AnimalGetAllDTO> findAllAnimal(Pageable pageable) {
+        // DB에 저장된 댕냥이 리스트 반환, 없다면 빈 페이지 반환
+        Page<Animal> animalPage = animalRepository.findAll(pageable);
+
+        // Page<Animal>을 List<AnimalGetAllDTO>로 변환
+        List<AnimalGetAllDTO> animalDtoList = entityToDto(animalPage.getContent());
+
+        // Page<AnimalGetAllDTO>로 변환
+        return new PageImpl<>(animalDtoList, pageable, animalPage.getTotalElements());
     }
 
 
@@ -297,6 +324,9 @@ public class AnimalServiceImpl  implements AnimalService{
         return new AnimalResponseDTO(adoptedAnimal, animalImages);
     }
 
+    public AnimalBreedDto responseDTO(Animal animal){
+        return new AnimalBreedDto(animal);
+    }
     @Override
     public List<AnimalResponseDTO> responseList(List<Animal> animalList) {
         List<AnimalResponseDTO> responseList = new ArrayList<>();
@@ -305,6 +335,17 @@ public class AnimalServiceImpl  implements AnimalService{
             responseList.add(response(animal));
         }
 
+        return responseList;
+    }
+
+    //먼치킨인 동물 찾기 with query dsl
+    @Override
+    public List<AnimalBreedDto> findByBreed() {
+        List<AnimalBreedDto> responseList = new ArrayList<>();
+        List<Animal> animalList =  animalCustomRepository.findByBreed();
+        for(Animal animal : animalList){
+            responseList.add(responseDTO(animal));
+        }
         return responseList;
     }
 }

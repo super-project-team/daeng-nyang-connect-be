@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.controller;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalBreedDto;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalGetAllDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,12 +76,19 @@ public class AnimalController {
     }
 
     // 조회 - 전체 * kind(동물 종류) * city(지역별) * 입양 완료 상태별
+//    @Operation(summary = "게시물 전체 조회")
+//    @GetMapping("/getAll")
+//    public ResponseEntity<?> findAllAnimal(){
+//        List<AnimalGetAllDTO> animalList = animalService.findAllAnimal();
+//        return ResponseEntity.status(200).body(animalList);
+//    }
     @Operation(summary = "게시물 전체 조회")
     @GetMapping("/getAll")
-    public ResponseEntity<?> findAllAnimal(){
-        List<AnimalGetAllDTO> animalList = animalService.findAllAnimal();
+    public ResponseEntity<?> findAllAnimal(Pageable pageable){
+        Page<AnimalGetAllDTO> animalList = animalService.findAllAnimal(pageable);
         return ResponseEntity.status(200).body(animalList);
     }
+
 
     @Operation(summary = "종류별로 조회")
     @GetMapping("/kind/{kind}")
@@ -108,5 +118,12 @@ public class AnimalController {
                                         @RequestHeader("access_token") String token){
         Map<String, String> message = animalService.scrapAnimal(animalId, token);
         return ResponseEntity.status(200).body(message);
+    }
+
+    @Operation(summary = "먼치킨인 동물 찾기")
+    @GetMapping("/breed/munchicken")
+    public ResponseEntity<?> breedAnimal(@RequestHeader("access_token") String token){
+        List<AnimalBreedDto> animalList = animalService.findByBreed();
+        return ResponseEntity.status(200).body(animalList);
     }
 }

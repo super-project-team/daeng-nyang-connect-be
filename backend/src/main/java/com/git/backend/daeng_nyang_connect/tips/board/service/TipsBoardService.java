@@ -212,7 +212,7 @@ public class TipsBoardService {
 //                })
 //                .collect(Collectors.toList());
 //    }
-    @Cacheable(cacheNames = "tips_Board", key = "'get_All'")
+    @Cacheable(cacheNames = "tips_getAll", key = "'get_All'")
     public List<TipsBoardDto> getAll( ){
         List<Tips> all = tipsBoardRepository.findAll();
 
@@ -236,7 +236,7 @@ public class TipsBoardService {
         }).collect(Collectors.toList());
 
     }
-    @Cacheable(cacheNames = "tips_Board_Detail", key = "#tipsID")
+    @Cacheable(cacheNames = "tips_detail", key = "#tipsID")
     public TipsBoardDetailDto getThisBoard(Long tipsID){
 
         Tips thisBoard = tipsBoardRepository.findById(tipsID).orElseThrow();

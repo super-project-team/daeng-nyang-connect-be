@@ -10,4 +10,5 @@ import lombok.*;
 public class MateBoardLikeDTO {
     private Long likeId;
     private Long userId;
+
 }

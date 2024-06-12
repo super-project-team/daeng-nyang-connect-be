@@ -1,6 +1,7 @@
 package com.git.backend.daeng_nyang_connect.animal.service;
 
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
+import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalBreedDto;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalGetAllDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalResponseDTO;
 import com.git.backend.daeng_nyang_connect.animal.entity.AdoptedAnimal;
@@ -8,6 +9,8 @@ import com.git.backend.daeng_nyang_connect.animal.entity.AdoptionStatus;
 import com.git.backend.daeng_nyang_connect.animal.entity.Animal;
 import com.git.backend.daeng_nyang_connect.animal.entity.Kind;
 import com.git.backend.daeng_nyang_connect.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
@@ -27,7 +30,8 @@ public interface AnimalService {
     Animal updateAnimal(Long animalId, AnimalRequestDTO animalRequestDTO, String token);
 
     // 댕냥 게시판에 등록된 파양동물 전체 출력
-    List<AnimalGetAllDTO> findAllAnimal();
+//    List<AnimalGetAllDTO> findAllAnimal();
+    Page<AnimalGetAllDTO> findAllAnimal(Pageable pageable);
 
     // 댕냥 게시판에 등록된 파양동물을 동물 종류별로 출력
     List<AnimalGetAllDTO> findAnimalByKind(Kind kind);
@@ -64,4 +68,8 @@ public interface AnimalService {
 
     // 원하는 response 값 List에 저장 후 반환
     List<AnimalResponseDTO> responseList(List<Animal> animalList);
+
+
+    //먼치킨인 동물 찾기 with query dsl
+    List<AnimalBreedDto> findByBreed();
 }
