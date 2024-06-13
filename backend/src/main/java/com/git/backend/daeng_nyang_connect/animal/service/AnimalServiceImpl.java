@@ -1,5 +1,6 @@
 package com.git.backend.daeng_nyang_connect.animal.service;
 
+import com.daengnyang.jooq.custom.JPrefixGeneratorStrategy;
 import com.git.backend.daeng_nyang_connect.animal.dto.request.AnimalRequestDTO;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalBreedDto;
 import com.git.backend.daeng_nyang_connect.animal.dto.response.AnimalGetAllDTO;
@@ -15,6 +16,8 @@ import com.git.backend.daeng_nyang_connect.user.entity.User;
 import com.git.backend.daeng_nyang_connect.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
@@ -42,6 +45,8 @@ public class AnimalServiceImpl  implements AnimalService{
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
     private final AnimalCustomRepositoryImpl animalCustomRepository;
+    private JPrefixGeneratorStrategy jPrefixGeneratorStrategy;
+
 
     @Override
     public Animal addAnimal(AnimalRequestDTO animalRequestDTO, List<MultipartFile> files, String token) {
@@ -348,4 +353,6 @@ public class AnimalServiceImpl  implements AnimalService{
         }
         return responseList;
     }
+
+
 }
